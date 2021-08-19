@@ -9,14 +9,20 @@ interface props {
 
 function Wrapper({ children }:props):JSX.Element{
     return (
-        <div className="bg-gray-100 w-screen">
-            <NavBar />
-            <div className="ml-80 mt-14">
-
-            {children}
-            <Footer />
-            </div>
+      <div className="bg-gray-100 w-screen">
+        <NavBar />
+        <div className="ml-80 mt-16">
+          {children}
+          <button
+            onClick={() => {
+              console.log("hello")
+            }}
+          >
+            Hello
+          </button>
         </div>
+        <Footer />
+      </div>
     )
 }
 

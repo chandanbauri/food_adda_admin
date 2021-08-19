@@ -30,12 +30,12 @@ function NavBar() {
     return title
   }
   return (
-    <div className="fixed top-0 left-0 right-0 bottom-0 flex box-border">
+    <>
       <Drawer />
-      <div className="bg-white shadow-lg h-14 w-full flex items-center justify-start pl-3 box-border text-green-500 text-xl">
+      <div className="bg-white shadow-lg h-14 w-full flex items-center justify-start pl-3 box-border text-green-500 text-xl fixed top-0 left-0 right-0">
         {getTitle()}
       </div>
-    </div>
+    </>
   )
 }
 

@@ -35,7 +35,7 @@ function Drawer() {
     </div>
   )
   return (
-    <div className="h-screen xl:w-80 w-96 bg-white shadow-xl box-border">
+    <div className="h-screen w-72 bg-white shadow-xl box-border fixed top-0 left-0">
       <DrawerHeader />
       <div className="flex flex-1 flex-col mt-5">
         <Link href="/dashboard">
