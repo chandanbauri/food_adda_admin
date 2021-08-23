@@ -1,8 +1,9 @@
 import * as React from "react"
 import Wrapper from "../../components/layout"
 import ContentTable from "../../components/table"
-
-export default function Transactions() {
+import nookies from "nookies"
+import { Layout } from "../../components/layout/secondary"
+export default function Transactions({ session }: any) {
   let tableData = [
     {
       F1: "I1 asknjnasdsadas",
@@ -54,11 +55,19 @@ export default function Transactions() {
     { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
   ]
   let tableFileds = ["F1", "F2", "F3", "F4", "F5", "F6"]
+  if (session)
+    return (
+      <div className="bg-gray-200 flex-1 flex">
+        <Wrapper>
+          <ContentTable tableData={tableData} tableFileds={tableFileds} />
+        </Wrapper>
+      </div>
+    )
   return (
-    <div className="bg-gray-200 flex-1 flex">
-      <Wrapper>
-        <ContentTable tableData={tableData} tableFileds={tableFileds} />
-      </Wrapper>
-    </div>
+    <Layout title="Not Authenticated">
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
+      </div>
+    </Layout>
   )
 }

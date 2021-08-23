@@ -1,12 +1,43 @@
-import * as React from 'react'
-import Wrapper from '../components/layout'
+import Link from "next/link"
+import * as React from "react"
+import { useAuth } from "../components/context/auth"
+import Wrapper from "../components/layout"
+import { Layout } from "../components/layout/secondary"
 
 export default function Home() {
+  const Auth = useAuth()
   return (
-    <div className="bg-gray-200 flex-1 flex">
-      <Wrapper>
-        <h1>Hello</h1>
-      </Wrapper>
-    </div>
+    <Layout title="Food Adda">
+      <div className="bg-white flex-1 flex justify-center items-center box-border h-screen w-screen">
+        <div className="flex flex-col items-center max-w-5xl">
+          <h1 className=" sm:text-2xl md:text-3xl font-bold text-green-600">
+            Wellcome to Food Adda
+          </h1>
+          <div className="flex flex-row items-center justify-between mt-5">
+            {Auth?.user ? (
+              <Link href="/dashboard">
+                <button
+                  onClick={() => {
+                    console.log("1")
+                  }}
+                >
+                  <div className="box-border px-10 py-2 border-2 border-green-500 rounded-md shadow-lg mx-5">
+                    <span className="text-green-500">Go to Dashboard</span>
+                  </div>
+                </button>
+              </Link>
+            ) : (
+              <Link href="/auth/login">
+                <button>
+                  <div className="box-border px-14 py-2 border-2 border-green-600 bg-green-600 rounded-md shadow-lg mx-5">
+                    <span className="text-white">Log in</span>
+                  </div>
+                </button>
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    </Layout>
   )
 }

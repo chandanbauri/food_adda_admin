@@ -1,7 +1,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/router"
-
+import firebase from "firebase/app"
 function Drawer() {
   const router = useRouter()
   const getTitle = (): string => {
@@ -109,6 +109,21 @@ function Drawer() {
             </div>
           )}
         </Link>
+        <button
+          onClick={async () => {
+            try {
+              console.log("hell")
+              await firebase.auth().signOut()
+              window.location.href = "/"
+            } catch (error) {
+              throw error
+            }
+          }}
+        >
+          <div className="flex p-3 text-green-600  space-x-4 0 hover:bg-gray-50 hover:text-green-600  cursor-pointer  ">
+            <p>Sign out</p>
+          </div>
+        </button>
       </div>
     </div>
   )
