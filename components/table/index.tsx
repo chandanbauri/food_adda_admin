@@ -1,24 +1,36 @@
 import * as React from "react"
 
+type actionProps = {
+  Icon: React.ReactNode
+  action: (props: any) => void
+}
+
 type tableProps = {
   tableFileds: Array<string>
   tableData: Array<any>
+  actions?: Array<actionProps>
 }
 
 const ContentTable: React.FunctionComponent<tableProps> = ({
   tableData,
   tableFileds,
+  actions,
 }: tableProps) => {
   return (
-    <div className="w-full box-border p-4">
+    <div className="w-full box-border md:p-4">
       <table className="w-full table-auto shadow-xl">
         <thead>
-          <tr className="bg-green-500 sticky top-14">
+          <tr className="bg-green-500 sticky top-14 md:top-14 z-10">
             {tableFileds.map((item: string, index: number) => (
               <th key={index} className="px-4 py-4">
                 <span className="text-white">{item}</span>
               </th>
             ))}
+            {actions && (
+              <th className="px-4 py-4">
+                <span className="text-white">actions</span>
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -32,6 +44,23 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                   {data[item]}
                 </td>
               ))}
+              {actions && (
+                <td key={`${index}item`} className=" px-4 py-4">
+                  {actions.map(
+                    ({ Icon, action }: actionProps, index: number) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          action(data)
+                        }}
+                        className="box-border p-2 hover:bg-gray-300 rounded-full transition-all ease-linear mx-2"
+                      >
+                        {Icon}
+                      </button>
+                    )
+                  )}
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

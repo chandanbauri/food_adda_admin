@@ -15,7 +15,6 @@ export default function FoodMenu({ session }: any) {
     return (
       <div className="bg-gray-200 flex-1 flex">
         <Wrapper>
-          <h1>Food Menu</h1>
           <MenuContainer title="Food Menu" data={data} />
         </Wrapper>
       </div>

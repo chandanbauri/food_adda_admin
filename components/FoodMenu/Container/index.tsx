@@ -11,7 +11,7 @@ const MenuContainer: React.FunctionComponent<MenuContainerProps> = ({
   data,
 }) => {
   return (
-    <div className="max-h-96 w-full max-w-md bg-blue-100 shadow-xl rounded-2xl p-4 scrollBar">
+    <div className="max-h-96 w-full max-w-md bg-green-100 shadow-xl md:rounded-2xl p-4 scrollBar">
       <h1 className="text-2xl text-gray-800 font-sans">{title}</h1>
       <div className="h-full max-h-80 overflow-y-scroll">
         <div className="pt-1">

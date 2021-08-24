@@ -31,7 +31,6 @@ export default function Dashboard({ session }: any) {
     return (
       <div className="bg-gray-200 flex-1 flex">
         <Wrapper>
-          <h1>Dashboard</h1>
           {/* <button
           onClick={async () => {
             await assignOrder({
@@ -48,7 +47,7 @@ export default function Dashboard({ session }: any) {
         >
           Test
         </button> */}
-          <div className="flex flex-wrap">
+          <div className="flex flex-wrap flex-row items-start justify-start">
             <OrderCard title="Pending" qty={10} desc="Pending orders Card" />
             <OrderCard title="Pending" qty={10} desc="Pending orders Card" />
             <OrderCard title="Pending" qty={10} desc="Pending orders Card" />

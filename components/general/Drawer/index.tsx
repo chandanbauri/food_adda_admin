@@ -2,8 +2,11 @@ import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import firebase from "firebase/app"
+import * as Feather from "react-feather"
+import clsx from "clsx"
 function Drawer() {
   const router = useRouter()
+  const [drawer, setDrawer] = React.useState<boolean>(false)
   const getTitle = (): string => {
     let title: string = ""
     switch (router.route) {
@@ -30,14 +33,31 @@ function Drawer() {
   }
 
   const DrawerHeader = () => (
-    <div className="h-14 shadow-xl bg-white flex items-center justify-start pl-2">
+    <div className="h-14 shadow-xl bg-white fixed top-0 left-0 right-0 flex items-center justify-between px-4 box-border z-50">
       <h1 className="text-2xl font-medium text-green-600">Food Adda</h1>
+
+      <button
+        className="flex md:hidden"
+        onClick={() => {
+          setDrawer((prev) => !prev)
+        }}
+      >
+        {drawer ? (
+          <Feather.X className="text-green-500" size={30} />
+        ) : (
+          <Feather.Menu className="text-green-500" />
+        )}
+      </button>
     </div>
   )
   return (
-    <div className="h-screen w-72 bg-white shadow-xl box-border fixed top-0 left-0">
+    <>
       <DrawerHeader />
-      <div className="flex flex-1 flex-col mt-5">
+      {/* <div className="md:h-screen w-full md:w-72 shadow-xl box-border fixed top-0 left-0 md:right-auto right-0 md:bottom-auto bottom-0"> */}
+      <div
+        className={`flex flex-1 flex-col bg-white md:mt-5 md:transform-none transform transition ease-in-out md:static fixed top-14 md:left-auto left-0 right-0 md:right-1/4 z-50 md:z-10 +
+        ${drawer ? "translate-x-0" : "-translate-x-full"}`}
+      >
         <Link href="/dashboard">
           {router.route === "/dashboard" ? (
             <div className="flex p-3 text-green-600  space-x-4 0 hover:bg-gray-50 hover:text-green-600  cursor-pointer ">
@@ -125,7 +145,8 @@ function Drawer() {
           </div>
         </button>
       </div>
-    </div>
+      {/* </div> */}
+    </>
   )
 }
 

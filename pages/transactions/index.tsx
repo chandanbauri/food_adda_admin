@@ -3,6 +3,8 @@ import Wrapper from "../../components/layout"
 import ContentTable from "../../components/table"
 import nookies from "nookies"
 import { Layout } from "../../components/layout/secondary"
+import { verifyIdToken } from "../../utilities/firebase_admin"
+import * as Feather from "react-feather"
 export default function Transactions({ session }: any) {
   let tableData = [
     {
@@ -55,11 +57,25 @@ export default function Transactions({ session }: any) {
     { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
   ]
   let tableFileds = ["F1", "F2", "F3", "F4", "F5", "F6"]
+  let actions = [
+    {
+      Icon: <Feather.Edit size={24} />,
+      action: (data: any) => console.log(data),
+    },
+    {
+      Icon: <Feather.Trash2 size={24} />,
+      action: (data: any) => console.log(data),
+    },
+  ]
   if (session)
     return (
       <div className="bg-gray-200 flex-1 flex">
         <Wrapper>
-          <ContentTable tableData={tableData} tableFileds={tableFileds} />
+          <ContentTable
+            tableData={tableData}
+            tableFileds={tableFileds}
+            actions={actions}
+          />
         </Wrapper>
       </div>
     )
@@ -70,4 +86,25 @@ export default function Transactions({ session }: any) {
       </div>
     </Layout>
   )
+}
+
+export async function getServerSideProps(context: any) {
+  try {
+    let cookies = nookies.get(context)
+    const token = await verifyIdToken(cookies.token)
+    if (token) {
+      const { uid, email } = token
+      return {
+        props: { session: `your email is ${email},and your uid is ${uid}` },
+      }
+    }
+    context.res.writeHead(302, { location: "/auth/login" })
+    context.res.end()
+    return { props: {} }
+  } catch (error) {
+    // console.log(error)
+    context.res.writeHead(302, { location: "/auth/login" })
+    context.res.end()
+    return { props: {} }
+  }
 }
