@@ -1,29 +1,31 @@
 type Food = {
   name: string
   id: string
-  description: string
+  desc: string
 }
 
 type FoodsObj = {
   [key: string]: Array<Food>
 }
 
-export class FoodMenu {
-  categories: Array<String> | null
-  Foods: FoodsObj | null
+export class FoodMenuConstructor {
+  categories: Array<String>
+  Foods: FoodsObj
   constructor() {
-    this.categories = null
-    this.Foods = null
+    this.categories = []
+    this.Foods = {}
+    console.log("Menu created ...")
   }
 
   isFoodMenuEmpty() {
-    if (!this.categories) return true
+    if (this.categories.length == 0) return true
     else return false
   }
   findCategoryIndex(name: string) {
     if (!this.isFoodMenuEmpty()) {
       let category = this.categories?.findIndex((value) => value == name)
-      if (category) {
+      console.log(category)
+      if (category >= 0) {
         return category
       } else {
         return null
@@ -31,7 +33,7 @@ export class FoodMenu {
     } else return null
   }
   findFoodIndex(categoryName: string, food: string) {
-    if (this.Foods) {
+    if (!this.isFoodMenuEmpty()) {
       let index = this.Foods[categoryName].findIndex(
         (value) => value.name == food
       )
@@ -42,8 +44,9 @@ export class FoodMenu {
   }
   isCategoryAlreadyPresent(name: string) {
     if (!this.isFoodMenuEmpty()) {
-      let category = this.categories?.findIndex((value) => value == name)
-      if (category) {
+      let category = this.categories.findIndex((value) => value == name)
+      console.log(category)
+      if (category >= 0) {
         return true
       } else {
         return false
@@ -54,15 +57,17 @@ export class FoodMenu {
     if (this.isCategoryAlreadyPresent(name)) {
       return `Category named ${name} is already present`
     } else {
-      if (this.categories && this.Foods) {
-        this.categories?.push(name)
-        this.Foods[name].push(...foods)
+      if (this.categories !== null && this.Foods !== null) {
+        this.categories.push(name)
+        this.Foods[name] = foods
+
         return `Category added succesfully`
       } else return "there is some issue"
     }
   }
   addFoodItem(categoryName: string, foods: Array<Food>) {
-    if (this.isCategoryAlreadyPresent(categoryName) && this.Foods) {
+    if (this.isCategoryAlreadyPresent(categoryName)) {
+      console.log("working ...")
       this.Foods[categoryName].push(...foods)
     }
   }
@@ -72,15 +77,16 @@ export class FoodMenu {
       let category = this.findCategoryIndex(categoryName)
       if (category) {
         let List = this.categories
-        if (List) {
-          if (category == 0) {
-            this.categories = [...List?.slice(1)]
-          } else {
-            this.categories = [
-              ...List.slice(0, category),
-              ...List.slice(category + 1),
-            ]
-          }
+        if (category == 0) {
+          this.categories = [...List?.slice(1)]
+          return "category deleted successfully"
+        } else {
+          this.categories = [
+            ...List.slice(0, category),
+            ...List.slice(category + 1),
+          ]
+          delete this.Foods[categoryName]
+          return "category deleted successfully"
         }
       } else {
         return "The Category no Longer exists"
@@ -88,7 +94,7 @@ export class FoodMenu {
     }
   }
   deleteFood(categoryName: string, food: string) {
-    if (this.Foods) {
+    if (this.isCategoryAlreadyPresent(categoryName)) {
       let index = this.findFoodIndex(categoryName, food)
       if (index !== null) {
         let list = this.Foods[categoryName]
@@ -98,9 +104,19 @@ export class FoodMenu {
             ...list.slice(0, index),
             ...list.slice(index + 1),
           ]
+        return "category deleted successfully"
       } else {
         return "Food item does not exist"
       }
     } else return "Food menu is empty"
+  }
+  displayMainMenu() {
+    return this.categories
+  }
+  displayFoods() {
+    return this.Foods
+  }
+  displayCategory(name: any) {
+    if (this.isCategoryAlreadyPresent(name)) return this.Foods[name]
   }
 }

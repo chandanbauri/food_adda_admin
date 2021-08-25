@@ -48,11 +48,36 @@ export default function Dashboard({ session }: any) {
           Test
         </button> */}
           <div className="flex flex-wrap flex-row items-start justify-start">
-            <OrderCard title="Pending" qty={10} desc="Pending orders Card" />
-            <OrderCard title="Pending" qty={10} desc="Pending orders Card" />
-            <OrderCard title="Pending" qty={10} desc="Pending orders Card" />
-            <OrderCard title="Pending" qty={10} desc="Pending orders Card" />
-            <OrderCard title="Pending" qty={10} desc="Pending orders Card" />
+            <OrderCard
+              title="Pending"
+              qty={10}
+              desc="Pending orders Card"
+              to="/DB/Orders/pending"
+            />
+            <OrderCard
+              title="Pending"
+              qty={10}
+              desc="Pending orders Card"
+              to="/DB/Orders/active"
+            />
+            <OrderCard
+              title="Pending"
+              qty={10}
+              desc="Pending orders Card"
+              to="/DB/Orders/rejected"
+            />
+            <OrderCard
+              title="Pending"
+              qty={10}
+              desc="Pending orders Card"
+              to="/DB/Orders/some"
+            />
+            <OrderCard
+              title="Pending"
+              qty={10}
+              desc="Pending orders Card"
+              to="/DB/Orders/other"
+            />
           </div>
           <div className="w-full mt-5 flex 2xl:flex-row flex-col mb-10">
             {/* <canvas id="graph-log" className="w-full h-full"></canvas> */}

@@ -55,7 +55,7 @@ function Drawer() {
       <DrawerHeader />
       {/* <div className="md:h-screen w-full md:w-72 shadow-xl box-border fixed top-0 left-0 md:right-auto right-0 md:bottom-auto bottom-0"> */}
       <div
-        className={`flex flex-1 flex-col bg-white md:mt-5 md:transform-none transform transition ease-in-out md:static fixed top-14 md:left-auto left-0 right-0 md:right-1/4 z-50 md:z-10 +
+        className={`flex flex-1 flex-col bg-white md:mt-5 md:transform-none transform transition ease-in-out fixed top-14 left-0 w-full md:w-72 z-50 md:z-10 +
         ${drawer ? "translate-x-0" : "-translate-x-full"}`}
       >
         <Link href="/dashboard">

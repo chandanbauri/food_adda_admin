@@ -1,30 +1,24 @@
 import * as React from "react"
-import MenuContainer from "../../components/FoodMenu/Container"
-import Wrapper from "../../components/layout"
+import Wrapper from "../../../components/layout"
 import nookies from "nookies"
-import { verifyIdToken } from "../../utilities/firebase_admin"
-import { Layout } from "../../components/layout/secondary"
-import * as Feather from "react-feather"
-import { useResource } from "../../components/context/Resource"
-
-export default function FoodMenu({ session }: any) {
+import { verifyIdToken } from "../../../utilities/firebase_admin"
+import { Layout } from "../../../components/layout/secondary"
+import { useRouter } from "next/router"
+import ContentTable from "../../../components/table"
+import { useResource } from "../../../components/context/Resource"
+export default function View({ session }: any) {
+  const router = useRouter()
+  const { category } = router.query
   const Resource = useResource()
   if (session)
     return (
-      <div className="flex-1 flex flex-col">
-        <Wrapper>
-          <MenuContainer
-            title="Food Menu"
-            data={Resource?.foodMenu.displayMainMenu()}
-            headerOptions={[
-              {
-                Icon: <Feather.Edit />,
-                to: "/foodMenu/addCategory",
-              },
-            ]}
-          />
-        </Wrapper>
-      </div>
+      <Wrapper>
+        <ContentTable
+          tableData={Resource?.foodMenu.displayCategory(category)}
+          tableFileds={["name", "id", "desc"]}
+          actions={[]}
+        />
+      </Wrapper>
     )
   return (
     <Layout title="Not Authenticated">

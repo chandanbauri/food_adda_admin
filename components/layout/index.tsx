@@ -9,9 +9,9 @@ interface props {
 
 function Wrapper({ children }: props): JSX.Element {
   return (
-    <div className="bg-gray-100 w-screen">
+    <div className=" w-screen">
       <NavBar />
-      <div className="md:ml-80 md:mt-16 z-40">{children}</div>
+      <div className="md:ml-80 mt-20 z-40">{children}</div>
       <Footer />
     </div>
   )
