@@ -18,6 +18,7 @@ export default function AddNewFood({ session }: any) {
           tableData={Resource?.foodMenu.displayCategory(category)}
           tableFileds={["name", "id", "desc"]}
           actions={[]}
+          tableTitle="Add New Food"
         />
       </Wrapper>
     )

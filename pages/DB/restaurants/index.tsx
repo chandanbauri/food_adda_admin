@@ -74,7 +74,8 @@ export default function RestaurantsDB({ session }: any) {
           <ContentTable
             tableData={tableData}
             tableFileds={tableFileds}
-            actions={actions}
+            // actions={actions}
+            tableTitle="Restaurants"
           />
         </Wrapper>
       </div>

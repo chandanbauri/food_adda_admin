@@ -152,6 +152,7 @@ export default function Orders({ session }: any) {
             tableData={tableData}
             tableFileds={tableFileds}
             actions={getActions(type)}
+            tableTitle={`${type} Orders`}
           />
         </Wrapper>
       </div>

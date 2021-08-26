@@ -29,7 +29,7 @@ export default function Dashboard({ session }: any) {
   }
   if (session)
     return (
-      <div className="bg-gray-200 flex-1 flex">
+      <div className="bg-white flex-1 flex">
         <Wrapper>
           {/* <button
           onClick={async () => {
@@ -47,7 +47,7 @@ export default function Dashboard({ session }: any) {
         >
           Test
         </button> */}
-          <div className="flex flex-wrap flex-row items-start justify-start">
+          <div className="flex h-full flex-wrap flex-row items-start justify-start">
             <OrderCard
               title="Pending"
               qty={10}
@@ -78,20 +78,6 @@ export default function Dashboard({ session }: any) {
               desc="Pending orders Card"
               to="/DB/Orders/other"
             />
-          </div>
-          <div className="w-full mt-5 flex 2xl:flex-row flex-col mb-10">
-            {/* <canvas id="graph-log" className="w-full h-full"></canvas> */}
-            <div className="xl:w-4/5 w-full px-2 bg-white shadow-xl rounded-2xl m-2 box-border">
-              <Line
-                data={data}
-                width={300}
-                height={400}
-                options={{ maintainAspectRatio: false }}
-              />
-            </div>
-            <div className="2xl:w-1/5 xl:w-96 px-2 py-4 bg-white shadow-xl rounded-2xl m-2 box-border">
-              <Pie data={data} />
-            </div>
           </div>
         </Wrapper>
       </div>

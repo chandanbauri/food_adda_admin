@@ -18,6 +18,7 @@ export default function View({ session }: any) {
           tableData={Resource?.foodMenu.displayCategory(category)}
           tableFileds={["name", "id", "desc"]}
           actions={[]}
+          tableTitle={`${category}`}
         />
       </Wrapper>
     )

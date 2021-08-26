@@ -74,7 +74,8 @@ export default function UserDB({ session }: any) {
           <ContentTable
             tableData={tableData}
             tableFileds={tableFileds}
-            actions={actions}
+            // actions={actions}
+            tableTitle="Users"
           />
         </Wrapper>
       </div>

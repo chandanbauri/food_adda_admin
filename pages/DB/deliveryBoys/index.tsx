@@ -67,6 +67,12 @@ export default function DeliveryBoyDB({ session }: any) {
       action: (data: any) => console.log(data),
     },
   ]
+  let HeaderActions = [
+    {
+      Icon: <Feather.Plus />,
+      to: "/DB/deliveryBoys/addNew",
+    },
+  ]
   if (session)
     return (
       <div className="bg-gray-200 flex-1 flex">
@@ -75,6 +81,8 @@ export default function DeliveryBoyDB({ session }: any) {
             tableData={tableData}
             tableFileds={tableFileds}
             actions={actions}
+            headerActions={HeaderActions}
+            tableTitle="Delivery Boys"
           />
         </Wrapper>
       </div>

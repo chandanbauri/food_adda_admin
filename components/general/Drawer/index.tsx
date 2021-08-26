@@ -16,9 +16,9 @@ function Drawer() {
       case "/foodMenu":
         title = "Food Menu"
         break
-      case "/transactions":
-        title = "Transactions"
-        break
+      // case "/transactions":
+      //   title = "Transactions"
+      //   break
       case "/DB/users":
         title = "Dashboard"
         break
@@ -33,7 +33,7 @@ function Drawer() {
   }
 
   const DrawerHeader = () => (
-    <div className="h-14 shadow-xl bg-white fixed top-0 left-0 right-0 flex items-center justify-between px-4 box-border z-50">
+    <div className="h-14 shadow-md bg-white fixed top-0 left-0 right-0 flex items-center justify-between px-4 box-border z-50">
       <h1 className="text-2xl font-medium text-green-600">Food Adda</h1>
 
       <button
@@ -82,7 +82,7 @@ function Drawer() {
           )}
         </Link>
 
-        <Link href="/transactions">
+        {/* <Link href="/transactions">
           {router.route === "/transactions" ? (
             <div className="flex p-3 text-green-600  space-x-4 0 hover:bg-gray-50 hover:text-green-600  cursor-pointer  ">
               <p>Transaction</p>
@@ -92,7 +92,7 @@ function Drawer() {
               <p>Transaction</p>
             </div>
           )}
-        </Link>
+        </Link> */}
 
         <Link href="/DB/users">
           {router.route === "/DB/users" ? (

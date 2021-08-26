@@ -13,7 +13,7 @@ const PopUpContainer: React.FunctionComponent<props> = ({
   if (trigger)
     return (
       <div className="fixed top-0 left-0 right-0 bottom-0 bg-black z-50 bg-opacity-25 overflow-y-scroll">
-        <div className="flex items-center h-full w-full flex-col mt-14 box-border px-4">
+        <div className="flex items-center h-full w-full flex-col box-border mt-14 px-4">
           <div className="max-w-full md:max-w-2xl w-full bg-white shadow-lg md:rounded-md box-border p-4">
             {content}
             <div className="w-full flex items-center justify-center mt-5 sticky bottom-8">
