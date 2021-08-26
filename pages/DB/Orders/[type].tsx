@@ -8,6 +8,7 @@ import * as Feather from "react-feather"
 import ContentTable from "../../../components/table"
 import PopUpContainer from "../../../components/popUp/container"
 import PopUpTable from "../../../components/popUp/table"
+import { GetStaticPaths } from "next"
 export default function Orders({ session }: any) {
   let router = useRouter()
   let { type } = router.query
@@ -184,3 +185,4 @@ export async function getServerSideProps(context: any) {
     return { props: {} }
   }
 }
+

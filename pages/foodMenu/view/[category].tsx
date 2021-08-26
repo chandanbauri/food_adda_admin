@@ -6,6 +6,7 @@ import { Layout } from "../../../components/layout/secondary"
 import { useRouter } from "next/router"
 import ContentTable from "../../../components/table"
 import { useResource } from "../../../components/context/Resource"
+import { GetStaticPaths } from "next"
 export default function View({ session }: any) {
   const router = useRouter()
   const { category } = router.query
@@ -49,3 +50,5 @@ export async function getServerSideProps(context: any) {
     return { props: {} }
   }
 }
+
+
