@@ -5,21 +5,61 @@ import { verifyIdToken } from "../../../utilities/firebase_admin"
 import { Layout } from "../../../components/layout/secondary"
 import { useRouter } from "next/router"
 import ContentTable from "../../../components/table"
-import { useResource } from "../../../components/context/Resource"
-import { GetStaticPaths } from "next"
+import firebase from "firebase"
 export default function View({ session }: any) {
   const router = useRouter()
-  const { category } = router.query
-  const Resource = useResource()
+  const { category, name } = router.query
+  let CategoriesCollection = firebase.firestore().collection("categories")
+  const [tableData, setTableData] = React.useState<Array<any>>([])
+  const [initializing, setInitializing] = React.useState<boolean>(true)
+  const getList = async () => {
+    if (typeof category == "string") {
+      let res = await CategoriesCollection.doc(category)
+        .collection("foods")
+        .get()
+      if (res.size) {
+        let list: Array<any> = []
+        res.docs.map((item, index) => {
+          list.push(item.data())
+        })
+        console.log(list)
+        setInitializing(false)
+        setTableData(list)
+      } else {
+        setTableData([])
+        setInitializing(false)
+      }
+    }
+  }
+  React.useEffect(() => {
+    getList().catch((error) => {
+      throw error
+    })
+    return
+  }, [])
+  if (initializing)
+    return (
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-xl">Loading ...</h1>
+      </div>
+    )
   if (session)
     return (
       <Wrapper>
-        <ContentTable
-          tableData={Resource?.foodMenu.displayCategory(category)}
-          tableFileds={["name", "id", "desc"]}
-          actions={[]}
-          tableTitle={`${category}`}
-        />
+        {!tableData.length ? (
+          <div className="h-64 w-full flex items-center justify-center">
+            <h1 className="text-green-500 text-2xl font-bold">
+              No data available
+            </h1>
+          </div>
+        ) : (
+          <ContentTable
+            tableData={tableData}
+            tableFileds={["name", "cost", "desc"]}
+            // actions={[]}
+            tableTitle={`${name}`}
+          />
+        )}
       </Wrapper>
     )
   return (
@@ -51,5 +91,3 @@ export async function getServerSideProps(context: any) {
     return { props: {} }
   }
 }
-
-

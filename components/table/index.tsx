@@ -4,6 +4,8 @@ import * as React from "react"
 type actionProps = {
   Icon: React.ReactNode
   action: (props: any) => void
+  isLink?: boolean
+  to?: string
 }
 type HeaderAction = {
   Icon: React.ReactNode
@@ -50,7 +52,7 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                   </th>
                 ))}
                 {actions && (
-                  <th className="px-4 py-4">
+                  <th className="px-4 py-4 capitalize">
                     <span className="text-white">actions</span>
                   </th>
                 )}
@@ -64,25 +66,43 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                     className={index % 2 == 0 ? "bg-green-100" : "bg-white"}
                   >
                     {tableFileds.map((item: string, index: number) => (
-                      <td key={`${index}item`} className={`px-4 py-4`}>
+                      <td
+                        key={`${index}item`}
+                        className={`px-4 py-4 text-center`}
+                      >
                         {data[item]}
                       </td>
                     ))}
                     {actions && (
-                      <td key={`${index}item`} className=" px-4 py-4">
-                        {actions.map(
-                          ({ Icon, action }: actionProps, index: number) => (
-                            <button
-                              key={index}
-                              onClick={() => {
-                                action(data)
-                              }}
-                              className="box-border p-2 hover:bg-gray-300 rounded-full transition-all ease-linear mx-2"
-                            >
-                              {Icon}
-                            </button>
-                          )
-                        )}
+                      <td key={`${index}item`} className=" px-4 py-4 ">
+                        <div className="flex items-center justify-between">
+                          {actions.map(
+                            (
+                              { Icon, action, isLink, to }: actionProps,
+                              index: number
+                            ) =>
+                              isLink && to ? (
+                                <Link
+                                  href={`${to}/${data["id"]}?name=${data["name"]}`}
+                                  key={index}
+                                >
+                                  <span className="box-border p-2 hover:bg-gray-300 rounded-full transition-all ease-linear mx-2">
+                                    {Icon}
+                                  </span>
+                                </Link>
+                              ) : (
+                                <button
+                                  key={index}
+                                  onClick={() => {
+                                    action(data)
+                                  }}
+                                  className="box-border p-2 hover:bg-gray-300 rounded-full transition-all ease-linear mx-2"
+                                >
+                                  {Icon}
+                                </button>
+                              )
+                          )}
+                        </div>
                       </td>
                     )}
                   </tr>

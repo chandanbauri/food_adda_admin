@@ -5,23 +5,46 @@ import nookies from "nookies"
 import { verifyIdToken } from "../../../utilities/firebase_admin"
 import { Layout } from "../../../components/layout/secondary"
 import { useResource } from "../../../components/context/Resource"
+import firebase from "firebase"
+import * as Feather from "react-feather"
+import PopUpContainer from "../../../components/popUp/container"
 
 export default function AddNewCategory({ session }: any) {
-  const Resource = useResource()
+  const CategoryCollection = firebase.firestore().collection("categories")
   const [catFormFields, setCatFormFields] = React.useState({
     name: "",
   })
-  const [FoodFormFields, setFoodFormFields] = React.useState({
-    name: "",
-    id: "",
-    desc: "",
-  })
-  function handleHoursInput(e: any) {
-    // let newEdit = { ...editing };
+  const [trigger, setTrigger] = React.useState<boolean>(false)
+  const [error, setError] = React.useState<boolean>(true)
 
-    // newEdit.hours = e.target.value;
-    // setEditing(newEdit);
-    setFoodFormFields((prev) => ({ ...prev, desc: e.target.value }))
+  const closePopUp = () => {
+    setError(false)
+    setTrigger(false)
+    setCatFormFields({ name: "" })
+  }
+  const Success = () => (
+    <div className="h-64 flex flex-col items-center justify-center text-green-500">
+      <div>
+        <Feather.CheckCircle size={80} />
+      </div>
+      <h1 className="mt-10 font-bold text-xl">Category</h1>
+      <h1 className="font-bold text-xl"> Added Successfully</h1>
+    </div>
+  )
+  const Failure = () => (
+    <div className="h-64 flex flex-col items-center justify-center text-red-500">
+      <div>
+        <Feather.XCircle size={80} />
+      </div>
+      <h1 className="mt-10 font-bold text-xl">Something</h1>
+      <h1 className="font-bold text-xl">Went wrong</h1>
+      <h1 className="mt-10 font-bold text-xl">Or</h1>
+      <h1 className="font-bold text-xl">May be category already exists</h1>
+    </div>
+  )
+  const PopUpContent = () => {
+    if (!error) return <Success />
+    return <Failure />
   }
   if (session)
     return (
@@ -41,38 +64,30 @@ export default function AddNewCategory({ session }: any) {
               }}
             />
           </div>
-          <div className="flex flex-col mt-4 mb-2">
-            <label>Food Name</label>
-            <input
-              className="border-2 border-green-500 my-2"
-              value={FoodFormFields.name}
-              onChange={(e) => {
-                setFoodFormFields((prev) => ({
-                  ...prev,
-                  name: e.target.value,
-                }))
-              }}
-            />
-          </div>
-          <div className="flex flex-col mt-4 mb-2">
-            <label>Food Description</label>
-            <textarea
-              className="border-2 border-green-500 my-2"
-              //value={FoodFormFields.desc}
-              onChange={handleHoursInput}
-            />
-          </div>
           <div className="flex flex-grow items-center justify-center">
             <button
-              onClick={() => {
-                Resource?.foodMenu.addCategory(catFormFields.name, [
-                  {
-                    name: FoodFormFields.name,
-                    id: `${catFormFields.name}/${FoodFormFields.name}`,
-                    desc: FoodFormFields.desc,
-                  },
-                ])
-                console.log(Resource?.foodMenu.displayFoods())
+              onClick={async () => {
+                try {
+                  let res = await CategoryCollection.where(
+                    "name",
+                    "==",
+                    `${catFormFields.name}`
+                  ).get()
+                  if (res.size) {
+                    setTrigger(true)
+                    setError(true)
+                  } else {
+                    await CategoryCollection.add({
+                      name: catFormFields.name,
+                    })
+                    setTrigger(true)
+                    setError(false)
+                  }
+                } catch (error) {
+                  setTrigger(true)
+                  setError(true)
+                  throw error
+                }
               }}
             >
               <div className="py-2 px-10 bg-green-500 shadow-md rounded-md">
@@ -80,6 +95,11 @@ export default function AddNewCategory({ session }: any) {
               </div>
             </button>
           </div>
+          <PopUpContainer
+            trigger={trigger}
+            content={<PopUpContent />}
+            onClose={closePopUp}
+          />
         </div>
       </Wrapper>
     )

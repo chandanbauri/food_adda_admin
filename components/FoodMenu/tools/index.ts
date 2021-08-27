@@ -16,7 +16,10 @@ export class FoodMenuConstructor {
     this.Foods = {}
     console.log("Menu created ...")
   }
-
+  initialize(categories: Array<string>, foods: FoodsObj) {
+    this.categories = categories
+    this.Foods = foods
+  }
   isFoodMenuEmpty() {
     if (this.categories.length == 0) return true
     else return false
