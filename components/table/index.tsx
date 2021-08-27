@@ -46,7 +46,7 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
               <tr className="bg-green-500 z-10">
                 {tableFileds.map((item: string, index: number) => (
                   <th key={index} className={`px-4 py-4`}>
-                    <span className="text-white">{item}</span>
+                    <span className="text-white capitalize">{item}</span>
                   </th>
                 ))}
                 {actions && (

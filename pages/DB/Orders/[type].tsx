@@ -9,10 +9,19 @@ import ContentTable from "../../../components/table"
 import PopUpContainer from "../../../components/popUp/container"
 import PopUpTable from "../../../components/popUp/table"
 import { GetStaticPaths } from "next"
+import { useResource } from "../../../components/context/Resource"
+import firebase from "firebase"
+import { assignOrder } from "../../../utilities/functions"
 export default function Orders({ session }: any) {
+  const OrdersCollection = firebase.firestore().collection("orders")
   let router = useRouter()
   let { type } = router.query
   const [popUp, setPopUp] = React.useState<boolean>(false)
+  let Resource = useResource()
+  const [success, setSuccess] = React.useState<boolean>(false)
+  const [Error, setError] = React.useState<boolean>(false)
+  const [DeliveryBoys, setDeliveryBoys] = React.useState<Array<any>>([])
+
   let tableData = [
     {
       F1: "I1 asknjnasdsadas",
@@ -75,15 +84,20 @@ export default function Orders({ session }: any) {
   //     },
   //   ]
 
-  const getActions = (type: any) => {
+  const getPopUpActions = (type: any) => {
     let actions: Array<any> = []
     switch (type) {
       case "pending":
         actions = [
           {
-            Icon: <Feather.Edit size={24} />,
-            action: (data: any) => {
-              setPopUp((prev) => true)
+            Icon: <Feather.CheckSquare size={24} />,
+            action: async (data: any) => {
+              try {
+                //  await assignOrder({})
+                setPopUp((prev) => false)
+              } catch (error) {
+                setPopUp((prev) => false)
+              }
             },
           },
           {
@@ -92,32 +106,107 @@ export default function Orders({ session }: any) {
           },
         ]
         break
-      case "active":
-        actions = [
-          {
-            Icon: <Feather.Edit size={24} />,
-            action: (data: any) => console.log("active", data),
-          },
-          {
-            Icon: <Feather.Trash2 size={24} />,
-            action: (data: any) => console.log("active", data),
-          },
-        ]
+      case "ongoing":
+        actions = []
         break
       case "rejected":
-        actions = [
-          {
-            Icon: <Feather.Edit size={24} />,
-            action: (data: any) => console.log("rejected", data),
-          },
-          {
-            Icon: <Feather.Trash2 size={24} />,
-            action: (data: any) => console.log("rejected", data),
-          },
-        ]
+        actions = []
+        break
+      case "canceled":
+        actions = []
+        break
+      case "delivered":
+        actions = []
         break
     }
     return actions
+  }
+
+  const getActions = (type: any) => {
+    let actions: Array<any> = []
+    switch (type) {
+      case "pending":
+        actions = [
+          {
+            Icon: <Feather.CheckSquare size={24} />,
+            action: (data: any) => {
+              setPopUp(true)
+            },
+          },
+          {
+            Icon: <Feather.Trash2 size={24} />,
+            action: async (data: any) => {
+              try {
+                await OrdersCollection.doc(data.id).update({
+                  isPending: false,
+                  isCanceled: false,
+                  isOnGoing: false,
+                  isDelivered: false,
+                  isRejected: true,
+                })
+                if (Resource?.Orders.pending) {
+                  let index = Resource?.Orders?.pending?.findIndex(
+                    (item, index) => item.id == data.id
+                  )
+                  if (index !== undefined) {
+                    Resource?.setOrders((prev) => ({
+                      ...prev,
+                      rejected: [...prev.rejected, prev.pending[index]],
+                    }))
+                    if (index == 0) {
+                      Resource?.setOrders((prev) => ({
+                        ...prev,
+                        pending: [...prev.pending.slice(1)],
+                      }))
+                    } else if (index == 1) {
+                      Resource?.setOrders((prev) => ({
+                        ...prev,
+                        pending: [
+                          ...prev.pending.slice(0, index),
+                          ...prev.pending.slice(index + 1),
+                        ],
+                      }))
+                    }
+                  }
+                }
+                setSuccess((prev) => false)
+              } catch (error) {
+                setError((prev) => false)
+              }
+            },
+          },
+        ]
+        break
+      case "ongoing":
+        actions = []
+        break
+      case "rejected":
+        actions = []
+        break
+      case "canceled":
+        actions = []
+        break
+      case "delivered":
+        actions = []
+        break
+    }
+    return actions
+  }
+
+  const getOrders = () => {
+    console.log(Resource?.Orders)
+    switch (type) {
+      case "pending":
+        return Resource?.Orders?.pending
+      case "rejected":
+        return Resource?.Orders?.rejected
+      case "canceled":
+        return Resource?.Orders?.canceled
+      case "ongoing":
+        return Resource?.Orders?.onGoing
+      case "delivered":
+        return Resource?.Orders?.delivered
+    }
   }
   const PopUpConent = () => (
     <div>
@@ -129,11 +218,12 @@ export default function Orders({ session }: any) {
         <PopUpTable
           tableData={tableData}
           tableFileds={tableFileds}
-          actions={getActions(type)}
+          actions={getPopUpActions(type)}
         />
       </div>
     </div>
   )
+  console.log(getOrders())
   if (session)
     return (
       <div className="bg-gray-200 flex-1 flex">
@@ -186,4 +276,3 @@ export async function getServerSideProps(context: any) {
     return { props: {} }
   }
 }
-

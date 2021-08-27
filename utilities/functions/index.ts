@@ -6,3 +6,8 @@ export const assignOrder = functions.httpsCallable("assignOrder")
 export const createNewDeliveryPartner = functions.httpsCallable(
   "createNewDeliveryPartner"
 )
+
+export const getListOfDeliveryBoys = functions.httpsCallable(
+  "getListOfDeliveryBoys"
+)
+export const getListUsers = functions.httpsCallable("getListUsers")

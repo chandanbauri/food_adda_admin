@@ -6,43 +6,46 @@ import { Layout } from "../../../../components/layout/secondary"
 import { createNewDeliveryPartner } from "../../../../utilities/functions"
 import PopUpContainer from "../../../../components/popUp/container"
 import * as Feather from "react-feather"
+import firebase from "firebase"
 
-export default function AddNewDeliveryBoy({ session }: any) {
+export default function AddNewRestaurant({ session }: any) {
+  const RestaurantCollection = firebase.firestore().collection("restaurants")
   const [trigger, setTrigger] = React.useState<boolean>(false)
   const [error, setError] = React.useState<boolean>(true)
   let initialState = {
-    // email: "user@example.com",
+    // email: "",
     // emailVerified: false,
-    // phoneNumber: "+11234567890",
-    // password: "secretPassword",
-    // displayName: "John Doe",
-    // photoURL: "http://www.example.com/12345678/photo.png",
-    // disabled: false,
-    email: "",
-    emailVerified: false,
-    phoneNumber: "",
-    password: "",
-    displayName: "",
-    photoURL: "",
-    disabled: false,
+    // phoneNumber: "",
+    // password: "",
+    // displayName: "",
+    // photoURL: "",
+    //   disabled: false,
+    restaurantName: "",
+    phone: "",
+    address: "",
+    preparationDuration: "",
   }
   const [app, setApp] = React.useState(initialState)
   let fields = [
     {
-      label: "Name",
-      name: "displayName",
-      value: app.displayName,
+      label: "Restaurant Name",
+      name: "restaurantName",
+      value: app.restaurantName,
     },
     {
-      label: "Email",
-      name: "email",
-      value: app.email,
+      label: "Phone",
+      name: "phone",
+      value: app.phone,
     },
-    { label: "Phone Number", name: "phoneNumber", value: app.phoneNumber },
     {
-      label: "Password",
-      name: "password",
-      value: app.password,
+      label: "Preparation Duration (in minutes)",
+      name: "preparationDuration",
+      value: app.preparationDuration,
+    },
+    {
+      label: "Full Address",
+      name: "address",
+      value: app.address,
     },
   ]
   let handleText = (name: string) => (e: any) => {
@@ -63,7 +66,7 @@ export default function AddNewDeliveryBoy({ session }: any) {
       <div>
         <Feather.CheckCircle size={80} />
       </div>
-      <h1 className="mt-10 font-bold text-xl">Delivery Partner</h1>
+      <h1 className="mt-10 font-bold text-xl">Restaurant</h1>
       <h1 className="font-bold text-xl"> Added Successfully</h1>
     </div>
   )
@@ -80,11 +83,12 @@ export default function AddNewDeliveryBoy({ session }: any) {
     if (!error) return <Success />
     return <Failure />
   }
+
   if (session)
     return (
       <Wrapper>
         <div className="w-full px-4 mt-5 box-border">
-          <h1 className="text-green-500 text-2xl">Add New Delivery Boy</h1>
+          <h1 className="text-green-500 text-2xl">Add New Restaurant</h1>
           {fields.map((item, index) => (
             <div className="flex flex-col mt-4 mb-2" key={index}>
               <label className="capitalize">{item.label}</label>
@@ -100,29 +104,14 @@ export default function AddNewDeliveryBoy({ session }: any) {
             <button
               onClick={async () => {
                 try {
-                  let res = await createNewDeliveryPartner({
-                    details: {
-                      email: app.email,
-                      emailVerified: false,
-                      phoneNumber: `+91${app.phoneNumber}`,
-                      password: app.password,
-                      displayName: app.displayName,
-                      // photoURL: app.photoURL,
-                      disabled: false,
-                    },
-                  })
-                  if (res) {
-                    console.log(res)
-                    setTrigger(true)
-                    setError(false)
-                  } else {
-                    setTrigger(true)
-                    setError(true)
-                  }
+                  await RestaurantCollection.add(app)
+                  setTrigger(true)
+                  setError(false)
                 } catch (error) {
+                  setTrigger(true)
+                  setError(true)
                   throw error
                 }
-                console.log(app)
                 // setTrigger(true)
               }}
             >

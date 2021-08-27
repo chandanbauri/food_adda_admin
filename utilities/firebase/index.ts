@@ -11,6 +11,5 @@ const Config = {
 }
 
 export const fireBaseClient = () => {
-  console.log("Initializing ...")
   if (!firebase.apps.length) firebase.initializeApp(Config)
 }
