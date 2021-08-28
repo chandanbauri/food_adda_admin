@@ -37,7 +37,7 @@ export default function AddNewFood({ session }: any) {
       value: app.name,
     },
     {
-      label: "Email",
+      label: "Description",
       name: "desc",
       value: app.desc,
     },
@@ -116,7 +116,7 @@ export default function AddNewFood({ session }: any) {
                     } else {
                       await CategoriesCollection.doc(category)
                         .collection("foods")
-                        .add({ ...app })
+                        .add({ ...app, category: name })
                       setError(false)
                       setTrigger(true)
                     }

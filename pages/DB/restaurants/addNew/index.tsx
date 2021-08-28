@@ -7,11 +7,16 @@ import { createNewDeliveryPartner } from "../../../../utilities/functions"
 import PopUpContainer from "../../../../components/popUp/container"
 import * as Feather from "react-feather"
 import firebase from "firebase"
+import ContentTable from "../../../../components/table"
 
 export default function AddNewRestaurant({ session }: any) {
   const RestaurantCollection = firebase.firestore().collection("restaurants")
   const [trigger, setTrigger] = React.useState<boolean>(false)
   const [error, setError] = React.useState<boolean>(true)
+  const CategoriesCollection = firebase.firestore().collection("categories")
+  const [foodList, setFoodList] = React.useState<Array<any>>([])
+  const [initializing, setInitializing] = React.useState<boolean>(true)
+  const [basket, setBasket] = React.useState<Array<any>>([])
   let initialState = {
     // email: "",
     // emailVerified: false,
@@ -60,6 +65,7 @@ export default function AddNewRestaurant({ session }: any) {
     setError(false)
     setTrigger(false)
     setApp(initialState)
+    setBasket([])
   }
   const Success = () => (
     <div className="h-64 flex flex-col items-center justify-center text-green-500">
@@ -84,6 +90,55 @@ export default function AddNewRestaurant({ session }: any) {
     return <Failure />
   }
 
+  const getFood = async () => {
+    try {
+      let list: Array<any> = []
+      let FoodList: Array<any> = []
+      let res = await CategoriesCollection.get()
+      if (res.size) {
+        res.docs.map((item) => {
+          list.push({ ...item.data(), id: item.id })
+        })
+        list.map(async (item, index) => {
+          let response = await CategoriesCollection.doc(item.id)
+            .collection("foods")
+            .get()
+          if (response.size) {
+            response.docs.map((item) => {
+              FoodList.push({ ...item.data(), id: item.id })
+            })
+          }
+          if (index == list.length - 1) setInitializing(false)
+        })
+        console.log(FoodList)
+        setFoodList(FoodList)
+      }
+    } catch (error) {
+      setInitializing(false)
+      throw error
+    }
+  }
+  const actions = [
+    {
+      Icon: <Feather.Plus />,
+      action: (data: any) => {
+        setBasket((prev) => [...prev, data])
+      },
+    },
+  ]
+  React.useEffect(() => {
+    getFood().catch((error) => {
+      throw error
+    })
+    return
+  }, [])
+
+  if (initializing)
+    return (
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-xl">Loading ...</h1>
+      </div>
+    )
   if (session)
     return (
       <Wrapper>
@@ -100,13 +155,29 @@ export default function AddNewRestaurant({ session }: any) {
             </div>
           ))}
 
+          <ContentTable
+            tableData={foodList}
+            tableFileds={["category", "name", "desc", "cost"]}
+            tableTitle="Food List"
+            actions={actions}
+          />
+
           <div className="flex flex-grow items-center justify-center">
             <button
               onClick={async () => {
                 try {
-                  await RestaurantCollection.add(app)
-                  setTrigger(true)
-                  setError(false)
+                  let res = await RestaurantCollection.add(app)
+                  if (res) {
+                    basket.map(async (item, index) => {
+                      await RestaurantCollection.doc(res.id)
+                        .collection("foods")
+                        .add(item)
+                      if (index === basket.length - 1) {
+                        setTrigger(true)
+                        setError(false)
+                      }
+                    })
+                  }
                 } catch (error) {
                   setTrigger(true)
                   setError(true)
