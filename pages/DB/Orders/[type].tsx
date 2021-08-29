@@ -11,9 +11,14 @@ import PopUpTable from "../../../components/popUp/table"
 import { GetStaticPaths } from "next"
 import { useResource } from "../../../components/context/Resource"
 import firebase from "firebase"
-import { assignOrder } from "../../../utilities/functions"
+import {
+  askForAcceptingOrder,
+  assignOrder,
+  getListOfDeliveryBoys,
+} from "../../../utilities/functions"
 export default function Orders({ session }: any) {
   const OrdersCollection = firebase.firestore().collection("orders")
+  const focusedItem = React.useRef<any>()
   let router = useRouter()
   let { type } = router.query
   const [popUp, setPopUp] = React.useState<boolean>(false)
@@ -21,6 +26,24 @@ export default function Orders({ session }: any) {
   const [success, setSuccess] = React.useState<boolean>(false)
   const [Error, setError] = React.useState<boolean>(false)
   const [DeliveryBoys, setDeliveryBoys] = React.useState<Array<any>>([])
+  const [popUpData, setPopUpData] = React.useState<Array<any>>([])
+  const getList = async () => {
+    try {
+      let res = await getListOfDeliveryBoys()
+      if (res) {
+        let parsedResponse = JSON.parse(res.data)
+        if (parsedResponse.success) {
+          setPopUpData(parsedResponse.data)
+          // setInitializing(false)
+        } else {
+          // setInitializing(false)
+          setPopUpData([])
+        }
+      }
+    } catch (error) {
+      throw error
+    }
+  }
 
   let tableData = [
     {
@@ -93,16 +116,14 @@ export default function Orders({ session }: any) {
             Icon: <Feather.CheckSquare size={24} />,
             action: async (data: any) => {
               try {
-                //  await assignOrder({})
-                setPopUp((prev) => false)
+                let res = await askForAcceptingOrder({
+                  order: focusedItem.current,
+                  deliveryBoyID: data.uid,
+                })
               } catch (error) {
                 setPopUp((prev) => false)
               }
             },
-          },
-          {
-            Icon: <Feather.Trash2 size={24} />,
-            action: (data: any) => console.log("pending", data),
           },
         ]
         break
@@ -130,6 +151,8 @@ export default function Orders({ session }: any) {
           {
             Icon: <Feather.CheckSquare size={24} />,
             action: (data: any) => {
+              focusedItem.current = data
+              console.log(focusedItem.current)
               setPopUp(true)
             },
           },
@@ -216,14 +239,20 @@ export default function Orders({ session }: any) {
       </div>
       <div className="w-full overflow-x-scroll">
         <PopUpTable
-          tableData={tableData}
-          tableFileds={tableFileds}
+          tableData={popUpData}
+          tableFileds={["uid", "displayName", "phoneNumber"]}
           actions={getPopUpActions(type)}
         />
       </div>
     </div>
   )
-  console.log(getOrders())
+  React.useEffect(() => {
+    getList().catch((error) => {
+      throw error
+    })
+    return
+  }, [])
+
   if (session)
     return (
       <div className="bg-gray-200 flex-1 flex">
@@ -239,8 +268,8 @@ export default function Orders({ session }: any) {
             }}
           />
           <ContentTable
-            tableData={tableData}
-            tableFileds={tableFileds}
+            tableData={getOrders()}
+            tableFileds={["id", "paymentMethod", "amount"]}
             actions={getActions(type)}
             tableTitle={`${type} Orders`}
           />
