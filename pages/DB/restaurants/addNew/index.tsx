@@ -17,6 +17,8 @@ export default function AddNewRestaurant({ session }: any) {
   const [foodList, setFoodList] = React.useState<Array<any>>([])
   const [initializing, setInitializing] = React.useState<boolean>(true)
   const [basket, setBasket] = React.useState<Array<any>>([])
+  const [tags, setTags] = React.useState<Array<any>>([])
+  const [tag, setTag] = React.useState<any>()
   let initialState = {
     // email: "",
     // emailVerified: false,
@@ -89,6 +91,20 @@ export default function AddNewRestaurant({ session }: any) {
     if (!error) return <Success />
     return <Failure />
   }
+  const RemoveType = (text: string) => {
+    setTags((prev) => {
+      let list = prev.filter((item) => item != text)
+      return list
+    })
+  }
+  const Chips = ({ text }: any) => (
+    <div className="pl-3 py-2 bg-purple-500 rounded-full m-2 flex items-center justify-between">
+      <span className="text-white text-xs">{text}</span>
+      <div className="px-3 text-white" onClick={() => RemoveType(text)}>
+        <Feather.X size={18} />
+      </div>
+    </div>
+  )
 
   const getFood = async () => {
     try {
@@ -154,6 +170,31 @@ export default function AddNewRestaurant({ session }: any) {
               />
             </div>
           ))}
+          <div className="flex flex-col mt-4 mb-2">
+            <label className="capitalize">Restaurant Types</label>
+            <textarea
+              className="border-2 border-green-500 my-2"
+              value={tag}
+              onChange={(e) => {
+                setTag(e.target.value)
+              }}
+              onKeyUp={(e) => {
+                if (e.key === "Enter" && tag != "") {
+                  setTags((prev) => {
+                    let list = [...prev, tag.replace("\n", "")]
+                    console.log(list)
+                    return Array.from(new Set(list))
+                  })
+                  setTag("")
+                }
+              }}
+            />
+            <div className="flex flex-row items-center justify-start flex-wrap">
+              {tags.map((item, index) => (
+                <Chips text={item} key={index} />
+              ))}
+            </div>
+          </div>
 
           <ContentTable
             tableData={foodList}
@@ -166,7 +207,7 @@ export default function AddNewRestaurant({ session }: any) {
             <button
               onClick={async () => {
                 try {
-                  let res = await RestaurantCollection.add(app)
+                  let res = await RestaurantCollection.add({ ...app, tags })
                   if (res) {
                     basket.map(async (item, index) => {
                       await RestaurantCollection.doc(res.id)
@@ -178,6 +219,7 @@ export default function AddNewRestaurant({ session }: any) {
                       }
                     })
                   }
+                  setTags([])
                 } catch (error) {
                   setTrigger(true)
                   setError(true)

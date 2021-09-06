@@ -46,16 +46,16 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
           <table className="w-full table-auto shadow-xl">
             <thead>
               <tr className="bg-green-500 z-10">
-                {tableFileds.map((item: string, index: number) => (
-                  <th key={index} className={`px-4 py-4`}>
-                    <span className="text-white capitalize">{item}</span>
-                  </th>
-                ))}
                 {actions && (
                   <th className="px-4 py-4 capitalize">
                     <span className="text-white">actions</span>
                   </th>
                 )}
+                {tableFileds.map((item: string, index: number) => (
+                  <th key={index} className={`px-4 py-4`}>
+                    <span className="text-white capitalize">{item}</span>
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -65,17 +65,9 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                     key={index}
                     className={index % 2 == 0 ? "bg-green-100" : "bg-white"}
                   >
-                    {tableFileds.map((item: string, index: number) => (
-                      <td
-                        key={`${index}item`}
-                        className={`px-4 py-4 text-center`}
-                      >
-                        {data[item]}
-                      </td>
-                    ))}
                     {actions && (
                       <td key={`${index}item`} className=" px-4 py-4 ">
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-around">
                           {actions.map(
                             (
                               { Icon, action, isLink, to }: actionProps,
@@ -105,6 +97,14 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                         </div>
                       </td>
                     )}
+                    {tableFileds.map((item: string, index: number) => (
+                      <td
+                        key={`${index}item`}
+                        className={`px-4 py-4 text-center`}
+                      >
+                        {data[item]}
+                      </td>
+                    ))}
                   </tr>
                 ))}
             </tbody>

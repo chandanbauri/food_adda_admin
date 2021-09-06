@@ -9,8 +9,39 @@ import { OrderTypes, useResource } from "../../components/context/Resource"
 
 export default function Dashboard({ session }: any) {
   const OrdersCollections = firebase.firestore().collection("orders")
+  const CompanyFeatureValues = firebase.firestore().collection("Features")
+  const [features, setFeatures] = React.useState<any>({})
   const [initializing, setInitializing] = React.useState<boolean>(true)
   const Resource = useResource()
+  const updateFeature = async (field: string, value: string) => {
+    try {
+      let res = await CompanyFeatureValues.doc("production").get()
+      if (!res.exists) {
+        await CompanyFeatureValues.doc("production").set({
+          [field]: value,
+        })
+        return
+      }
+      await CompanyFeatureValues.doc("production").update({
+        [field]: value,
+      })
+    } catch (error) {
+      throw error
+    }
+  }
+  const FeatchFeatures = async () => {
+    try {
+      let res = await CompanyFeatureValues.doc("production").get()
+      if (res.exists) {
+        let featchedFeatures = res.data()
+        if (featchedFeatures) {
+          setFeatures(featchedFeatures)
+        }
+      }
+    } catch (error) {
+      throw error
+    }
+  }
   const FetchOrders = async () => {
     try {
       let Orders = await OrdersCollections.get()
@@ -94,7 +125,11 @@ export default function Dashboard({ session }: any) {
       throw error
     })
   }, [])
-
+  React.useEffect(() => {
+    FeatchFeatures().catch((error) => {
+      throw error
+    })
+  }, [])
   if (initializing)
     return (
       <div className="h-screen w-screen flex items-center justify-center">
@@ -157,15 +192,64 @@ export default function Dashboard({ session }: any) {
                 desc="Pending orders Card"
                 to="/DB/Orders/delivered"
               />
-              <button
-                onClick={() => {
-                  console.log(Resource)
-                }}
-              >
-                log
-              </button>
             </div>
           )}
+          <div className="ml-5">
+            <div className="my-5">
+              <div className="flex flex-col">
+                <label className=" text-lg text-green-500">
+                  Delivery Charge (₹)
+                </label>
+                <input
+                  className="border-green-500 border-2 md:h-12 h-10 mt-2 w-52 rounded-lg pl-10 pr-2 focus:border-blue-500 outline-none"
+                  placeholder="Delivery charge"
+                  type="number"
+                  min={0}
+                  value={features ? features.delivery_charge : 0}
+                  onChange={(e) => {
+                    setFeatures((prev: any) => ({
+                      ...prev,
+                      delivery_charge: e.target.value,
+                    }))
+                  }}
+                />
+              </div>
+              <button
+                onClick={() =>
+                  updateFeature("delivery_charge", features.delivery_charge)
+                }
+                className="px-10 py-1 bg-blue-500 rounded-lg text-white capitalize mt-5 shadow-xl"
+              >
+                save
+              </button>
+            </div>
+            <div className="my-5">
+              <div className="flex flex-col">
+                <label className=" text-lg text-green-500 capitalize">
+                  GST percentage (%)
+                </label>
+                <input
+                  className="border-green-500 border-2 md:h-12 h-10 mt-2 w-52 rounded-lg pl-10 pr-2 focus:border-blue-500 outline-none"
+                  placeholder="GST Percentage"
+                  type="number"
+                  min={0}
+                  value={features ? features.gst : 0}
+                  onChange={(e) => {
+                    setFeatures((prev: any) => ({
+                      ...prev,
+                      gst: e.target.value,
+                    }))
+                  }}
+                />
+              </div>
+              <button
+                onClick={() => updateFeature("gst", features.gst)}
+                className="px-10 py-1 bg-blue-500 rounded-lg text-white capitalize mt-5 shadow-xl"
+              >
+                save
+              </button>
+            </div>
+          </div>
         </Wrapper>
       </div>
     )

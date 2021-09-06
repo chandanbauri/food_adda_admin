@@ -240,7 +240,7 @@ export default function Orders({ session }: any) {
       <div className="w-full overflow-x-scroll">
         <PopUpTable
           tableData={popUpData}
-          tableFileds={["uid", "displayName", "phoneNumber"]}
+          tableFileds={["displayName", "phoneNumber"]}
           actions={getPopUpActions(type)}
         />
       </div>
@@ -269,7 +269,7 @@ export default function Orders({ session }: any) {
           />
           <ContentTable
             tableData={getOrders()}
-            tableFileds={["id", "paymentMethod", "amount"]}
+            tableFileds={["paymentMethod", "amount"]}
             actions={getActions(type)}
             tableTitle={`${type} Orders`}
           />

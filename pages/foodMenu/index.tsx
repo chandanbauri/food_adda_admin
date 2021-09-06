@@ -68,7 +68,7 @@ export default function FoodMenu({ session }: any) {
         <Wrapper>
           <ContentTable
             tableData={tableData}
-            tableFileds={["id", "name"]}
+            tableFileds={["name"]}
             tableTitle="Menu Categories"
             headerActions={HeaderActions}
             actions={actions}

@@ -59,7 +59,7 @@ export default function UserDB({ session }: any) {
   //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
   //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
   // ]
-  let tableFileds = ["uid", "displayName", "email", "phoneNumber"]
+  let tableFileds = ["displayName", "email", "phoneNumber"]
   // let actions = [
   //   {
   //     Icon: <Feather.Edit size={24} />,
