@@ -129,6 +129,17 @@ function Drawer() {
             </div>
           )}
         </Link>
+        <Link href="/promotions">
+          {router.route === "/DB/deliveryBoys" ? (
+            <div className="flex p-3 text-green-600  space-x-4 0 hover:bg-gray-50 hover:text-green-600  cursor-pointer  ">
+              <p>Promotions</p>
+            </div>
+          ) : (
+            <div className="flex p-3 text-gray-700  space-x-4 0 hover:bg-gray-50 hover:text-green-600  cursor-pointer  ">
+              <p>Promotions</p>
+            </div>
+          )}
+        </Link>
         <button
           onClick={async () => {
             try {
