@@ -72,7 +72,7 @@ export default function Dashboard({ session }: any) {
         if (item.isPending && checkOrder(item.id, Resource?.Orders.pending)) {
           Resource?.setOrders((prev) => {
             // let list = prev.pending
-            // console.log(prev.pending)
+            // //prev.pending)
             // list.push(item)
             return { ...prev, pending: [...prev.pending, item] }
           })
@@ -82,7 +82,7 @@ export default function Dashboard({ session }: any) {
         ) {
           Resource?.setOrders((prev) => {
             // let list = prev.pending
-            // console.log(prev.pending)
+            // //prev.pending)
             // list.push(item)
             return { ...prev, delivered: [...prev.delivered, item] }
           })
@@ -92,7 +92,7 @@ export default function Dashboard({ session }: any) {
         ) {
           Resource?.setOrders((prev) => {
             // let list = prev.pending
-            // console.log(prev.pending)
+            // //prev.pending)
             // list.push(item)
             return { ...prev, rejected: [...prev.rejected, item] }
           })
@@ -102,7 +102,7 @@ export default function Dashboard({ session }: any) {
         ) {
           Resource?.setOrders((prev) => {
             // let list = prev.pending
-            // console.log(prev.pending)
+            // //prev.pending)
             // list.push(item)
             return { ...prev, canceled: [...prev.canceled, item] }
           })
@@ -112,7 +112,7 @@ export default function Dashboard({ session }: any) {
         ) {
           Resource?.setOrders((prev) => {
             // let list = prev.pending
-            // console.log(prev.pending)
+            // //prev.pending)
             // list.push(item)
             return { ...prev, delivered: [...prev.delivered, item] }
           })
@@ -147,10 +147,10 @@ export default function Dashboard({ session }: any) {
               orderID: "5SC56nZkTAIwSJAn8Dpq",
             })
               .then((res) => {
-                console.log(res)
+                //res)
               })
               .catch((error) => {
-                console.log(error)
+                //error)
               })
           }}
         >
@@ -276,7 +276,7 @@ export async function getServerSideProps(context: any) {
     context.res.end()
     return { props: {} }
   } catch (error) {
-    // console.log(error)
+    // //error)
     context.res.writeHead(302, { location: "/auth/login" })
     context.res.end()
     return { props: {} }

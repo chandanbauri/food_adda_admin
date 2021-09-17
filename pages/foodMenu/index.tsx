@@ -21,10 +21,11 @@ export default function FoodMenu({ session }: any) {
         res.docs.map((item, index) => {
           list.push({ id: item.id, ...item.data() })
         })
-        console.log(list)
+        //list)
         setTableData(list)
         setInitializing(false)
       }
+      setInitializing(false)
     } catch (error) {
       setInitializing(false)
       throw error
@@ -99,7 +100,7 @@ export async function getServerSideProps(context: any) {
     context.res.end()
     return { props: {} }
   } catch (error) {
-    // console.log(error)
+    // //error)
     context.res.writeHead(302, { location: "/auth/login" })
     context.res.end()
     return { props: {} }

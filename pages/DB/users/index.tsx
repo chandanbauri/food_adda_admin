@@ -63,11 +63,11 @@ export default function UserDB({ session }: any) {
   // let actions = [
   //   {
   //     Icon: <Feather.Edit size={24} />,
-  //     action: (data: any) => console.log(data),
+  //     action: (data: any) => //data),
   //   },
   //   {
   //     Icon: <Feather.Trash2 size={24} />,
-  //     action: (data: any) => console.log(data),
+  //     action: (data: any) => //data),
   //   },
   // ]
   const getList = async () => {
@@ -81,6 +81,7 @@ export default function UserDB({ session }: any) {
         setTableData([])
         setInitializing(false)
       }
+      setInitializing(false)
     } catch (error) {
       throw error
     }
@@ -134,7 +135,7 @@ export async function getServerSideProps(context: any) {
     context.res.end()
     return { props: {} }
   } catch (error) {
-    // console.log(error)
+    // //error)
     context.res.writeHead(302, { location: "/auth/login" })
     context.res.end()
     return { props: {} }

@@ -51,13 +51,13 @@ export default function Login() {
                       .signInWithEmailAndPassword(email, password)
                       .then(() => (window.location.href = "/"))
                       .catch((error) => {
-                        console.log(error)
+                        //error)
                       })
                   } else {
-                    console.log("email or password is invalid")
+                    //"email or password is invalid")
                   }
                 } catch (error) {
-                  console.log(error)
+                  //error)
                 }
               }}
             />

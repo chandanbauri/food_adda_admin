@@ -12,6 +12,6 @@ export const verifyIdToken = async (token: any) => {
     .auth()
     .verifyIdToken(token)
     .catch((error) => {
-      console.log(error)
+      //error)
     })
 }

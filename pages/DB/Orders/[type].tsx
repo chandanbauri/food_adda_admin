@@ -99,11 +99,11 @@ export default function Orders({ session }: any) {
   //   let actions = [
   //     {
   //       Icon: <Feather.Edit size={24} />,
-  //       action: (data: any) => console.log(data),
+  //       action: (data: any) => //data),
   //     },
   //     {
   //       Icon: <Feather.Trash2 size={24} />,
-  //       action: (data: any) => console.log(data),
+  //       action: (data: any) => //data),
   //     },
   //   ]
 
@@ -152,7 +152,7 @@ export default function Orders({ session }: any) {
             Icon: <Feather.CheckSquare size={24} />,
             action: (data: any) => {
               focusedItem.current = data
-              console.log(focusedItem.current)
+              //focusedItem.current)
               setPopUp(true)
             },
           },
@@ -217,7 +217,7 @@ export default function Orders({ session }: any) {
   }
 
   const getOrders = () => {
-    console.log(Resource?.Orders)
+    //Resource?.Orders)
     switch (type) {
       case "pending":
         return Resource?.Orders?.pending
@@ -299,7 +299,7 @@ export async function getServerSideProps(context: any) {
     context.res.end()
     return { props: {} }
   } catch (error) {
-    // console.log(error)
+    // //error)
     context.res.writeHead(302, { location: "/auth/login" })
     context.res.end()
     return { props: {} }

@@ -12,7 +12,7 @@ export default function AddNewPromotion() {
     if (file) {
       reader.onload = () => {
         if (reader.readyState === 2) {
-          console.log(file)
+          //file)
           setImage(file)
           setPreviewImage(reader.result)
         }
@@ -32,7 +32,7 @@ export default function AddNewPromotion() {
       // setImage((prev: any) => {
       //   return { ...prev, ["name"]: "promotion1" }
       // })
-      console.log(image.name)
+      //image.name)
       const storageRef = firebase.storage().ref()
       //3.
       const imageRef = storageRef.child(`promotions/${image.name}`)

@@ -14,7 +14,7 @@ export class FoodMenuConstructor {
   constructor() {
     this.categories = []
     this.Foods = {}
-    console.log("Menu created ...")
+    //"Menu created ...")
   }
   initialize(categories: Array<string>, foods: FoodsObj) {
     this.categories = categories
@@ -27,7 +27,7 @@ export class FoodMenuConstructor {
   findCategoryIndex(name: string) {
     if (!this.isFoodMenuEmpty()) {
       let category = this.categories?.findIndex((value) => value == name)
-      console.log(category)
+      //category)
       if (category >= 0) {
         return category
       } else {
@@ -48,7 +48,7 @@ export class FoodMenuConstructor {
   isCategoryAlreadyPresent(name: string) {
     if (!this.isFoodMenuEmpty()) {
       let category = this.categories.findIndex((value) => value == name)
-      console.log(category)
+      //category)
       if (category >= 0) {
         return true
       } else {
@@ -70,7 +70,7 @@ export class FoodMenuConstructor {
   }
   addFoodItem(categoryName: string, foods: Array<Food>) {
     if (this.isCategoryAlreadyPresent(categoryName)) {
-      console.log("working ...")
+      //"working ...")
       this.Foods[categoryName].push(...foods)
     }
   }

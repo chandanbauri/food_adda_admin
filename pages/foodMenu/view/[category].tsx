@@ -22,7 +22,7 @@ export default function View({ session }: any) {
         res.docs.map((item, index) => {
           list.push(item.data())
         })
-        console.log(list)
+        //list)
         setInitializing(false)
         setTableData(list)
       } else {
@@ -85,7 +85,7 @@ export async function getServerSideProps(context: any) {
     context.res.end()
     return { props: {} }
   } catch (error) {
-    // console.log(error)
+    // //error)
     context.res.writeHead(302, { location: "/auth/login" })
     context.res.end()
     return { props: {} }

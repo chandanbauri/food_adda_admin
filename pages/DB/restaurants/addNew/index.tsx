@@ -68,7 +68,7 @@ export default function AddNewRestaurant({ session }: any) {
     //   ...prev,
     //   name: e.target.value,
     // }))
-    console.log(e.target.value)
+    //e.target.value)
     setApp((prev) => ({ ...prev, [name]: e.target.value }))
   }
   const closePopUp = () => {
@@ -85,7 +85,7 @@ export default function AddNewRestaurant({ session }: any) {
     if (file) {
       reader.onload = () => {
         if (reader.readyState === 2) {
-          console.log(file)
+          //file)
           setImage(file)
           setPreviewImage(reader.result)
         }
@@ -159,18 +159,20 @@ export default function AddNewRestaurant({ session }: any) {
         res.docs.map((item) => {
           list.push({ ...item.data(), id: item.id })
         })
-        await Promise.all(list.map(async (item, index) => {
-          let response = await CategoriesCollection.doc(item.id)
-            .collection("foods")
-            .get()
-          if (response.size) {
-            response.docs.map((item) => {
-              FoodList.push({ ...item.data(), id: item.id })
-            })
-          }
-          if (index == list.length - 1) setInitializing(false)
-        }))
-        console.log(FoodList)
+        await Promise.all(
+          list.map(async (item, index) => {
+            let response = await CategoriesCollection.doc(item.id)
+              .collection("foods")
+              .get()
+            if (response.size) {
+              response.docs.map((item) => {
+                FoodList.push({ ...item.data(), id: item.id })
+              })
+            }
+            if (index == list.length - 1) setInitializing(false)
+          })
+        )
+        //FoodList)
         setFoodList(FoodList)
       }
     } catch (error) {
@@ -226,7 +228,7 @@ export default function AddNewRestaurant({ session }: any) {
                 if (e.key === "Enter" && tag != "") {
                   setTags((prev) => {
                     let list = [...prev, tag.replace("\n", "")]
-                    console.log(list)
+                    //list)
                     return Array.from(new Set(list))
                   })
                   setTag("")
@@ -310,7 +312,7 @@ export default function AddNewRestaurant({ session }: any) {
           <div className="flex flex-grow items-center justify-center">
             <button
               onClick={async () => {
-                // console.log(app)
+                // //app)
                 try {
                   await uploadToFirebase()
                   if (imageURL.current !== "") {
@@ -378,7 +380,7 @@ export async function getServerSideProps(context: any) {
     context.res.end()
     return { props: {} }
   } catch (error) {
-    // console.log(error)
+    // //error)
     context.res.writeHead(302, { location: "/auth/login" })
     context.res.end()
     return { props: {} }

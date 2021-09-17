@@ -61,11 +61,11 @@ function Drawer() {
         <Link href="/dashboard">
           {router.route === "/dashboard" ? (
             <div className="flex p-3 text-green-600  space-x-4 0 hover:bg-gray-50 hover:text-green-600  cursor-pointer ">
-              <p>Dashbord</p>
+              <p>Dashboard</p>
             </div>
           ) : (
             <div className="flex p-3 text-gray-700  space-x-4 0 hover:bg-gray-50 hover:text-green-600  cursor-pointer ">
-              <p>Dashbord</p>
+              <p>Dashboard</p>
             </div>
           )}
         </Link>
@@ -143,7 +143,7 @@ function Drawer() {
         <button
           onClick={async () => {
             try {
-              console.log("hell")
+              //"hell")
               await firebase.auth().signOut()
               window.location.href = "/"
             } catch (error) {

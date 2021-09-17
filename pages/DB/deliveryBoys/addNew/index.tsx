@@ -50,7 +50,7 @@ export default function AddNewDeliveryBoy({ session }: any) {
     //   ...prev,
     //   name: e.target.value,
     // }))
-    console.log(e.target.value)
+    //e.target.value)
     setApp((prev) => ({ ...prev, [name]: e.target.value }))
   }
   const closePopUp = () => {
@@ -112,7 +112,7 @@ export default function AddNewDeliveryBoy({ session }: any) {
                     },
                   })
                   if (res) {
-                    console.log(res)
+                    //res)
                     setTrigger(true)
                     setError(false)
                   } else {
@@ -122,7 +122,7 @@ export default function AddNewDeliveryBoy({ session }: any) {
                 } catch (error) {
                   throw error
                 }
-                console.log(app)
+                //app)
                 // setTrigger(true)
               }}
             >
@@ -162,7 +162,7 @@ export async function getServerSideProps(context: any) {
     context.res.end()
     return { props: {} }
   } catch (error) {
-    // console.log(error)
+    // //error)
     context.res.writeHead(302, { location: "/auth/login" })
     context.res.end()
     return { props: {} }

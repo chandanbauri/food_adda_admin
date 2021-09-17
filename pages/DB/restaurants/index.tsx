@@ -69,11 +69,11 @@ export default function RestaurantsDB({ session }: any) {
   let actions = [
     {
       Icon: <Feather.Edit size={24} />,
-      action: (data: any) => console.log(data),
+      action: (data: any) => {},
     },
     {
       Icon: <Feather.Trash2 size={24} />,
-      action: (data: any) => console.log(data),
+      action: (data: any) => {},
     },
   ]
   let HeaderActions = [
@@ -148,7 +148,7 @@ export async function getServerSideProps(context: any) {
     context.res.end()
     return { props: {} }
   } catch (error) {
-    // console.log(error)
+    // //error)
     context.res.writeHead(302, { location: "/auth/login" })
     context.res.end()
     return { props: {} }

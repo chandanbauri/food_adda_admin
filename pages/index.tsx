@@ -18,7 +18,7 @@ export default function Home() {
               <Link href="/dashboard">
                 <button
                   onClick={() => {
-                    console.log("1")
+                    //"1")
                   }}
                 >
                   <div className="box-border px-10 py-2 border-2 border-green-500 rounded-md shadow-lg mx-5">

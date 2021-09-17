@@ -9,14 +9,14 @@ export default function Promotions() {
   const getPromotionBanners = async () => {
     try {
       const res = await storageRef.list()
-      // console.log("RES :", res)
+      // //"RES :", res)
       if (res && res.items) {
         let images = await Promise.all(
           res.items.map(async (item, index) => {
             return await item.getDownloadURL()
           })
         )
-        console.log(images)
+        //images)
         setPromotions(images)
       }
     } catch (error) {

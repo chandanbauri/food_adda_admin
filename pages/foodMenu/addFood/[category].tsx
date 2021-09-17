@@ -55,7 +55,7 @@ export default function AddNewFood({ session }: any) {
     //   ...prev,
     //   name: e.target.value,
     // }))
-    console.log(e.target.value)
+    //e.target.value)
     setApp((prev) => ({ ...prev, [name]: e.target.value }))
   }
   const closePopUp = () => {
@@ -94,7 +94,7 @@ export default function AddNewFood({ session }: any) {
     if (file) {
       reader.onload = () => {
         if (reader.readyState === 2) {
-          console.log(file)
+          //file)
           setImage(file)
           setPreviewImage(reader.result)
         }
@@ -231,7 +231,7 @@ export async function getServerSideProps(context: any) {
     context.res.end()
     return { props: {} }
   } catch (error) {
-    // console.log(error)
+    // //error)
     context.res.writeHead(302, { location: "/auth/login" })
     context.res.end()
     return { props: {} }
