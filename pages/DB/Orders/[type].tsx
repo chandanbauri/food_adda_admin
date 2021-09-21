@@ -16,6 +16,7 @@ import {
   assignOrder,
   getListOfDeliveryBoys,
 } from "../../../utilities/functions"
+import DeliveryBoyTable from "../../../components/popUp/delivery-boy"
 export default function Orders({ session }: any) {
   const OrdersCollection = firebase.firestore().collection("orders")
   const focusedItem = React.useRef<any>()
@@ -233,17 +234,7 @@ export default function Orders({ session }: any) {
   }
   const PopUpConent = () => (
     <div>
-      <div className="flex flex-grow justify-between items-center text-green-600 sticky top-0 bg-white">
-        <h1 className="py-4 text-lg ">Assign Order</h1>
-        <Feather.Trash2 size={24} />
-      </div>
-      <div className="w-full overflow-x-scroll">
-        <PopUpTable
-          tableData={popUpData}
-          tableFileds={["displayName", "phoneNumber"]}
-          actions={getPopUpActions(type)}
-        />
-      </div>
+      <DeliveryBoyTable order={focusedItem.current} />
     </div>
   )
   React.useEffect(() => {
@@ -255,7 +246,7 @@ export default function Orders({ session }: any) {
 
   if (session)
     return (
-      <div className="bg-gray-200 flex-1 flex">
+      <div className=" flex-1 flex">
         <Wrapper>
           {/* <div className="w-full md:px-4">
             <h1 className="w-full bg-green-500 py-5 flex items-center justify-center text-white uppercase">{`${type} Orders`}</h1>

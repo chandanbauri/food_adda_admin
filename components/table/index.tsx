@@ -84,7 +84,7 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                                       {Icon}
                                     </span>
                                   </Link>
-                                ) : (
+                                ) : data.isRequested && index == 1 ? null : (
                                   <button
                                     key={index}
                                     onClick={() => {

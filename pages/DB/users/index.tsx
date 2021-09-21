@@ -101,7 +101,7 @@ export default function UserDB({ session }: any) {
     )
   if (session)
     return (
-      <div className="bg-gray-200 flex-1 flex">
+      <div className=" flex-1 flex">
         <Wrapper>
           <ContentTable
             tableData={tableData}
