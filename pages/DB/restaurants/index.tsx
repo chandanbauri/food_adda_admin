@@ -75,7 +75,24 @@ export default function RestaurantsDB({ session }: any) {
     },
     {
       Icon: <Feather.Trash2 size={24} />,
-      action: (data: any) => {},
+      action: async (data: any) => {
+        try {
+          await RestaurantCollection.doc(data.id).delete()
+          setTableData((prev) => {
+            let index = prev.findIndex((item) => item.id == data.id)
+            if (index != -1) {
+              if (index == 0) {
+                return [...prev.slice(1)]
+              }
+              return [...prev.slice(0, index), ...prev.slice(index + 1)]
+            }
+            return prev
+          })
+          alert("deleted successfully")
+        } catch (error) {
+          console.error(error)
+        }
+      },
     },
   ]
   let HeaderActions = [

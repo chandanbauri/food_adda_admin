@@ -6,12 +6,14 @@ import { Layout } from "../../../components/layout/secondary"
 import { useRouter } from "next/router"
 import ContentTable from "../../../components/table"
 import firebase from "firebase"
+import * as Feather from "react-feather"
 export default function View({ session }: any) {
   const router = useRouter()
   const { category, name } = router.query
   let CategoriesCollection = firebase.firestore().collection("categories")
   const [tableData, setTableData] = React.useState<Array<any>>([])
   const [initializing, setInitializing] = React.useState<boolean>(true)
+  const RestaurantCollection = firebase.firestore().collection("restaurants")
   const getList = async () => {
     if (typeof category == "string") {
       let res = await CategoriesCollection.doc(category)
@@ -20,7 +22,7 @@ export default function View({ session }: any) {
       if (res.size) {
         let list: Array<any> = []
         res.docs.map((item, index) => {
-          list.push(item.data())
+          list.push({ ...item.data(), id: item.id })
         })
         //list)
         setInitializing(false)
@@ -31,6 +33,55 @@ export default function View({ session }: any) {
       }
     }
   }
+  let actions = [
+    {
+      Icon: <Feather.Trash2 />,
+      // isLink: true,
+      // to: "/foodMenu/view",
+      action: async (data: any) => {
+        setInitializing(true)
+        try {
+          let res = await RestaurantCollection.get()
+          if (res && !res.empty) {
+            let restaurants = res.docs.map((restaurant) => {
+              return { id: restaurant.id }
+            })
+            await Promise.all(
+              restaurants.map(async (restaurant) => {
+                let foods = await RestaurantCollection.doc(restaurant.id)
+                  .collection("foods")
+                  .where("id", "==", `${data.id}`)
+                  .get()
+                if (foods && !foods.empty) {
+                  await Promise.all(
+                    foods.docs.map(async (item) => {
+                      await RestaurantCollection.doc(restaurant.id)
+                        .collection("foods")
+                        .doc(item.id)
+                        .delete()
+                    })
+                  )
+                }
+              })
+            )
+            setTableData((prev: any) => {
+              let index = prev.findIndex((item: any) => item.id == data.id)
+              if (index != -1) {
+                if (index == 0) {
+                  return [...prev.slice(1)]
+                }
+                return [...prev.slice(0, index), ...prev.slice(index + 1)]
+              }
+              return prev
+            })
+            setInitializing(false)
+          }
+        } catch (error) {
+          console.error(error)
+        }
+      },
+    },
+  ]
   React.useEffect(() => {
     getList().catch((error) => {
       throw error
@@ -56,7 +107,7 @@ export default function View({ session }: any) {
           <ContentTable
             tableData={tableData}
             tableFileds={["name", "cost", "desc"]}
-            // actions={[]}
+            actions={actions}
             tableTitle={`${name}`}
           />
         )}

@@ -11,6 +11,7 @@ import firebase from "firebase"
 
 export default function FoodMenu({ session }: any) {
   let CategoriesCollection = firebase.firestore().collection("categories")
+  const RestaurantCollection = firebase.firestore().collection("restaurants")
   const [initializing, setInitializing] = React.useState<boolean>(true)
   const [tableData, setTableData] = React.useState<any>()
   const getList = async () => {
@@ -39,24 +40,77 @@ export default function FoodMenu({ session }: any) {
   }, [])
   const HeaderActions = [
     {
-      Icon: <Feather.Plus />,
+      Icon: <Feather.Plus size={18} />,
       to: "/foodMenu/addCategory",
     },
   ]
   let actions = [
     {
-      Icon: <Feather.Plus />,
+      Icon: <Feather.Plus size={18} />,
       isLink: true,
       to: "/foodMenu/addFood",
       action: () => {},
     },
     {
-      Icon: <Feather.Eye />,
+      Icon: <Feather.Eye size={18} />,
       isLink: true,
       to: "/foodMenu/view",
       action: () => {},
     },
+    {
+      Icon: <Feather.Trash2 />,
+      // isLink: true,
+      // to: "/foodMenu/view",
+      action: async (data: any) => {
+        try {
+          setInitializing(true)
+          let res = await RestaurantCollection.get()
+          let restaurants: Array<any> = []
+          if (res && !res.empty) {
+            restaurants = res.docs.map((item) => {
+              return { id: item.id }
+            })
+          }
+          await Promise.all(
+            restaurants.map(async (item) => {
+              let list: Array<any> = []
+              let foods = await RestaurantCollection.doc(item.id)
+                .collection("foods")
+                .where("category", "==", `${data.name}`)
+                .get()
+              if (foods && !foods.empty) {
+                list = foods.docs.map((food) => ({ id: food.id }))
+                await Promise.all(
+                  list.map(async (val) => {
+                    await RestaurantCollection.doc(item.id)
+                      .collection("foods")
+                      .doc(val.id)
+                      .delete()
+                  })
+                )
+              }
+            })
+          )
+
+          await CategoriesCollection.doc(data.id).delete()
+          setTableData((prev: any) => {
+            let index = prev.findIndex((item: any) => item.id == data.id)
+            if (index != -1) {
+              if (index == 0) {
+                return [...prev.slice(1)]
+              }
+              return [...prev.slice(0, index), ...prev.slice(index + 1)]
+            }
+            return prev
+          })
+          setInitializing(false)
+        } catch (error) {
+          console.error(error)
+        }
+      },
+    },
   ]
+
   if (initializing)
     return (
       <div className="h-screen w-screen flex items-center justify-center">

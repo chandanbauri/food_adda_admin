@@ -5,7 +5,10 @@ import nookies from "nookies"
 import { Layout } from "../../../components/layout/secondary"
 import * as Feather from "react-feather"
 import ContentTable from "../../../components/table"
-import { getListOfDeliveryBoys } from "../../../utilities/functions"
+import {
+  deleteDeliveryBoy,
+  getListOfDeliveryBoys,
+} from "../../../utilities/functions"
 export default function DeliveryBoyDB({ session }: any) {
   const [tableData, setTableData] = React.useState<Array<any>>([])
   const [initializing, setInitializing] = React.useState<boolean>(true)
@@ -99,7 +102,24 @@ export default function DeliveryBoyDB({ session }: any) {
     },
     {
       Icon: <Feather.Trash2 size={24} />,
-      action: (data: any) => {},
+      action: async (data: any) => {
+        try {
+          await deleteDeliveryBoy({ uid: data.id })
+          setTableData((prev) => {
+            let index = prev.findIndex((item) => item.id == data.id)
+            if (index != -1) {
+              if (index == 0) {
+                return [...prev.slice(1)]
+              }
+              return [...prev.slice(0, index), ...prev.slice(index + 1)]
+            }
+            return prev
+          })
+          alert("deleted successfully")
+        } catch (error) {
+          console.error(error)
+        }
+      },
     },
   ]
   React.useEffect(() => {

@@ -17,3 +17,4 @@ export const getListUsers = functions.httpsCallable("getListUsers")
 export const updateDeliveryPartner = functions.httpsCallable(
   "updateDeliveryPartner"
 )
+export const deleteDeliveryBoy = functions.httpsCallable("deleteDeliveryBoy")
