@@ -74,6 +74,10 @@ export default function View({ session }: any) {
               }
               return prev
             })
+            await CategoriesCollection.doc(category?.toString())
+              .collection("foods")
+              .doc(data.id)
+              .delete()
             setInitializing(false)
           }
         } catch (error) {

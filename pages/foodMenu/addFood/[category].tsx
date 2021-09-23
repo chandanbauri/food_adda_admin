@@ -168,26 +168,26 @@ export default function AddNewFood({ session }: any) {
                 try {
                   // await uploadToFirebase()
                   if (typeof category == "string") {
-                    let res = await CategoriesCollection.doc(category)
-                      .collection("foods")
-                      .where("name", "==", app.name)
-                      .get()
+                    // let res = await CategoriesCollection.doc(category)
+                    //   .collection("foods")
+                    //   .where("name", "==", app.name)
+                    //   .get()
 
-                    if (res.size) {
-                      setError(true)
-                      setTrigger(true)
-                    } else {
-                      await CategoriesCollection.doc(category)
-                        .collection("foods")
-                        .add({
-                          ...app,
-                          category: name,
-                          // image: imageURL.current,
-                        })
-                      setError(false)
-                      setTrigger(true)
-                    }
+                    // if (res.size) {
+                    //   setError(true)
+                    //   setTrigger(true)
+                    // } else {
+                    await CategoriesCollection.doc(category)
+                      .collection("foods")
+                      .add({
+                        ...app,
+                        category: name,
+                        // image: imageURL.current,
+                      })
+                    setError(false)
+                    setTrigger(true)
                   }
+                  // }
                 } catch (error) {
                   setError(true)
                   setTrigger(true)

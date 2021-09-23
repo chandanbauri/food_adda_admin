@@ -5,7 +5,7 @@ import nookies from "nookies"
 import { verifyIdToken } from "../../../utilities/firebase_admin"
 import { Layout } from "../../../components/layout/secondary"
 import * as Feather from "react-feather"
-import ContentTable from "../../../components/table"
+import ContentTable from "../../../components/table/restaurant/restaurant-table"
 import PopUpContainer from "../../../components/popUp/container"
 import PopUpTable from "../../../components/popUp/table"
 import { GetStaticPaths } from "next"
@@ -234,7 +234,19 @@ export default function Orders({ session }: any) {
   }
   const PopUpConent = () => (
     <div>
-      <DeliveryBoyTable order={focusedItem.current} />
+      <DeliveryBoyTable
+        order={focusedItem.current}
+        onAssigning={() => {
+          focusedItem.current
+          Resource?.setOrders((prev) => {
+            let { pending, ...rest } = prev
+            let list = pending.filter(
+              (item) => item.id != focusedItem.current.id
+            )
+            return { ...prev, pending: list }
+          })
+        }}
+      />
     </div>
   )
   React.useEffect(() => {
@@ -260,7 +272,17 @@ export default function Orders({ session }: any) {
           />
           <ContentTable
             tableData={getOrders()}
-            tableFileds={["paymentMethod", "amount", "gst", "deliveryCharge"]}
+            tableFileds={[
+              "paymentMethod",
+              "amount",
+              "gst",
+              "deliveryCharge",
+              "restaurantAddress",
+              "restaurantName",
+              "userName",
+              "phone",
+              "deliveryAddress",
+            ]}
             actions={getActions(type)}
             tableTitle={`${type} Orders`}
           />

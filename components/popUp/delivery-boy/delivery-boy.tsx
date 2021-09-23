@@ -7,16 +7,18 @@ import DeliveryBoyCard from "../../cards/delivery-boy/delivery-boy"
 
 type TableProps = {
   order: any
+  onAssigning: (value: boolean) => void
 }
 
 const keys = ["displayName", "phoneNumber"]
-export default function DeliveryBoyTable({ order }: TableProps) {
+export default function DeliveryBoyTable({ order, onAssigning }: TableProps) {
   const [deliveryBoys, setDeliveryBoys] = React.useState<Array<any>>([])
   const [AssignedDeliveryBoys, setADB] = React.useState<Array<any>>([])
   const [initializing, setInitializing] = React.useState<boolean>(false)
 
   const fetchDeliveryBoyes = async () => {
     setInitializing(true)
+
     try {
       let res = await getListOfDeliveryBoys()
       if (res) {
@@ -37,6 +39,7 @@ export default function DeliveryBoyTable({ order }: TableProps) {
           setDeliveryBoys([])
         }
       }
+
       setInitializing(false)
     } catch (error) {
       console.error("DELIVERY BOYS API", error)
@@ -45,6 +48,7 @@ export default function DeliveryBoyTable({ order }: TableProps) {
 
   const assignEveryOneAtOnce = async () => {
     try {
+      onAssigning(true)
       await Promise.all(
         AssignedDeliveryBoys.map(async (boy) => {
           try {
@@ -57,6 +61,8 @@ export default function DeliveryBoyTable({ order }: TableProps) {
           }
         })
       )
+      onAssigning(false)
+      alert("Order Assigned")
     } catch (error) {
       console.error(error)
     }
@@ -106,16 +112,17 @@ export default function DeliveryBoyTable({ order }: TableProps) {
             </thead>
 
             <tbody>
-              {deliveryBoys.length &&
-                deliveryBoys.map((info, index) => (
-                  <DeliveryBoyCard
-                    key={index}
-                    index={index}
-                    keys={keys}
-                    info={info}
-                    action={addToList}
-                  />
-                ))}
+              {deliveryBoys.length
+                ? deliveryBoys.map((info, index) => (
+                    <DeliveryBoyCard
+                      key={index}
+                      index={index}
+                      keys={keys}
+                      info={info}
+                      action={addToList}
+                    />
+                  ))
+                : null}
             </tbody>
           </table>
         </div>

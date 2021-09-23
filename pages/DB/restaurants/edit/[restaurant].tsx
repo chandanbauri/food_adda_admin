@@ -92,7 +92,8 @@ export default function EditRestaurant({ session }: any) {
     }
   }
   const uploadToFirebase = async () => {
-    if (image) {
+    if (!image && previewImage) {
+    } else if ((image && previewImage) || (image && !previewImage)) {
       try {
         const storageRef = firebase.storage().ref()
         const imageRef = storageRef.child(`restaurant/${image.name}`)
@@ -103,7 +104,7 @@ export default function EditRestaurant({ session }: any) {
       } catch (error) {
         throw error
       }
-    } else {
+    } else if (!previewImage && !image) {
       throw alert("Please upload an image first.")
     }
   }
