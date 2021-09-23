@@ -24,6 +24,8 @@ export default function AddNewDeliveryBoy({ session }: any) {
     password: "",
     displayName: "",
     photoURL: "",
+    pan: "",
+    dl: "",
     disabled: false,
   }
   const [app, setApp] = React.useState(initialState)
@@ -43,6 +45,16 @@ export default function AddNewDeliveryBoy({ session }: any) {
       label: "Password",
       name: "password",
       value: app.password,
+    },
+    {
+      label: "PAN no.",
+      name: "pan",
+      value: app.pan,
+    },
+    {
+      label: "DL no.",
+      name: "dl",
+      value: app.dl,
     },
   ]
   let handleText = (name: string) => (e: any) => {
@@ -93,6 +105,14 @@ export default function AddNewDeliveryBoy({ session }: any) {
                 value={item.value || ""}
                 onChange={handleText(item.name)}
               />
+              {item.name == "pan" && app.pan.length < 10 && app.pan != "" && (
+                <span className="text-red-500 text-xs">
+                  Not a valid PAN no.
+                </span>
+              )}
+              {item.name == "dl" && app.dl.length < 15 && app.dl != "" && (
+                <span className="text-red-500 text-xs">Not a valid DL no.</span>
+              )}
             </div>
           ))}
 
@@ -109,6 +129,8 @@ export default function AddNewDeliveryBoy({ session }: any) {
                       displayName: app.displayName,
                       // photoURL: app.photoURL,
                       disabled: false,
+                      dl: app.dl,
+                      pan: app.pan,
                     },
                   })
                   if (res) {
