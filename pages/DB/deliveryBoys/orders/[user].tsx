@@ -176,7 +176,7 @@ export default function ViewOrders({ session }: any) {
                 fetchOngoingList().catch((error) => console.error(error))
               }}
             >
-              <span>Ongoing</span>
+              <span>Accepted</span>
             </button>
             <button
               className="flex-1 flex items-center justify-center py-2"
@@ -184,7 +184,7 @@ export default function ViewOrders({ session }: any) {
                 fetchRejectedList().catch((error) => console.error(error))
               }}
             >
-              <span>Rejectd</span>
+              <span>Rejected</span>
             </button>
           </div>
           <ContentTable
