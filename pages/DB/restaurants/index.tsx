@@ -69,7 +69,9 @@ export default function RestaurantsDB({ session }: any) {
   let actions = [
     {
       Icon: <Feather.Edit size={24} />,
-      action: (data: any) => {},
+      // action: (data: any) => {},
+      isLink: true,
+      to: "/DB/restaurants/edit",
     },
     {
       Icon: <Feather.Trash2 size={24} />,
@@ -88,7 +90,7 @@ export default function RestaurantsDB({ session }: any) {
       if (res.docs.length) {
         let list: Array<any> = []
         res.docs.map((item, index) => {
-          list.push(item.data())
+          list.push({ ...item.data(), id: item.id })
         })
         setTableData(list)
         setInitializing(false)
@@ -118,7 +120,7 @@ export default function RestaurantsDB({ session }: any) {
           <ContentTable
             tableData={tableData}
             tableFileds={tableFileds}
-            // actions={actions}
+            actions={actions}
             tableTitle="Restaurants"
             headerActions={HeaderActions}
           />

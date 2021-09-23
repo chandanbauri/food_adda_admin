@@ -4,7 +4,7 @@ import Empty from "../empty/empty"
 
 type actionProps = {
   Icon: React.ReactNode
-  action: (props: any) => void
+  action?: (props: any) => void
   isLink?: boolean
   to?: string
 }
@@ -77,7 +77,14 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                               ) =>
                                 isLink && to ? (
                                   <Link
-                                    href={`${to}/${data["id"]}?name=${data["name"]}`}
+                                    href={`${to}/${data["id"]}?${
+                                      data["name"] ? "name=" + data["name"] : ""
+                                    }${
+                                      data["restaurantName"]
+                                        ? "restaurantName=" +
+                                          data["restaurantName"]
+                                        : ""
+                                    }`}
                                     key={index}
                                   >
                                     <span className="box-border p-2 hover:bg-gray-300 rounded-full transition-all ease-linear mx-2">
@@ -88,7 +95,7 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                                   <button
                                     key={index}
                                     onClick={() => {
-                                      action(data)
+                                      if (action) action(data)
                                     }}
                                     className="box-border p-2 hover:bg-gray-300 rounded-full transition-all ease-linear mx-2"
                                   >
