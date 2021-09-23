@@ -87,41 +87,41 @@ export default function AddNewFood({ session }: any) {
     if (!error) return <Success />
     return <Failure />
   }
-  const onImageChange = (e: any) => {
-    const reader = new FileReader()
-    let file = e.target.files[0] // get the supplied file
-    // if there is a file, set image to that file
-    if (file) {
-      reader.onload = () => {
-        if (reader.readyState === 2) {
-          //file)
-          setImage(file)
-          setPreviewImage(reader.result)
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
-      // if there is no file, set image back to null
-    } else {
-      setImage(null)
-      setPreviewImage(null)
-    }
-  }
-  const uploadToFirebase = async () => {
-    if (image) {
-      try {
-        const storageRef = firebase.storage().ref()
-        const imageRef = storageRef.child(`restaurant/${image.name}`)
-        let snap = await imageRef.put(image)
-        imageURL.current = await snap.ref.getDownloadURL()
-        setImage(null)
-        setPreviewImage(null)
-      } catch (error) {
-        throw error
-      }
-    } else {
-      throw alert("Please upload an image first.")
-    }
-  }
+  // const onImageChange = (e: any) => {
+  //   const reader = new FileReader()
+  //   let file = e.target.files[0] // get the supplied file
+  //   // if there is a file, set image to that file
+  //   if (file) {
+  //     reader.onload = () => {
+  //       if (reader.readyState === 2) {
+  //         //file)
+  //         setImage(file)
+  //         setPreviewImage(reader.result)
+  //       }
+  //     }
+  //     reader.readAsDataURL(e.target.files[0])
+  //     // if there is no file, set image back to null
+  //   } else {
+  //     setImage(null)
+  //     setPreviewImage(null)
+  //   }
+  // }
+  // const uploadToFirebase = async () => {
+  //   if (image) {
+  //     try {
+  //       const storageRef = firebase.storage().ref()
+  //       const imageRef = storageRef.child(`restaurant/${image.name}`)
+  //       let snap = await imageRef.put(image)
+  //       imageURL.current = await snap.ref.getDownloadURL()
+  //       setImage(null)
+  //       setPreviewImage(null)
+  //     } catch (error) {
+  //       throw error
+  //     }
+  //   } else {
+  //     throw alert("Please upload an image first.")
+  //   }
+  // }
   if (session)
     return (
       <Wrapper>
@@ -138,7 +138,7 @@ export default function AddNewFood({ session }: any) {
             </div>
           ))}
 
-          <div className=" bg-green-50 h-52 w-full sm:max-w-max rounded overflow-hidden relative outline-none my-10">
+          {/* <div className=" bg-green-50 h-52 w-full sm:max-w-max rounded overflow-hidden relative outline-none my-10">
             <div className="absolute top-0 left-0 right-0 bottom-0 outline-none">
               {previewImage != null && (
                 <Image
@@ -161,12 +161,12 @@ export default function AddNewFood({ session }: any) {
                 onImageChange(e)
               }}
             />
-          </div>
+          </div> */}
           <div className="flex flex-grow items-center justify-center">
             <button
               onClick={async () => {
                 try {
-                  await uploadToFirebase()
+                  // await uploadToFirebase()
                   if (typeof category == "string") {
                     let res = await CategoriesCollection.doc(category)
                       .collection("foods")
@@ -182,7 +182,7 @@ export default function AddNewFood({ session }: any) {
                         .add({
                           ...app,
                           category: name,
-                          image: imageURL.current,
+                          // image: imageURL.current,
                         })
                       setError(false)
                       setTrigger(true)
