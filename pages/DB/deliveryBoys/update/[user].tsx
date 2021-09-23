@@ -30,6 +30,8 @@ export default function AddNewDeliveryBoy({ session }: any) {
     password: "",
     displayName: "",
     photoURL: "",
+    aadhar: "",
+    dl: "",
     disabled: false,
   }
   const FetchDeltails = async () => {
@@ -68,6 +70,16 @@ export default function AddNewDeliveryBoy({ session }: any) {
       label: "Password",
       name: "password",
       value: app.password,
+    },
+    {
+      label: "AADHAR",
+      name: "aadhar",
+      value: app.aadhar,
+    },
+    {
+      label: "DL no.",
+      name: "dl",
+      value: app.dl,
     },
   ]
 
@@ -123,6 +135,16 @@ export default function AddNewDeliveryBoy({ session }: any) {
                 value={item.value || ""}
                 onChange={handleText(item.name)}
               />
+              {item.name == "aadhar" &&
+                app.aadhar.length < 12 &&
+                app.aadhar != "" && (
+                  <span className="text-red-500 text-xs">
+                    Not a valid AADHAR no.
+                  </span>
+                )}
+              {item.name == "dl" && app.dl.length < 15 && app.dl != "" && (
+                <span className="text-red-500 text-xs">Not a valid DL no.</span>
+              )}
             </div>
           ))}
 
@@ -140,6 +162,8 @@ export default function AddNewDeliveryBoy({ session }: any) {
                       displayName: app.displayName,
                       // photoURL: app.photoURL,
                       disabled: false,
+                      aadhar: app.aadhar,
+                      dl: app.dl,
                     },
                   })
                   if (res) {

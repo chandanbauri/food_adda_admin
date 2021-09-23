@@ -24,7 +24,7 @@ export default function AddNewDeliveryBoy({ session }: any) {
     password: "",
     displayName: "",
     photoURL: "",
-    pan: "",
+    aadhar: "",
     dl: "",
     disabled: false,
   }
@@ -47,9 +47,9 @@ export default function AddNewDeliveryBoy({ session }: any) {
       value: app.password,
     },
     {
-      label: "PAN no.",
-      name: "pan",
-      value: app.pan,
+      label: "AADHAR",
+      name: "aadhar",
+      value: app.aadhar,
     },
     {
       label: "DL no.",
@@ -105,11 +105,13 @@ export default function AddNewDeliveryBoy({ session }: any) {
                 value={item.value || ""}
                 onChange={handleText(item.name)}
               />
-              {item.name == "pan" && app.pan.length < 10 && app.pan != "" && (
-                <span className="text-red-500 text-xs">
-                  Not a valid PAN no.
-                </span>
-              )}
+              {item.name == "aadhar" &&
+                app.aadhar.length < 12 &&
+                app.aadhar != "" && (
+                  <span className="text-red-500 text-xs">
+                    Not a valid AADHAR no.
+                  </span>
+                )}
               {item.name == "dl" && app.dl.length < 15 && app.dl != "" && (
                 <span className="text-red-500 text-xs">Not a valid DL no.</span>
               )}
@@ -130,7 +132,7 @@ export default function AddNewDeliveryBoy({ session }: any) {
                       // photoURL: app.photoURL,
                       disabled: false,
                       dl: app.dl,
-                      pan: app.pan,
+                      aadhar: app.aadhar,
                     },
                   })
                   if (res) {
