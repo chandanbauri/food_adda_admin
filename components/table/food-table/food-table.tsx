@@ -9,11 +9,17 @@ import PopUpContainer from "../../popUp/container"
 import firebase from "firebase"
 
 type TableProps = {
-  restaurant: any
+  restaurant?: any
+  isEditMode: boolean
+  setBasket?: any
 }
 
 const keys = ["category", "name", "desc", "cost"]
-export default function FoodTable({ restaurant }: TableProps) {
+export default function FoodTable({
+  restaurant,
+  isEditMode,
+  setBasket,
+}: TableProps) {
   const [Foods, setFoods] = React.useState<Array<any>>([])
   const [deleteFoodList, setDFL] = React.useState<Array<any>>([])
   const [addList, setAddList] = React.useState<Array<any>>([])
@@ -24,21 +30,23 @@ export default function FoodTable({ restaurant }: TableProps) {
   const [foodList, setFoodList] = React.useState<Array<any>>([])
 
   const getRestaurantFood = async () => {
-    try {
-      let FoodList: Array<any> = []
-      let res = await RestaurantCollection.doc(restaurant?.toString())
-        .collection("foods")
-        .get()
-      if (res.size) {
-        FoodList = res.docs.map((item) => ({
-          ...item.data(),
-          irid: item.id,
-        }))
+    if (isEditMode && restaurant) {
+      try {
+        let FoodList: Array<any> = []
+        let res = await RestaurantCollection.doc(restaurant?.toString())
+          .collection("foods")
+          .get()
+        if (res.size) {
+          FoodList = res.docs.map((item) => ({
+            ...item.data(),
+            irid: item.id,
+          }))
+        }
+        console.log(`RESTAURANT ${restaurant} FOOD`, FoodList)
+        setFoods(FoodList)
+      } catch (error) {
+        console.error(error)
       }
-      console.log(`RESTAURANT ${restaurant} FOOD`, FoodList)
-      setFoods(FoodList)
-    } catch (error) {
-      console.error(error)
     }
   }
   const getFood = async () => {
@@ -191,16 +199,17 @@ export default function FoodTable({ restaurant }: TableProps) {
             </thead>
 
             <tbody>
-              {foodList.length &&
-                foodList.map((info, index) => (
-                  <FoodCard
-                    key={index}
-                    index={index}
-                    keys={keys}
-                    info={info}
-                    action={addToList}
-                  />
-                ))}
+              {foodList.length
+                ? foodList.map((info, index) => (
+                    <FoodCard
+                      key={index}
+                      index={index}
+                      keys={keys}
+                      info={info}
+                      action={addToList}
+                    />
+                  ))
+                : null}
             </tbody>
           </table>
         </div>
@@ -211,26 +220,34 @@ export default function FoodTable({ restaurant }: TableProps) {
             className="w-full py-2 bg-green-500 rounded shadow-xl"
             onClick={async () => {
               console.log("NEW IITEMs", addList)
-              try {
-                if (addList.length) {
-                  await Promise.all(
-                    addList.map(async (item, index) => {
-                      await RestaurantCollection.doc(restaurant)
-                        .collection("foods")
-                        .add(item)
-                      if (index === addList.length - 1) {
-                        // setTrigger(true)
-                        // setError(false)
-                        alert("Food items added !!")
-                      }
-                    })
-                  )
-                  setFoods((prev) => [...prev, ...addList])
-                } else {
-                  alert("Please select a food item first!!")
+              if (isEditMode && restaurant) {
+                try {
+                  if (addList.length) {
+                    await Promise.all(
+                      addList.map(async (item, index) => {
+                        await RestaurantCollection.doc(restaurant)
+                          .collection("foods")
+                          .add(item)
+                        if (index === addList.length - 1) {
+                          // setTrigger(true)
+                          // setError(false)
+                          alert("Food items added !!")
+                        }
+                      })
+                    )
+                    setFoods((prev) => [...prev, ...addList])
+                  } else {
+                    alert("Please select a food item first!!")
+                  }
+                } catch (error) {
+                  console.error(error)
                 }
-              } catch (error) {
-                console.error(error)
+              } else {
+                // new mode
+                setFoods((prev) => {
+                  if (setBasket) setBasket([...prev, ...addList])
+                  return [...prev, ...addList]
+                })
               }
             }}
           >
@@ -277,16 +294,17 @@ export default function FoodTable({ restaurant }: TableProps) {
             </thead>
 
             <tbody>
-              {Foods.length &&
-                Foods.map((info, index) => (
-                  <FoodCard
-                    key={index}
-                    index={index}
-                    keys={keys}
-                    info={info}
-                    action={addToDFLList}
-                  />
-                ))}
+              {Foods.length
+                ? Foods.map((info, index) => (
+                    <FoodCard
+                      key={index}
+                      index={index}
+                      keys={keys}
+                      info={info}
+                      action={addToDFLList}
+                    />
+                  ))
+                : null}
             </tbody>
           </table>
         </div>
@@ -320,36 +338,54 @@ export default function FoodTable({ restaurant }: TableProps) {
         <button
           className="px-4 py-2 bg-red-500 rounded shadow-xl w-full"
           onClick={async () => {
-            console.log("DELETE LIST", deleteFoodList)
-            try {
-              if (deleteFoodList.length) {
-                setFoods((prev) => {
-                  let list = prev.map((item) => {
-                    let index = deleteFoodList.findIndex(
-                      (food) => item.id == food.id
-                    )
-                    if (index == -1) {
-                      return item
-                    }
-                    return
+            // console.log("DELETE LIST", deleteFoodList)
+            if (isEditMode && restaurant) {
+              try {
+                if (deleteFoodList.length) {
+                  setFoods((prev) => {
+                    let list = prev.map((item) => {
+                      let index = deleteFoodList.findIndex(
+                        (food) => item.id == food.id
+                      )
+                      if (index == -1) {
+                        return item
+                      }
+                      return
+                    })
+                    return list.filter((item) => item != undefined)
                   })
-                  return list.filter((item) => item != undefined)
-                })
-                await Promise.all(
-                  deleteFoodList.map(async (food) => {
-                    await RestaurantCollection.doc(restaurant)
-                      .collection("foods")
-                      .doc(food.irid)
-                      .delete()
-                  })
-                )
-                alert("Seleted Food Items Have Been Deleted")
-                setDFL([])
-              } else {
-                alert("Please select food items to delete")
+                  await Promise.all(
+                    deleteFoodList.map(async (food) => {
+                      await RestaurantCollection.doc(restaurant)
+                        .collection("foods")
+                        .doc(food.irid)
+                        .delete()
+                    })
+                  )
+                  alert("Seleted Food Items Have Been Deleted")
+                  setDFL([])
+                } else {
+                  alert("Please select food items to delete")
+                }
+              } catch (error) {
+                console.error(error)
               }
-            } catch (error) {
-              console.error(error)
+            } else {
+              // add new mode
+              setFoods((prev) => {
+                let list = prev.map((item) => {
+                  let index = deleteFoodList.findIndex(
+                    (food) => item.id == food.id
+                  )
+                  if (index == -1) {
+                    return item
+                  }
+                  return
+                })
+                if (setBasket)
+                  setBasket(list.filter((item) => item != undefined))
+                return list.filter((item) => item != undefined)
+              })
             }
           }}
         >

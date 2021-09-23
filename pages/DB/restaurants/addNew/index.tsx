@@ -7,39 +7,38 @@ import { Layout } from "../../../../components/layout/secondary"
 import PopUpContainer from "../../../../components/popUp/container"
 import * as Feather from "react-feather"
 import firebase from "firebase"
-import ContentTable from "../../../../components/table"
+// import ContentTable from "../../../../components/table"
 import Image from "next/image"
 import TimeField from "react-simple-timefield"
-export default function AddNewRestaurant({ session }: any) {
+import { useRouter } from "next/router"
+import FoodTable from "../../../../components/table/food-table/food-table"
+let initialState = {
+  restaurantName: "",
+  phone: "",
+  address: "",
+  preparationDuration: "",
+  opening: "00:00",
+  closing: "00:00",
+}
+export default function EditRestaurant({ session }: any) {
+  // const { restaurant, restaurantName } = useRouter().query
   const RestaurantCollection = firebase.firestore().collection("restaurants")
+  // const CategoriesCollection = firebase.firestore().collection("categories")
   const [trigger, setTrigger] = React.useState<boolean>(false)
   const [error, setError] = React.useState<boolean>(true)
-  const CategoriesCollection = firebase.firestore().collection("categories")
-  const [foodList, setFoodList] = React.useState<Array<any>>([])
-  const [initializing, setInitializing] = React.useState<boolean>(true)
+  // const [foodList, setFoodList] = React.useState<Array<any>>([])
+  // const [restaurantFoodList, setRestaurantFoodList] = React.useState<
+  //   Array<any>
+  // >([])
+  const [initializing, setInitializing] = React.useState<boolean>(false)
   const [basket, setBasket] = React.useState<Array<any>>([])
   const [tags, setTags] = React.useState<Array<any>>([])
   const [tag, setTag] = React.useState<any>()
   const [image, setImage] = React.useState<any>(null)
   let imageURL = React.useRef<string>("")
-  let openingRef = React.useRef(null)
-  let closingRef = React.useRef(null)
+  // let openingRef = React.useRef(null)
+  // let closingRef = React.useRef(null)
   const [previewImage, setPreviewImage] = React.useState<any>(null)
-  let initialState = {
-    // email: "",
-    // emailVerified: false,
-    // phoneNumber: "",
-    // password: "",
-    // displayName: "",
-    // photoURL: "",
-    //   disabled: false,
-    restaurantName: "",
-    phone: "",
-    address: "",
-    preparationDuration: "",
-    opening: "00:00",
-    closing: "00:00",
-  }
   const [app, setApp] = React.useState(initialState)
   let fields = [
     {
@@ -64,18 +63,13 @@ export default function AddNewRestaurant({ session }: any) {
     },
   ]
   let handleText = (name: string) => (e: any) => {
-    // setCatFormFields((prev) => ({
-    //   ...prev,
-    //   name: e.target.value,
-    // }))
-    //e.target.value)
     setApp((prev) => ({ ...prev, [name]: e.target.value }))
   }
   const closePopUp = () => {
     setError(false)
     setTrigger(false)
     setApp(initialState)
-    setBasket([])
+    // setBasket([])
   }
 
   const onImageChange = (e: any) => {
@@ -113,24 +107,7 @@ export default function AddNewRestaurant({ session }: any) {
       throw alert("Please upload an image first.")
     }
   }
-  const Success = () => (
-    <div className="h-64 flex flex-col items-center justify-center text-green-500">
-      <div>
-        <Feather.CheckCircle size={80} />
-      </div>
-      <h1 className="mt-10 font-bold text-xl">Restaurant</h1>
-      <h1 className="font-bold text-xl"> Added Successfully</h1>
-    </div>
-  )
-  const Failure = () => (
-    <div className="h-64 flex flex-col items-center justify-center text-red-500">
-      <div>
-        <Feather.XCircle size={80} />
-      </div>
-      <h1 className="mt-10 font-bold text-xl">Something</h1>
-      <h1 className="font-bold text-xl">Went wrong</h1>
-    </div>
-  )
+
   const PopUpContent = () => {
     if (!error) return <Success />
     return <Failure />
@@ -150,50 +127,68 @@ export default function AddNewRestaurant({ session }: any) {
     </div>
   )
 
-  const getFood = async () => {
-    try {
-      let list: Array<any> = []
-      let FoodList: Array<any> = []
-      let res = await CategoriesCollection.get()
-      if (res.size) {
-        res.docs.map((item) => {
-          list.push({ ...item.data(), id: item.id })
-        })
-        await Promise.all(
-          list.map(async (item, index) => {
-            let response = await CategoriesCollection.doc(item.id)
-              .collection("foods")
-              .get()
-            if (response.size) {
-              response.docs.map((item) => {
-                FoodList.push({ ...item.data(), id: item.id })
-              })
-            }
-            if (index == list.length - 1) setInitializing(false)
-          })
-        )
-        //FoodList)
-        setFoodList(FoodList)
-      }
-    } catch (error) {
-      setInitializing(false)
-      throw error
-    }
-  }
-  const actions = [
-    {
-      Icon: <Feather.Plus />,
-      action: (data: any) => {
-        setBasket((prev) => [...prev, data])
-      },
-    },
-  ]
-  React.useEffect(() => {
-    getFood().catch((error) => {
-      throw error
-    })
-    return
-  }, [])
+  // const getRestaurantFood = async () => {
+  //   try {
+  //     let list: Array<any> = []
+  //     let FoodList: Array<any> = []
+  //     let res = await RestaurantCollection.doc(restaurant?.toString())
+  //       .collection("foods")
+  //       .get()
+  //     if (res.size) {
+  //       FoodList = res.docs.map((item) => ({
+  //         ...item.data(),
+  //         irid: item.id,
+  //       }))
+  //     }
+  //     console.log(`RESTAURANT ${restaurant} FOOD`, FoodList)
+  //     setRestaurantFoodList(FoodList)
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // }
+  // const getRestaurantDetails = async () => {
+  //   setInitializing(true)
+  //   try {
+  //     let res = await RestaurantCollection.doc(restaurant?.toString()).get()
+  //     if (res.exists && res.data()) {
+  //       let data = res.data()
+  //       initialState.restaurantName = data?.restaurantName
+  //       initialState.address = data?.address
+  //       initialState.phone = data?.phone
+  //       initialState.closing = data?.closing
+  //       initialState.opening = data?.opening
+  //       initialState.preparationDuration = data?.preparationDuration
+  //       if (data?.image) setPreviewImage(data.image)
+  //       if (data?.tags.length) setTags(data?.tags)
+  //       console.log(`RESTAURANT ${restaurant} DETAILS`, res.data())
+  //     }
+  //     setInitializing(false)
+  //   } catch (error) {
+  //     setInitializing(false)
+  //     console.error(error)
+  //   }
+  // }
+  // const actions = [
+  //   {
+  //     Icon: <Feather.Plus />,
+  //     action: (data: any) => {
+  //       setBasket((prev) => [...prev, data])
+  //     },
+  //   },
+  // ]
+
+  // React.useEffect(() => {
+  //   getRestaurantDetails().catch((error) => console.log(error))
+  // }, [])
+  // React.useEffect(() => {
+  //   getFood().catch((error) => {
+  //     throw error
+  //   })
+  //   return
+  // }, [])
+  // React.useEffect(() => {
+  //   getRestaurantFood().catch((error) => console.error(error))
+  // }, [])
 
   if (initializing)
     return (
@@ -205,7 +200,7 @@ export default function AddNewRestaurant({ session }: any) {
     return (
       <Wrapper>
         <div className="w-full px-4 mt-5 box-border">
-          <h1 className="text-green-500 text-2xl">Add New Restaurant</h1>
+          <h1 className="text-green-500 text-2xl">{`Add New Restaurant`}</h1>
           {fields.map((item, index) => (
             <div className="flex flex-col mt-4 mb-2" key={index}>
               <label className="capitalize">{item.label}</label>
@@ -224,8 +219,18 @@ export default function AddNewRestaurant({ session }: any) {
               onChange={(e) => {
                 setTag(e.target.value)
               }}
-              onKeyUp={(e) => {
-                if (e.key === "Enter" && tag != "") {
+            />
+            <div className="flex flex-row items-center justify-start flex-wrap">
+              {tags.map((item, index) => (
+                <Chips text={item} key={index} />
+              ))}
+            </div>
+          </div>
+          <div className=" my-3">
+            <button
+              className="px-14 py-2 bg-green-500 shadow-xl rounded"
+              onClick={() => {
+                if (tag != "") {
                   setTags((prev) => {
                     let list = [...prev, tag.replace("\n", "")]
                     //list)
@@ -234,12 +239,9 @@ export default function AddNewRestaurant({ session }: any) {
                   setTag("")
                 }
               }}
-            />
-            <div className="flex flex-row items-center justify-start flex-wrap">
-              {tags.map((item, index) => (
-                <Chips text={item} key={index} />
-              ))}
-            </div>
+            >
+              <span className=" capitalize text-white">add type</span>
+            </button>
           </div>
           <div className="flex justify-between md:flex-row flex-col">
             <div className="flex flex-col">
@@ -302,17 +304,11 @@ export default function AddNewRestaurant({ session }: any) {
             />
           </div>
 
-          <ContentTable
-            tableData={foodList}
-            tableFileds={["category", "name", "desc", "cost"]}
-            tableTitle="Food List"
-            actions={actions}
-          />
-
-          <div className="flex flex-grow items-center justify-center">
+          <div className="flex flex-grow items-center justify-center my-5">
             <button
               onClick={async () => {
-                // //app)
+                // console.log("BASKET", basket)
+                //app)
                 try {
                   await uploadToFirebase()
                   if (imageURL.current !== "") {
@@ -334,6 +330,8 @@ export default function AddNewRestaurant({ session }: any) {
                         })
                       )
                     }
+                    setTrigger(true)
+                    setError(false)
                     setTags([])
                   }
                 } catch (error) {
@@ -349,6 +347,18 @@ export default function AddNewRestaurant({ session }: any) {
               </div>
             </button>
           </div>
+          {/* <ContentTable
+            tableData={restaurantFoodList}
+            tableFileds={["category", "name", "desc", "cost"]}
+            tableTitle={`Food list of ${restaurantName}`}
+            actions={actions}
+          /> */}
+
+          <FoodTable
+            isEditMode={false}
+            setBasket={(value: any) => setBasket(value)}
+          />
+
           <PopUpContainer
             trigger={trigger}
             content={<PopUpContent />}
@@ -365,6 +375,25 @@ export default function AddNewRestaurant({ session }: any) {
     </Layout>
   )
 }
+
+const Success = () => (
+  <div className="h-64 flex flex-col items-center justify-center text-green-500">
+    <div>
+      <Feather.CheckCircle size={80} />
+    </div>
+    <h1 className="mt-10 font-bold text-xl">Restaurant</h1>
+    <h1 className="font-bold text-xl"> Added Successfully</h1>
+  </div>
+)
+const Failure = () => (
+  <div className="h-64 flex flex-col items-center justify-center text-red-500">
+    <div>
+      <Feather.XCircle size={80} />
+    </div>
+    <h1 className="mt-10 font-bold text-xl">Something</h1>
+    <h1 className="font-bold text-xl">Went wrong</h1>
+  </div>
+)
 
 export async function getServerSideProps(context: any) {
   try {

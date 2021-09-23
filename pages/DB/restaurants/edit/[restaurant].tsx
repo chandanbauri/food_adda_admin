@@ -7,7 +7,7 @@ import { Layout } from "../../../../components/layout/secondary"
 import PopUpContainer from "../../../../components/popUp/container"
 import * as Feather from "react-feather"
 import firebase from "firebase"
-import ContentTable from "../../../../components/table"
+// import ContentTable from "../../../../components/table"
 import Image from "next/image"
 import TimeField from "react-simple-timefield"
 import { useRouter } from "next/router"
@@ -23,21 +23,21 @@ let initialState = {
 export default function EditRestaurant({ session }: any) {
   const { restaurant, restaurantName } = useRouter().query
   const RestaurantCollection = firebase.firestore().collection("restaurants")
-  const CategoriesCollection = firebase.firestore().collection("categories")
+  // const CategoriesCollection = firebase.firestore().collection("categories")
   const [trigger, setTrigger] = React.useState<boolean>(false)
   const [error, setError] = React.useState<boolean>(true)
-  const [foodList, setFoodList] = React.useState<Array<any>>([])
-  const [restaurantFoodList, setRestaurantFoodList] = React.useState<
-    Array<any>
-  >([])
+  // const [foodList, setFoodList] = React.useState<Array<any>>([])
+  // const [restaurantFoodList, setRestaurantFoodList] = React.useState<
+  //   Array<any>
+  // >([])
   const [initializing, setInitializing] = React.useState<boolean>(true)
-  const [basket, setBasket] = React.useState<Array<any>>([])
+  // const [basket, setBasket] = React.useState<Array<any>>([])
   const [tags, setTags] = React.useState<Array<any>>([])
   const [tag, setTag] = React.useState<any>()
   const [image, setImage] = React.useState<any>(null)
   let imageURL = React.useRef<string>("")
-  let openingRef = React.useRef(null)
-  let closingRef = React.useRef(null)
+  // let openingRef = React.useRef(null)
+  // let closingRef = React.useRef(null)
   const [previewImage, setPreviewImage] = React.useState<any>(null)
   const [app, setApp] = React.useState(initialState)
   let fields = [
@@ -69,7 +69,7 @@ export default function EditRestaurant({ session }: any) {
     setError(false)
     setTrigger(false)
     setApp(initialState)
-    setBasket([])
+    // setBasket([])
   }
 
   const onImageChange = (e: any) => {
@@ -127,25 +127,25 @@ export default function EditRestaurant({ session }: any) {
     </div>
   )
 
-  const getRestaurantFood = async () => {
-    try {
-      let list: Array<any> = []
-      let FoodList: Array<any> = []
-      let res = await RestaurantCollection.doc(restaurant?.toString())
-        .collection("foods")
-        .get()
-      if (res.size) {
-        FoodList = res.docs.map((item) => ({
-          ...item.data(),
-          irid: item.id,
-        }))
-      }
-      console.log(`RESTAURANT ${restaurant} FOOD`, FoodList)
-      setRestaurantFoodList(FoodList)
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  // const getRestaurantFood = async () => {
+  //   try {
+  //     let list: Array<any> = []
+  //     let FoodList: Array<any> = []
+  //     let res = await RestaurantCollection.doc(restaurant?.toString())
+  //       .collection("foods")
+  //       .get()
+  //     if (res.size) {
+  //       FoodList = res.docs.map((item) => ({
+  //         ...item.data(),
+  //         irid: item.id,
+  //       }))
+  //     }
+  //     console.log(`RESTAURANT ${restaurant} FOOD`, FoodList)
+  //     setRestaurantFoodList(FoodList)
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // }
   const getRestaurantDetails = async () => {
     setInitializing(true)
     try {
@@ -168,14 +168,14 @@ export default function EditRestaurant({ session }: any) {
       console.error(error)
     }
   }
-  const actions = [
-    {
-      Icon: <Feather.Plus />,
-      action: (data: any) => {
-        setBasket((prev) => [...prev, data])
-      },
-    },
-  ]
+  // const actions = [
+  //   {
+  //     Icon: <Feather.Plus />,
+  //     action: (data: any) => {
+  //       setBasket((prev) => [...prev, data])
+  //     },
+  //   },
+  // ]
 
   React.useEffect(() => {
     getRestaurantDetails().catch((error) => console.log(error))
@@ -186,9 +186,9 @@ export default function EditRestaurant({ session }: any) {
   //   })
   //   return
   // }, [])
-  React.useEffect(() => {
-    getRestaurantFood().catch((error) => console.error(error))
-  }, [])
+  // React.useEffect(() => {
+  //   getRestaurantFood().catch((error) => console.error(error))
+  // }, [])
 
   if (initializing)
     return (
@@ -356,7 +356,7 @@ export default function EditRestaurant({ session }: any) {
             actions={actions}
           /> */}
 
-          <FoodTable restaurant={restaurant} />
+          <FoodTable restaurant={restaurant} isEditMode={true} />
 
           <PopUpContainer
             trigger={trigger}

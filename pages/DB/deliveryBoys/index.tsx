@@ -15,7 +15,13 @@ export default function DeliveryBoyDB({ session }: any) {
       if (res) {
         let parsedResponse = JSON.parse(res.data)
         if (parsedResponse.success) {
-          setTableData(parsedResponse.data)
+          console.log("DELIVERY BOYS", parsedResponse.data)
+          let list = parsedResponse.data.map((item: any) => {
+            let { uid, ...details } = item
+            console.log("DELIVERY BOY", item)
+            return { id: uid, ...details }
+          })
+          setTableData(list)
           setInitializing(false)
         } else {
           setInitializing(false)
@@ -77,20 +83,23 @@ export default function DeliveryBoyDB({ session }: any) {
   //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
   // ]
   let tableFileds = ["displayName", "phoneNumber"]
-  // let actions = [
-  //   {
-  //     Icon: <Feather.Edit size={24} />,
-  //     action: (data: any) => //data),
-  //   },
-  //   {
-  //     Icon: <Feather.Trash2 size={24} />,
-  //     action: (data: any) => //data),
-  //   },
-  // ]
+
   let HeaderActions = [
     {
       Icon: <Feather.Plus />,
       to: "/DB/deliveryBoys/addNew",
+    },
+  ]
+  let actions = [
+    {
+      Icon: <Feather.Edit size={24} />,
+      // action: (data: any) => {},
+      isLink: true,
+      to: "/DB/deliveryBoys/update",
+    },
+    {
+      Icon: <Feather.Trash2 size={24} />,
+      action: (data: any) => {},
     },
   ]
   React.useEffect(() => {
@@ -112,7 +121,7 @@ export default function DeliveryBoyDB({ session }: any) {
           <ContentTable
             tableData={tableData}
             tableFileds={tableFileds}
-            // actions={actions}
+            actions={actions}
             headerActions={HeaderActions}
             tableTitle="Delivery Boys"
           />
