@@ -137,7 +137,7 @@ export default function ViewOrders({ session }: any) {
     try {
       let ongoing: Array<any> = []
       let ongoingRes = await DeliveryBoysCollection.doc(user?.toString())
-        .collection("ongoing")
+        .collection("completed")
         .get()
       if (ongoingRes && !ongoingRes.empty) {
         ongoing = ongoingRes.docs.map((item) => ({
