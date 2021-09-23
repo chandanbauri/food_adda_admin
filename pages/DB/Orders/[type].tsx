@@ -260,7 +260,7 @@ export default function Orders({ session }: any) {
           />
           <ContentTable
             tableData={getOrders()}
-            tableFileds={["paymentMethod", "amount"]}
+            tableFileds={["paymentMethod", "amount", "gst", "deliveryCharge"]}
             actions={getActions(type)}
             tableTitle={`${type} Orders`}
           />

@@ -1,40 +1,47 @@
 import * as React from "react"
-import Wrapper from "../../../components/layout"
-import { verifyIdToken } from "../../../utilities/firebase_admin"
+import Wrapper from "../../../../components/layout"
+import { verifyIdToken } from "../../../../utilities/firebase_admin"
 import nookies from "nookies"
-import { Layout } from "../../../components/layout/secondary"
+import { Layout } from "../../../../components/layout/secondary"
 import * as Feather from "react-feather"
-import ContentTable from "../../../components/table"
+import ContentTable from "../../../../components/table"
 import {
   deleteDeliveryBoy,
   getListOfDeliveryBoys,
-} from "../../../utilities/functions"
-export default function DeliveryBoyDB({ session }: any) {
+} from "../../../../utilities/functions"
+import firebase from "firebase"
+import { useRouter } from "next/router"
+export default function ViewOrders({ session }: any) {
+  const DeliveryBoysCollection = firebase
+    .firestore()
+    .collection("deliveryPartners")
+  const OrdersCollection = firebase.firestore().collection("orders")
   const [tableData, setTableData] = React.useState<Array<any>>([])
   const [initializing, setInitializing] = React.useState<boolean>(true)
-  const getList = async () => {
-    try {
-      let res = await getListOfDeliveryBoys()
-      if (res) {
-        let parsedResponse = JSON.parse(res.data)
-        if (parsedResponse.success) {
-          console.log("DELIVERY BOYS", parsedResponse.data)
-          let list = parsedResponse.data.map((item: any) => {
-            let { uid, ...details } = item
-            console.log("DELIVERY BOY", item)
-            return { id: uid, ...details }
-          })
-          setTableData(list)
-          setInitializing(false)
-        } else {
-          setInitializing(false)
-          setTableData([])
-        }
-      }
-    } catch (error) {
-      throw error
-    }
-  }
+  const { user } = useRouter().query
+  // const getList = async () => {
+  //   try {
+  //     let res = await getListOfDeliveryBoys()
+  //     if (res) {
+  //       let parsedResponse = JSON.parse(res.data)
+  //       if (parsedResponse.success) {
+  //         console.log("DELIVERY BOYS", parsedResponse.data)
+  //         let list = parsedResponse.data.map((item: any) => {
+  //           let { uid, ...details } = item
+  //           console.log("DELIVERY BOY", item)
+  //           return { id: uid, ...details }
+  //         })
+  //         setTableData(list)
+  //         setInitializing(false)
+  //       } else {
+  //         setInitializing(false)
+  //         setTableData([])
+  //       }
+  //     }
+  //   } catch (error) {
+  //     throw error
+  //   }
+  // }
   // let tableData = [
   //   {
   //     F1: "I1 asknjnasdsadas",
@@ -85,7 +92,7 @@ export default function DeliveryBoyDB({ session }: any) {
   //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
   //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
   // ]
-  let tableFileds = ["displayName", "phoneNumber"]
+  let tableFileds = ["paymentMethod", "amount", "gst", "deliveryCharge"]
 
   let HeaderActions = [
     {
@@ -104,35 +111,53 @@ export default function DeliveryBoyDB({ session }: any) {
       Icon: <Feather.Eye size={24} />,
       // action: (data: any) => {},
       isLink: true,
-      to: "/DB/deliveryBoys/orders",
-    },
-    {
-      Icon: <Feather.Trash2 size={24} />,
-      action: async (data: any) => {
-        try {
-          await deleteDeliveryBoy({ uid: data.id })
-          setTableData((prev) => {
-            let index = prev.findIndex((item) => item.id == data.id)
-            if (index != -1) {
-              if (index == 0) {
-                return [...prev.slice(1)]
-              }
-              return [...prev.slice(0, index), ...prev.slice(index + 1)]
-            }
-            return prev
-          })
-          alert("deleted successfully")
-        } catch (error) {
-          console.error(error)
-        }
-      },
+      to: "/DB/deliveryBoys/update",
     },
   ]
+  const fetchRejectedList = async () => {
+    setInitializing(true)
+    try {
+      let rejectd: Array<any> = []
+      let rejectedRes = await DeliveryBoysCollection.doc(user?.toString())
+        .collection("rejected")
+        .get()
+      if (rejectedRes && !rejectedRes.empty) {
+        rejectd = rejectedRes.docs.map((item) => ({
+          ...item.data(),
+        }))
+      }
+      setTableData(rejectd)
+      setInitializing(false)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  const fetchOngoingList = async () => {
+    setInitializing(true)
+    try {
+      let ongoing: Array<any> = []
+      let ongoingRes = await DeliveryBoysCollection.doc(user?.toString())
+        .collection("ongoing")
+        .get()
+      if (ongoingRes && !ongoingRes.empty) {
+        ongoing = ongoingRes.docs.map((item) => ({
+          ...item.data(),
+        }))
+      }
+      setTableData(ongoing)
+      setInitializing(false)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  // React.useEffect(() => {
+  //   getList().catch((error) => {
+  //     throw error
+  //   })
+  //   return
+  // }, [])
   React.useEffect(() => {
-    getList().catch((error) => {
-      throw error
-    })
-    return
+    fetchRejectedList().catch((error) => console.error(error))
   }, [])
   if (initializing)
     return (
@@ -142,14 +167,32 @@ export default function DeliveryBoyDB({ session }: any) {
     )
   if (session)
     return (
-      <div className=" flex-1 flex">
+      <div className="flex-1 flex">
         <Wrapper>
+          <div className="flex w-full">
+            <button
+              className="flex-1 flex items-center justify-center py-2"
+              onClick={() => {
+                fetchOngoingList().catch((error) => console.error(error))
+              }}
+            >
+              <span>Ongoing</span>
+            </button>
+            <button
+              className="flex-1 flex items-center justify-center py-2"
+              onClick={() => {
+                fetchRejectedList().catch((error) => console.error(error))
+              }}
+            >
+              <span>Rejectd</span>
+            </button>
+          </div>
           <ContentTable
             tableData={tableData}
             tableFileds={tableFileds}
-            actions={actions}
+            // actions={actions}
             headerActions={HeaderActions}
-            tableTitle="Delivery Boys"
+            tableTitle="Delivery Boy"
           />
         </Wrapper>
       </div>
