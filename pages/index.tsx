@@ -7,11 +7,11 @@ import { Layout } from "../components/layout/secondary"
 export default function Home() {
   const Auth = useAuth()
   return (
-    <Layout title="Food Adda">
+    <Layout title="Food Dhaba">
       <div className="bg-white flex-1 flex justify-center items-center box-border h-screen w-screen">
         <div className="flex flex-col items-center max-w-5xl">
           <h1 className=" sm:text-2xl md:text-3xl font-bold text-green-600">
-            Wellcome to Food Adda
+            Wellcome to Food Dhaba
           </h1>
           <div className="flex flex-row items-center justify-between mt-5">
             {Auth?.user ? (

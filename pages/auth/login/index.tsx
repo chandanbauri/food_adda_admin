@@ -20,7 +20,7 @@ export default function Login() {
       <div className="h-screen w-screen flex items-center justify-center">
         <div className="flex flex-col items-center">
           <h1 className="text-green-500 xs:text-xl sm:text-2xl md:text-3xl mb-5">
-            Food Adda
+            Food Dhaba
           </h1>
           <div className="mt-2">
             <TextInput

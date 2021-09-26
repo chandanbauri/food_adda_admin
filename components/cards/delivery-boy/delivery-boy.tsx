@@ -27,7 +27,7 @@ export default function DeliveryBoyCard({ keys, info, action, index }: props) {
       </td>
       {keys.map((key, index) => (
         <td key={index} className="px-4 py-2">
-          <div className="flex items-center justify-center">{info[key]}</div>
+          <div className="flex items-center justify-center">{`${info[key]}`}</div>
         </td>
       ))}
     </tr>

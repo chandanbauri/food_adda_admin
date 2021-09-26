@@ -111,7 +111,13 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                           key={`${index}item`}
                           className={`px-4 py-4 text-center`}
                         >
-                          {data[item]}
+                          {`${
+                            item == "state"
+                              ? data[item]
+                                ? "Online"
+                                : "Off  line"
+                              : data[item]
+                          }`}
                         </td>
                       ))}
                     </tr>

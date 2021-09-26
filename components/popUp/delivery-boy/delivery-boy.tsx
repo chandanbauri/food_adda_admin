@@ -10,7 +10,8 @@ type TableProps = {
   onAssigning: (value: boolean) => void
 }
 
-const keys = ["displayName", "phoneNumber"]
+const keys = ["displayName", "phoneNumber", "state"]
+const Fields = ["Name", "Phone", "Online"]
 export default function DeliveryBoyTable({ order, onAssigning }: TableProps) {
   const [deliveryBoys, setDeliveryBoys] = React.useState<Array<any>>([])
   const [AssignedDeliveryBoys, setADB] = React.useState<Array<any>>([])
@@ -25,6 +26,7 @@ export default function DeliveryBoyTable({ order, onAssigning }: TableProps) {
         let parsedResponse = JSON.parse(res.data)
         if (parsedResponse.success) {
           let list: Array<any> = parsedResponse.data.map((boy: any) => {
+            console.log("BOYS", boy)
             let index = boy.requests.findIndex(
               (item: any) => item.orderId == order.id
             )
@@ -103,7 +105,7 @@ export default function DeliveryBoyTable({ order, onAssigning }: TableProps) {
                 <th>
                   <span className="text-white capitalize">actions</span>
                 </th>
-                {keys.map((key, index) => (
+                {Fields.map((key, index) => (
                   <th key={index} className="px-4 py-4 capitalize">
                     <span className="text-white">{key}</span>
                   </th>

@@ -34,7 +34,7 @@ function Drawer() {
 
   const DrawerHeader = () => (
     <div className="h-14 shadow-md bg-white fixed top-0 left-0 right-0 flex items-center justify-between px-4 box-border z-50">
-      <h1 className="text-2xl font-medium text-green-600">Food Adda</h1>
+      <h1 className="text-2xl font-medium text-green-600">Food Dhaba</h1>
 
       <button
         className="flex md:hidden"

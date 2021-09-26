@@ -159,7 +159,10 @@ export default function EditRestaurant({ session }: any) {
         initialState.closing = data?.closing
         initialState.opening = data?.opening
         initialState.preparationDuration = data?.preparationDuration
-        if (data?.image) setPreviewImage(data.image)
+        if (data?.image) {
+          setPreviewImage(data.image)
+          imageURL.current = data.image
+        }
         if (data?.tags.length) setTags(data?.tags)
         console.log(`RESTAURANT ${restaurant} DETAILS`, res.data())
       }
@@ -313,6 +316,7 @@ export default function EditRestaurant({ session }: any) {
                 try {
                   await uploadToFirebase()
                   if (imageURL.current !== "") {
+                    console.log()
                     await RestaurantCollection.doc(
                       restaurant?.toString()
                     ).update({
