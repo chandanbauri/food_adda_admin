@@ -18,10 +18,10 @@ export default function DeliveryBoyDB({ session }: any) {
       if (res) {
         let parsedResponse = JSON.parse(res.data)
         if (parsedResponse.success) {
-          console.log("DELIVERY BOYS", parsedResponse.data)
+          //console.log("DELIVERY BOYS", parsedResponse.data)
           let list = parsedResponse.data.map((item: any) => {
             let { uid, ...details } = item
-            console.log("DELIVERY BOY", item)
+            //console.log("DELIVERY BOY", item)
             return { id: uid, ...details }
           })
           setTableData(list)
@@ -85,7 +85,7 @@ export default function DeliveryBoyDB({ session }: any) {
   //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
   //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
   // ]
-  let tableFileds = ["displayName", "phoneNumber", "state"]
+  let tableFileds = ["displayName", "phoneNumber", "state", "dl", "aadhar"]
 
   let HeaderActions = [
     {

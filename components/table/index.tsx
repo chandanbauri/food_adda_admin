@@ -107,17 +107,21 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                         </td>
                       )}
                       {tableFileds.map((item: string, index: number) => (
-                        <td
-                          key={`${index}item`}
-                          className={`px-4 py-4 text-center`}
-                        >
-                          {`${
-                            item == "state"
-                              ? data[item]
-                                ? "Online"
-                                : "Off  line"
-                              : data[item]
-                          }`}
+                        <td key={`${index}item`}>
+                          <span
+                            className={`px-4 py-4 text-center whitespace-nowrap ${
+                              item == "state" &&
+                              (data[item] ? "" : "text-red-500")
+                            }`}
+                          >
+                            {`${
+                              item == "state"
+                                ? data[item]
+                                  ? "Online"
+                                  : "Off-line"
+                                : data[item] ?? "Not Available"
+                            }`}
+                          </span>
                         </td>
                       ))}
                     </tr>

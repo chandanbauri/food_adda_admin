@@ -4,7 +4,7 @@ import * as Feather from "react-feather"
 type props = {
   keys: Array<string>
   info: any
-  action: (data: any) => void
+  action: (info: any) => void
   index: number
 }
 
@@ -27,7 +27,17 @@ export default function DeliveryBoyCard({ keys, info, action, index }: props) {
       </td>
       {keys.map((key, index) => (
         <td key={index} className="px-4 py-2">
-          <div className="flex items-center justify-center">{`${info[key]}`}</div>
+          <div
+            className={`flex items-center justify-center ${
+              key == "state" && (info[key] ? "" : "text-red-500")
+            }`}
+          >{`${
+            key == "state"
+              ? info[key]
+                ? "Online"
+                : "Off-line"
+              : info[key] ?? "Not Available"
+          }`}</div>
         </td>
       ))}
     </tr>

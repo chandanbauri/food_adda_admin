@@ -39,7 +39,7 @@ export default function AddNewDeliveryBoy({ session }: any) {
       let res = await deliveryPartnersCollection.doc(user?.toString()).get()
       if (res && res.exists && res.data()) {
         let data = res.data()
-        console.log("USER DETAILS", data)
+        //console.log("USER DETAILS", data)
         initialState.email = data?.email
         initialState.emailVerified = data?.emailVerified
         initialState.phoneNumber = data?.phoneNumber
@@ -47,6 +47,8 @@ export default function AddNewDeliveryBoy({ session }: any) {
         initialState.displayName = data?.displayName
         initialState.photoURL = data?.photoURL
         initialState.disabled = data?.disabled
+        initialState.dl = data?.dl
+        initialState.aadhar = data?.aadhar
       }
       setInitializing(false)
     } catch (error) {
@@ -152,12 +154,13 @@ export default function AddNewDeliveryBoy({ session }: any) {
             <button
               onClick={async () => {
                 try {
+                  setInitializing(true)
                   let res = await updateDeliveryPartner({
                     uid: user,
                     details: {
                       email: app.email,
                       emailVerified: false,
-                      phoneNumber: `+91${app.phoneNumber}`,
+                      phoneNumber: `${app.phoneNumber}`,
                       password: app.password,
                       displayName: app.displayName,
                       // photoURL: app.photoURL,
@@ -174,6 +177,8 @@ export default function AddNewDeliveryBoy({ session }: any) {
                     setTrigger(true)
                     setError(true)
                   }
+                  await FetchDeltails()
+                  setInitializing(false)
                 } catch (error) {
                   throw error
                 }

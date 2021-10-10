@@ -140,7 +140,7 @@ export default function EditRestaurant({ session }: any) {
   //         irid: item.id,
   //       }))
   //     }
-  //     console.log(`RESTAURANT ${restaurant} FOOD`, FoodList)
+  //     //console.log(`RESTAURANT ${restaurant} FOOD`, FoodList)
   //     setRestaurantFoodList(FoodList)
   //   } catch (error) {
   //     console.error(error)
@@ -160,7 +160,7 @@ export default function EditRestaurant({ session }: any) {
   //       initialState.preparationDuration = data?.preparationDuration
   //       if (data?.image) setPreviewImage(data.image)
   //       if (data?.tags.length) setTags(data?.tags)
-  //       console.log(`RESTAURANT ${restaurant} DETAILS`, res.data())
+  //       //console.log(`RESTAURANT ${restaurant} DETAILS`, res.data())
   //     }
   //     setInitializing(false)
   //   } catch (error) {
@@ -178,7 +178,7 @@ export default function EditRestaurant({ session }: any) {
   // ]
 
   // React.useEffect(() => {
-  //   getRestaurantDetails().catch((error) => console.log(error))
+  //   getRestaurantDetails().catch((error) => //console.log(error))
   // }, [])
   // React.useEffect(() => {
   //   getFood().catch((error) => {
@@ -307,7 +307,7 @@ export default function EditRestaurant({ session }: any) {
           <div className="flex flex-grow items-center justify-center my-5">
             <button
               onClick={async () => {
-                // console.log("BASKET", basket)
+                // //console.log("BASKET", basket)
                 //app)
                 try {
                   await uploadToFirebase()

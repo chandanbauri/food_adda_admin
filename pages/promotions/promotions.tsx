@@ -15,7 +15,7 @@ export default function Promotions() {
       if (res && res.items) {
         let images = await Promise.all(
           res.items.map(async (item, index) => {
-            // console.log(`BANNER ${index}`, item.fullPath)
+            // //console.log(`BANNER ${index}`, item.fullPath)
             return { url: await item.getDownloadURL(), path: item.fullPath }
           })
         )

@@ -141,7 +141,7 @@ export default function EditRestaurant({ session }: any) {
   //         irid: item.id,
   //       }))
   //     }
-  //     console.log(`RESTAURANT ${restaurant} FOOD`, FoodList)
+  //     //console.log(`RESTAURANT ${restaurant} FOOD`, FoodList)
   //     setRestaurantFoodList(FoodList)
   //   } catch (error) {
   //     console.error(error)
@@ -164,7 +164,7 @@ export default function EditRestaurant({ session }: any) {
           imageURL.current = data.image
         }
         if (data?.tags.length) setTags(data?.tags)
-        console.log(`RESTAURANT ${restaurant} DETAILS`, res.data())
+        //console.log(`RESTAURANT ${restaurant} DETAILS`, res.data())
       }
       setInitializing(false)
     } catch (error) {
@@ -316,7 +316,7 @@ export default function EditRestaurant({ session }: any) {
                 try {
                   await uploadToFirebase()
                   if (imageURL.current !== "") {
-                    console.log()
+                    //console.log()
                     await RestaurantCollection.doc(
                       restaurant?.toString()
                     ).update({

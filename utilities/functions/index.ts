@@ -18,3 +18,4 @@ export const updateDeliveryPartner = functions.httpsCallable(
   "updateDeliveryPartner"
 )
 export const deleteDeliveryBoy = functions.httpsCallable("deleteDeliveryBoy")
+export const rejectOrder = functions.httpsCallable("rejectOrder")

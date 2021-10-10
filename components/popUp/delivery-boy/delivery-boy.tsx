@@ -26,7 +26,7 @@ export default function DeliveryBoyTable({ order, onAssigning }: TableProps) {
         let parsedResponse = JSON.parse(res.data)
         if (parsedResponse.success) {
           let list: Array<any> = parsedResponse.data.map((boy: any) => {
-            console.log("BOYS", boy)
+            //console.log("BOYS", boy)
             let index = boy.requests.findIndex(
               (item: any) => item.orderId == order.id
             )
@@ -133,12 +133,12 @@ export default function DeliveryBoyTable({ order, onAssigning }: TableProps) {
         <button
           className="px-4 py-2 bg-green-500 rounded shadow-xl w-full"
           onClick={async () => {
-            console.log("ORDER INFO", order)
-            console.log("ASSIGNED LIST", AssignedDeliveryBoys)
+            //console.log("ORDER INFO", order)
+            //console.log("ASSIGNED LIST", AssignedDeliveryBoys)
             try {
-              console.log("ASSGINING ....")
+              //console.log("ASSGINING ....")
               await assignEveryOneAtOnce()
-              console.log("ASSGINMENT COMPLETE")
+              //console.log("ASSGINMENT COMPLETE")
             } catch (error) {
               console.error(error)
             }

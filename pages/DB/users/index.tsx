@@ -59,7 +59,16 @@ export default function UserDB({ session }: any) {
   //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
   //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
   // ]
-  let tableFileds = ["displayName", "email", "phoneNumber"]
+  let tableFileds = [
+    "uid",
+    "displayName",
+    "email",
+    "phoneNumber",
+    "createdAt",
+    "home address",
+    "office address",
+    "others address",
+  ]
   // let actions = [
   //   {
   //     Icon: <Feather.Edit size={24} />,
@@ -76,7 +85,20 @@ export default function UserDB({ session }: any) {
       if (res) {
         setInitializing(false)
         let parsedData = JSON.parse(res.data)
-        setTableData(parsedData.data)
+        let tdata = parsedData.data.map((user: any) => {
+          let { addresses, ...rest } = user
+          let newAddresses: any = {}
+          addresses.forEach((address: any) => {
+            let { tag, home, area, landmark, city, state, pincode } = address
+            newAddresses[
+              `${tag} address`
+            ] = `${home}, ${area}, ${landmark}, ${city}, ${state},${pincode}`
+          })
+
+          return { ...rest, ...newAddresses }
+        })
+
+        setTableData(tdata)
       } else {
         setTableData([])
         setInitializing(false)

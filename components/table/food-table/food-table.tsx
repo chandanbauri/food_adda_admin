@@ -1,12 +1,8 @@
 import * as React from "react"
-import {
-  askForAcceptingOrder,
-  getListOfDeliveryBoys,
-} from "../../../utilities/functions"
-import DeliveryBoyCard from "../../cards/delivery-boy/delivery-boy"
 import FoodCard from "../../cards/food/food-card"
 import PopUpContainer from "../../popUp/container"
 import firebase from "firebase"
+import PopUpFoodCard from "../../cards/food/pop-up-food-card"
 
 type TableProps = {
   restaurant?: any
@@ -22,7 +18,8 @@ export default function FoodTable({
 }: TableProps) {
   const [Foods, setFoods] = React.useState<Array<any>>([])
   const [deleteFoodList, setDFL] = React.useState<Array<any>>([])
-  const [addList, setAddList] = React.useState<Array<any>>([])
+  // const [addList, setAddList] = React.useState<Array<any>>([])
+  let addList = React.useRef<Array<any>>([])
   const [trigger, setTrigger] = React.useState<boolean>(false)
   const [initializing, setInitializing] = React.useState<boolean>(false)
   const RestaurantCollection = firebase.firestore().collection("restaurants")
@@ -42,7 +39,7 @@ export default function FoodTable({
             irid: item.id,
           }))
         }
-        console.log(`RESTAURANT ${restaurant} FOOD`, FoodList)
+        //console.log(`RESTAURANT ${restaurant} FOOD`, FoodList)
         setFoods(FoodList)
       } catch (error) {
         console.error(error)
@@ -74,8 +71,8 @@ export default function FoodTable({
             if (index == list.length - 1) setInitializing(false)
           })
         )
-        console.log("RESTAURANT FOOD LENGTH", Foods.length)
-        console.log("TOTAL SIZE", FoodList.length)
+        //console.log("RESTAURANT FOOD LENGTH", Foods.length)
+        //console.log("TOTAL SIZE", FoodList.length)
         //FoodList)
         if (Foods.length) {
           finalList = FoodList.map((item) => {
@@ -162,18 +159,32 @@ export default function FoodTable({
       }
     })
   }
-  const addToList = (info: any) => {
-    setAddList((prev) => {
-      let index = prev.findIndex((item) => item.id == info.id)
-      if (index == -1) {
-        return [...prev, info]
-      } else {
-        if (index == 0) {
-          return [...prev.slice(1)]
-        }
-        return [...prev.slice(0, index), ...prev.slice(index + 1)]
+  const add = (index: number, list: Array<any>, info: any) => {
+    if (index == -1) {
+      return [...list, info]
+    } else {
+      if (index == 0) {
+        return [...list.slice(1)]
       }
-    })
+      return [...list.slice(0, index), ...list.slice(index + 1)]
+    }
+  }
+  const addToList = (info: any) => {
+    // setAddList((prev) => {
+    //   let index = prev.findIndex((item) => item.id == info.id)
+    //   if (index == -1) {
+    //     return [...prev, info]
+    //   } else {
+    //     if (index == 0) {
+    //       return [...prev.slice(1)]
+    //     }
+    //     return [...prev.slice(0, index), ...prev.slice(index + 1)]
+    //   }
+    // })
+    let list = addList.current
+
+    let index = list.findIndex((item) => item.id == info.id)
+    addList.current = add(index, list, info)
   }
 
   //   React.useEffect(() => {
@@ -197,16 +208,15 @@ export default function FoodTable({
                 ))}
               </tr>
             </thead>
-
             <tbody>
               {foodList.length
                 ? foodList.map((info, index) => (
-                    <FoodCard
+                    <PopUpFoodCard
                       key={index}
                       index={index}
                       keys={keys}
                       info={info}
-                      action={addToList}
+                      action={(data) => addToList(data)}
                     />
                   ))
                 : null}
@@ -219,23 +229,23 @@ export default function FoodTable({
           <button
             className="w-full py-2 bg-green-500 rounded shadow-xl"
             onClick={async () => {
-              console.log("NEW IITEMs", addList)
+              //console.log("NEW IITEMs", addList)
               if (isEditMode && restaurant) {
                 try {
-                  if (addList.length) {
+                  if (addList.current.length) {
                     await Promise.all(
-                      addList.map(async (item, index) => {
+                      addList.current.map(async (item, index) => {
                         await RestaurantCollection.doc(restaurant)
                           .collection("foods")
                           .add(item)
-                        if (index === addList.length - 1) {
+                        if (index === addList.current.length - 1) {
                           // setTrigger(true)
                           // setError(false)
                           alert("Food items added !!")
                         }
                       })
                     )
-                    setFoods((prev) => [...prev, ...addList])
+                    setFoods((prev) => [...prev, ...addList.current])
                   } else {
                     alert("Please select a food item first!!")
                   }
@@ -245,8 +255,8 @@ export default function FoodTable({
               } else {
                 // new mode
                 setFoods((prev) => {
-                  if (setBasket) setBasket([...prev, ...addList])
-                  return [...prev, ...addList]
+                  if (setBasket) setBasket([...prev, ...addList.current])
+                  return [...prev, ...addList.current]
                 })
               }
             }}
@@ -264,7 +274,7 @@ export default function FoodTable({
     getFood().catch((error) => console.log(error))
   }, [])
   //   React.useEffect(() => {
-  //     getFood().catch((error) => console.log(error))
+  //     getFood().catch((error) => //console.log(error))
   //   }, ])
   if (initializing)
     return (
@@ -314,7 +324,8 @@ export default function FoodTable({
           trigger={trigger}
           content={<PopUpContent />}
           onClose={() => {
-            setAddList([])
+            // setAddList([])
+            addList.current = []
             setTrigger(false)
           }}
         />
@@ -338,7 +349,7 @@ export default function FoodTable({
         <button
           className="px-4 py-2 bg-red-500 rounded shadow-xl w-full"
           onClick={async () => {
-            // console.log("DELETE LIST", deleteFoodList)
+            // //console.log("DELETE LIST", deleteFoodList)
             if (isEditMode && restaurant) {
               try {
                 if (deleteFoodList.length) {

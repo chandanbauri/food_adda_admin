@@ -120,14 +120,36 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                             </div>
                           </td>
                         ) : null}
-                        {tableFileds.map((item: string, index: number) => (
-                          <td
-                            key={`${index}item`}
-                            className={`px-4 py-4 text-center`}
-                          >
-                            {newData[item]}
-                          </td>
-                        ))}
+                        {tableFileds.map((item: string, index: number) => {
+                          if (typeof newData[item] == "boolean")
+                            return (
+                              <td
+                                key={`${index}item`}
+                                className={`px-4 py-4 text-center whitespace-nowrap`}
+                              >
+                                <span>
+                                  {newData[item] ? "Done" : "Not Done Yet"}
+                                </span>
+                              </td>
+                            )
+                          if (typeof newData[item] == "undefined")
+                            return (
+                              <td
+                                key={`${index}item`}
+                                className={`px-4 py-4 text-center whitespace-nowrap`}
+                              >
+                                <span>Not Available</span>
+                              </td>
+                            )
+                          return (
+                            <td
+                              key={`${index}item`}
+                              className={`px-4 py-4 text-center whitespace-nowrap`}
+                            >
+                              {newData[item]}
+                            </td>
+                          )
+                        })}
                       </tr>
                     )
                   })}

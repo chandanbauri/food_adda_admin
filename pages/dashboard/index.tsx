@@ -15,6 +15,7 @@ export default function Dashboard({ session }: any) {
   const Resource = useResource()
   const updateFeature = async (field: string, value: string) => {
     try {
+      setInitializing(true)
       let res = await CompanyFeatureValues.doc("production").get()
       if (!res.exists) {
         await CompanyFeatureValues.doc("production").set({
@@ -25,6 +26,7 @@ export default function Dashboard({ session }: any) {
       await CompanyFeatureValues.doc("production").update({
         [field]: value,
       })
+      setInitializing(false)
     } catch (error) {
       throw error
     }
@@ -171,25 +173,25 @@ export default function Dashboard({ session }: any) {
               <OrderCard
                 title="On Going"
                 qty={Resource?.Orders.onGoing.length}
-                desc="Pending orders Card"
+                desc="On going orders Card"
                 to="/DB/Orders/ongoing"
               />
               <OrderCard
                 title="Rejected"
                 qty={Resource?.Orders.rejected.length}
-                desc="Pending orders Card"
+                desc="Rejected orders Card"
                 to="/DB/Orders/rejected"
               />
               <OrderCard
                 title="Canceled"
                 qty={Resource?.Orders.canceled.length}
-                desc="Pending orders Card"
+                desc="Canceled orders Card"
                 to="/DB/Orders/canceled"
               />
               <OrderCard
                 title="Delivered"
                 qty={Resource?.Orders.delivered.length}
-                desc="Pending orders Card"
+                desc="Delivered orders Card"
                 to="/DB/Orders/delivered"
               />
             </div>
@@ -244,6 +246,37 @@ export default function Dashboard({ session }: any) {
               </div>
               <button
                 onClick={() => updateFeature("gst", features.gst)}
+                className="px-10 py-1 bg-blue-500 rounded-lg text-white capitalize mt-5 shadow-xl"
+              >
+                save
+              </button>
+            </div>
+            <div className="my-5">
+              <div className="flex flex-col">
+                <label className=" text-lg text-green-500">
+                  Minimum Order Cost (₹)
+                </label>
+                <input
+                  className="border-green-500 border-2 md:h-12 h-10 mt-2 w-52 rounded-lg pl-10 pr-2 focus:border-blue-500 outline-none"
+                  placeholder="Minimum Order Cost"
+                  type="number"
+                  min={0}
+                  value={features ? features.minimum_order_price : 0}
+                  onChange={(e) => {
+                    setFeatures((prev: any) => ({
+                      ...prev,
+                      minimum_order_price: e.target.value,
+                    }))
+                  }}
+                />
+              </div>
+              <button
+                onClick={() =>
+                  updateFeature(
+                    "minimum_order_price",
+                    features.minimum_order_price
+                  )
+                }
                 className="px-10 py-1 bg-blue-500 rounded-lg text-white capitalize mt-5 shadow-xl"
               >
                 save

@@ -15,6 +15,7 @@ import {
   askForAcceptingOrder,
   assignOrder,
   getListOfDeliveryBoys,
+  rejectOrder,
 } from "../../../utilities/functions"
 import DeliveryBoyTable from "../../../components/popUp/delivery-boy"
 export default function Orders({ session }: any) {
@@ -28,6 +29,9 @@ export default function Orders({ session }: any) {
   const [Error, setError] = React.useState<boolean>(false)
   const [DeliveryBoys, setDeliveryBoys] = React.useState<Array<any>>([])
   const [popUpData, setPopUpData] = React.useState<Array<any>>([])
+  const [initializing, setInitializing] = React.useState<boolean>(false)
+  const [isDeleting, setIsDeleting] = React.useState<boolean>(false)
+  const [data, setData] = React.useState<any>({})
   const getList = async () => {
     try {
       let res = await getListOfDeliveryBoys()
@@ -150,6 +154,11 @@ export default function Orders({ session }: any) {
       case "pending":
         actions = [
           {
+            Icon: <Feather.Eye size={24} />,
+            isLink: true,
+            to: "/DB/Orders/inspect",
+          },
+          {
             Icon: <Feather.CheckSquare size={24} />,
             action: (data: any) => {
               focusedItem.current = data
@@ -160,43 +169,42 @@ export default function Orders({ session }: any) {
           {
             Icon: <Feather.Trash2 size={24} />,
             action: async (data: any) => {
-              try {
-                await OrdersCollection.doc(data.id).update({
-                  isPending: false,
-                  isCanceled: false,
-                  isOnGoing: false,
-                  isDelivered: false,
-                  isRejected: true,
-                })
-                if (Resource?.Orders.pending) {
-                  let index = Resource?.Orders?.pending?.findIndex(
-                    (item, index) => item.id == data.id
-                  )
-                  if (index !== undefined) {
-                    Resource?.setOrders((prev) => ({
-                      ...prev,
-                      rejected: [...prev.rejected, prev.pending[index]],
-                    }))
-                    if (index == 0) {
-                      Resource?.setOrders((prev) => ({
-                        ...prev,
-                        pending: [...prev.pending.slice(1)],
-                      }))
-                    } else if (index == 1) {
-                      Resource?.setOrders((prev) => ({
-                        ...prev,
-                        pending: [
-                          ...prev.pending.slice(0, index),
-                          ...prev.pending.slice(index + 1),
-                        ],
-                      }))
-                    }
-                  }
-                }
-                setSuccess((prev) => false)
-              } catch (error) {
-                setError((prev) => false)
-              }
+              setPopUp(true)
+              setIsDeleting(true)
+              setData(data)
+              // try {
+              //   setInitializing(true)
+              //   await rejectOrder({ order: data })
+              //   if (Resource?.Orders.pending) {
+              //     let index = Resource?.Orders?.pending?.findIndex(
+              //       (item, index) => item.id == data.id
+              //     )
+              //     if (index !== undefined) {
+              //       Resource?.setOrders((prev) => ({
+              //         ...prev,
+              //         rejected: [...prev.rejected, prev.pending[index]],
+              //       }))
+              //       if (index == 0) {
+              //         Resource?.setOrders((prev) => ({
+              //           ...prev,
+              //           pending: [...prev.pending.slice(1)],
+              //         }))
+              //       } else if (index == 1) {
+              //         Resource?.setOrders((prev) => ({
+              //           ...prev,
+              //           pending: [
+              //             ...prev.pending.slice(0, index),
+              //             ...prev.pending.slice(index + 1),
+              //           ],
+              //         }))
+              //       }
+              //     }
+              //   }
+              //   setSuccess((prev) => false)
+              //   setInitializing(false)
+              // } catch (error) {
+              //   setError((prev) => false)
+              // }
             },
           },
         ]
@@ -255,7 +263,14 @@ export default function Orders({ session }: any) {
     })
     return
   }, [])
-
+  if (initializing)
+    return (
+      <Layout title="Not Authenticated">
+        <div className="h-screen w-screen flex items-center justify-center">
+          <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
+        </div>
+      </Layout>
+    )
   if (session)
     return (
       <div className=" flex-1 flex">
@@ -265,8 +280,63 @@ export default function Orders({ session }: any) {
           </div> */}
           <PopUpContainer
             trigger={popUp}
-            content={<PopUpConent />}
+            content={
+              isDeleting ? (
+                <div className="flex flex-col mb-5 text-center">
+                  <h4 className="text-xl font-sans font-bold">
+                    Are you sure ?
+                  </h4>
+                  <button
+                    className="w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl"
+                    onClick={async () => {
+                      // deleteTournament().catch((error) => console.error(error))
+                      try {
+                        setInitializing(true)
+                        await rejectOrder({ order: data })
+                        if (Resource?.Orders.pending) {
+                          let index = Resource?.Orders?.pending?.findIndex(
+                            (item, index) => item.id == data.id
+                          )
+                          if (index !== undefined) {
+                            Resource?.setOrders((prev) => ({
+                              ...prev,
+                              rejected: [...prev.rejected, prev.pending[index]],
+                            }))
+                            if (index == 0) {
+                              Resource?.setOrders((prev) => ({
+                                ...prev,
+                                pending: [...prev.pending.slice(1)],
+                              }))
+                            } else if (index == 1) {
+                              Resource?.setOrders((prev) => ({
+                                ...prev,
+                                pending: [
+                                  ...prev.pending.slice(0, index),
+                                  ...prev.pending.slice(index + 1),
+                                ],
+                              }))
+                            }
+                          }
+                        }
+                        setSuccess((prev) => false)
+                        setData(null)
+                        setIsDeleting(false)
+                        setInitializing(false)
+                      } catch (error) {
+                        setError((prev) => false)
+                      }
+                    }}
+                  >
+                    <span className="text-white font-bold">Proceed</span>
+                  </button>
+                </div>
+              ) : (
+                <PopUpConent />
+              )
+            }
             onClose={() => {
+              setData(null)
+              setIsDeleting(false)
               setPopUp(false)
             }}
           />
@@ -282,6 +352,10 @@ export default function Orders({ session }: any) {
               "userName",
               "phone",
               "deliveryAddress",
+              "isPickedUp",
+              "isDelivered",
+              "isRejected",
+              "isPending",
             ]}
             actions={getActions(type)}
             tableTitle={`${type} Orders`}
@@ -289,13 +363,6 @@ export default function Orders({ session }: any) {
         </Wrapper>
       </div>
     )
-  return (
-    <Layout title="Not Authenticated">
-      <div className="h-screen w-screen flex items-center justify-center">
-        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
-      </div>
-    </Layout>
-  )
 }
 
 export async function getServerSideProps(context: any) {

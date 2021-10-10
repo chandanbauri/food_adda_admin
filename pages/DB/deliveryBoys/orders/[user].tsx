@@ -25,10 +25,10 @@ export default function ViewOrders({ session }: any) {
   //     if (res) {
   //       let parsedResponse = JSON.parse(res.data)
   //       if (parsedResponse.success) {
-  //         console.log("DELIVERY BOYS", parsedResponse.data)
+  //         //console.log("DELIVERY BOYS", parsedResponse.data)
   //         let list = parsedResponse.data.map((item: any) => {
   //           let { uid, ...details } = item
-  //           console.log("DELIVERY BOY", item)
+  //           //console.log("DELIVERY BOY", item)
   //           return { id: uid, ...details }
   //         })
   //         setTableData(list)
