@@ -8,12 +8,15 @@ import * as Feather from "react-feather"
 import { useResource } from "../../components/context/Resource"
 import ContentTable from "../../components/table"
 import firebase from "firebase"
+import PopUpContainer from "../../components/popUp/container"
 
 export default function FoodMenu({ session }: any) {
   let CategoriesCollection = firebase.firestore().collection("categories")
   const RestaurantCollection = firebase.firestore().collection("restaurants")
   const [initializing, setInitializing] = React.useState<boolean>(true)
   const [tableData, setTableData] = React.useState<any>()
+  const [popUp, setPopUp] = React.useState<boolean>(false)
+  const [data, setData] = React.useState<any>({})
   const getList = async () => {
     try {
       let res = await CategoriesCollection.get()
@@ -58,55 +61,18 @@ export default function FoodMenu({ session }: any) {
       action: () => {},
     },
     {
+      Icon: <Feather.Edit size={18} />,
+      isLink: true,
+      to: "/foodMenu/update",
+      action: () => {},
+    },
+    {
       Icon: <Feather.Trash2 />,
       // isLink: true,
       // to: "/foodMenu/view",
       action: async (data: any) => {
-        try {
-          setInitializing(true)
-          let res = await RestaurantCollection.get()
-          let restaurants: Array<any> = []
-          if (res && !res.empty) {
-            restaurants = res.docs.map((item) => {
-              return { id: item.id }
-            })
-          }
-          await Promise.all(
-            restaurants.map(async (item) => {
-              let list: Array<any> = []
-              let foods = await RestaurantCollection.doc(item.id)
-                .collection("foods")
-                .where("category", "==", `${data.name}`)
-                .get()
-              if (foods && !foods.empty) {
-                list = foods.docs.map((food) => ({ id: food.id }))
-                await Promise.all(
-                  list.map(async (val) => {
-                    await RestaurantCollection.doc(item.id)
-                      .collection("foods")
-                      .doc(val.id)
-                      .delete()
-                  })
-                )
-              }
-            })
-          )
-
-          await CategoriesCollection.doc(data.id).delete()
-          setTableData((prev: any) => {
-            let index = prev.findIndex((item: any) => item.id == data.id)
-            if (index != -1) {
-              if (index == 0) {
-                return [...prev.slice(1)]
-              }
-              return [...prev.slice(0, index), ...prev.slice(index + 1)]
-            }
-            return prev
-          })
-          setInitializing(false)
-        } catch (error) {
-          console.error(error)
-        }
+        setData(data)
+        setPopUp(true)
       },
     },
   ]
@@ -121,6 +87,76 @@ export default function FoodMenu({ session }: any) {
     return (
       <div className="flex-1 flex flex-col">
         <Wrapper>
+          <PopUpContainer
+            trigger={popUp}
+            content={
+              <div className="flex flex-col mb-5 text-center">
+                <h4 className="text-xl font-sans font-bold">Are you sure ?</h4>
+                <button
+                  className="w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl"
+                  onClick={async () => {
+                    // deleteTournament().catch((error) => console.error(error))
+                    try {
+                      setInitializing(true)
+                      let res = await RestaurantCollection.get()
+                      let restaurants: Array<any> = []
+                      if (res && !res.empty) {
+                        restaurants = res.docs.map((item) => {
+                          return { id: item.id }
+                        })
+                      }
+                      await Promise.all(
+                        restaurants.map(async (item) => {
+                          let list: Array<any> = []
+                          let foods = await RestaurantCollection.doc(item.id)
+                            .collection("foods")
+                            .where("category", "==", `${data.name}`)
+                            .get()
+                          if (foods && !foods.empty) {
+                            list = foods.docs.map((food) => ({ id: food.id }))
+                            await Promise.all(
+                              list.map(async (val) => {
+                                await RestaurantCollection.doc(item.id)
+                                  .collection("foods")
+                                  .doc(val.id)
+                                  .delete()
+                              })
+                            )
+                          }
+                        })
+                      )
+
+                      await CategoriesCollection.doc(data.id).delete()
+                      setTableData((prev: any) => {
+                        let index = prev.findIndex(
+                          (item: any) => item.id == data.id
+                        )
+                        if (index != -1) {
+                          if (index == 0) {
+                            return [...prev.slice(1)]
+                          }
+                          return [
+                            ...prev.slice(0, index),
+                            ...prev.slice(index + 1),
+                          ]
+                        }
+                        return prev
+                      })
+                      setInitializing(false)
+                    } catch (error) {
+                      console.error(error)
+                    }
+                  }}
+                >
+                  <span className="text-white font-bold">Proceed</span>
+                </button>
+              </div>
+            }
+            onClose={() => {
+              setData(null)
+              setPopUp(false)
+            }}
+          />
           <ContentTable
             tableData={tableData}
             tableFileds={["name"]}

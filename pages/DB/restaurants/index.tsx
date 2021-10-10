@@ -6,10 +6,13 @@ import { Layout } from "../../../components/layout/secondary"
 import * as Feather from "react-feather"
 import ContentTable from "../../../components/table"
 import firebase from "firebase"
+import PopUpContainer from "../../../components/popUp/container"
 export default function RestaurantsDB({ session }: any) {
   const RestaurantCollection = firebase.firestore().collection("restaurants")
   const [tableData, setTableData] = React.useState<Array<any>>([])
   const [initializing, setInitializing] = React.useState<boolean>(true)
+  const [popUp, setPopUp] = React.useState<boolean>(false)
+  const [data, setData] = React.useState<any>({})
   // let tableData = [
   //   {
   //     F1: "I1 asknjnasdsadas",
@@ -76,22 +79,8 @@ export default function RestaurantsDB({ session }: any) {
     {
       Icon: <Feather.Trash2 size={24} />,
       action: async (data: any) => {
-        try {
-          await RestaurantCollection.doc(data.id).delete()
-          setTableData((prev) => {
-            let index = prev.findIndex((item) => item.id == data.id)
-            if (index != -1) {
-              if (index == 0) {
-                return [...prev.slice(1)]
-              }
-              return [...prev.slice(0, index), ...prev.slice(index + 1)]
-            }
-            return prev
-          })
-          alert("deleted successfully")
-        } catch (error) {
-          console.error(error)
-        }
+        setData(data)
+        setPopUp(true)
       },
     },
   ]
@@ -134,6 +123,45 @@ export default function RestaurantsDB({ session }: any) {
     return (
       <div className=" flex-1 flex">
         <Wrapper>
+          <PopUpContainer
+            trigger={popUp}
+            content={
+              <div className="flex flex-col mb-5 text-center">
+                <h4 className="text-xl font-sans font-bold">Are you sure ?</h4>
+                <button
+                  className="w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl"
+                  onClick={async () => {
+                    // deleteTournament().catch((error) => console.error(error))
+                    try {
+                      await RestaurantCollection.doc(data.id).delete()
+                      setTableData((prev) => {
+                        let index = prev.findIndex((item) => item.id == data.id)
+                        if (index != -1) {
+                          if (index == 0) {
+                            return [...prev.slice(1)]
+                          }
+                          return [
+                            ...prev.slice(0, index),
+                            ...prev.slice(index + 1),
+                          ]
+                        }
+                        return prev
+                      })
+                      alert("deleted successfully")
+                    } catch (error) {
+                      console.error(error)
+                    }
+                  }}
+                >
+                  <span className="text-white font-bold">Proceed</span>
+                </button>
+              </div>
+            }
+            onClose={() => {
+              setData(null)
+              setPopUp(false)
+            }}
+          />
           <ContentTable
             tableData={tableData}
             tableFileds={tableFileds}

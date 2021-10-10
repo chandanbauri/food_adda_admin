@@ -356,6 +356,9 @@ export default function Orders({ session }: any) {
               "isDelivered",
               "isRejected",
               "isPending",
+              "placedAt",
+              "acceptedOn",
+              "deliveredOn",
             ]}
             actions={getActions(type)}
             tableTitle={`${type} Orders`}

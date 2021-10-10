@@ -1,6 +1,7 @@
 import Link from "next/link"
 import * as React from "react"
 import Empty from "../../empty/empty"
+import moment from "moment"
 
 type actionProps = {
   Icon: React.ReactNode
@@ -139,6 +140,21 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                                 className={`px-4 py-4 text-center whitespace-nowrap`}
                               >
                                 <span>Not Available</span>
+                              </td>
+                            )
+                          if (
+                            item == "placedAt" ||
+                            item == "acceptedOn" ||
+                            item == "deliveredOn"
+                          )
+                            return (
+                              <td
+                                key={`${index}item`}
+                                className={`px-4 py-4 text-center whitespace-nowrap`}
+                              >
+                                {moment(newData[item]).format(
+                                  "ddd MM YYYY HH:mm a"
+                                ) ?? "Not Available"}
                               </td>
                             )
                           return (

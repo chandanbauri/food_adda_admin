@@ -9,9 +9,12 @@ import {
   deleteDeliveryBoy,
   getListOfDeliveryBoys,
 } from "../../../utilities/functions"
+import PopUpContainer from "../../../components/popUp/container"
 export default function DeliveryBoyDB({ session }: any) {
   const [tableData, setTableData] = React.useState<Array<any>>([])
   const [initializing, setInitializing] = React.useState<boolean>(true)
+  const [popUp, setPopUp] = React.useState<boolean>(false)
+  const [data, setData] = React.useState<any>({})
   const getList = async () => {
     try {
       let res = await getListOfDeliveryBoys()
@@ -109,22 +112,8 @@ export default function DeliveryBoyDB({ session }: any) {
     {
       Icon: <Feather.Trash2 size={24} />,
       action: async (data: any) => {
-        try {
-          await deleteDeliveryBoy({ uid: data.id })
-          setTableData((prev) => {
-            let index = prev.findIndex((item) => item.id == data.id)
-            if (index != -1) {
-              if (index == 0) {
-                return [...prev.slice(1)]
-              }
-              return [...prev.slice(0, index), ...prev.slice(index + 1)]
-            }
-            return prev
-          })
-          alert("deleted successfully")
-        } catch (error) {
-          console.error(error)
-        }
+        setData(data)
+        setPopUp(true)
       },
     },
   ]
@@ -144,6 +133,45 @@ export default function DeliveryBoyDB({ session }: any) {
     return (
       <div className=" flex-1 flex">
         <Wrapper>
+          <PopUpContainer
+            trigger={popUp}
+            content={
+              <div className="flex flex-col mb-5 text-center">
+                <h4 className="text-xl font-sans font-bold">Are you sure ?</h4>
+                <button
+                  className="w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl"
+                  onClick={async () => {
+                    // deleteTournament().catch((error) => console.error(error))
+                    try {
+                      await deleteDeliveryBoy({ uid: data.id })
+                      setTableData((prev) => {
+                        let index = prev.findIndex((item) => item.id == data.id)
+                        if (index != -1) {
+                          if (index == 0) {
+                            return [...prev.slice(1)]
+                          }
+                          return [
+                            ...prev.slice(0, index),
+                            ...prev.slice(index + 1),
+                          ]
+                        }
+                        return prev
+                      })
+                      alert("deleted successfully")
+                    } catch (error) {
+                      console.error(error)
+                    }
+                  }}
+                >
+                  <span className="text-white font-bold">Proceed</span>
+                </button>
+              </div>
+            }
+            onClose={() => {
+              setData(null)
+              setPopUp(false)
+            }}
+          />
           <ContentTable
             tableData={tableData}
             tableFileds={tableFileds}
