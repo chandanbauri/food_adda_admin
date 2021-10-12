@@ -4,7 +4,7 @@ import { verifyIdToken } from "../../../../utilities/firebase_admin"
 import nookies from "nookies"
 import { Layout } from "../../../../components/layout/secondary"
 import * as Feather from "react-feather"
-import ContentTable from "../../../../components/table"
+import ContentTable from "../../../../components/table/restaurant/restaurant-table"
 import {
   deleteDeliveryBoy,
   getListOfDeliveryBoys,
@@ -92,7 +92,24 @@ export default function ViewOrders({ session }: any) {
   //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
   //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
   // ]
-  let tableFileds = ["paymentMethod", "amount", "gst", "deliveryCharge"]
+  let tableFileds = [
+    "paymentMethod",
+    "amount",
+    "gst",
+    "deliveryCharge",
+    "restaurantAddress",
+    "restaurantName",
+    "userName",
+    "phone",
+    "deliveryAddress",
+    "isPickedUp",
+    "isDelivered",
+    "isRejected",
+    "isPending",
+    "placedAt",
+    "acceptedOn",
+    "deliveredOn",
+  ]
 
   let HeaderActions = [
     {
