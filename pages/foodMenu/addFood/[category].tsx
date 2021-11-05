@@ -4,13 +4,9 @@ import nookies from "nookies"
 import { verifyIdToken } from "../../../utilities/firebase_admin"
 import { Layout } from "../../../components/layout/secondary"
 import { useRouter } from "next/router"
-import ContentTable from "../../../components/table"
-import { useResource } from "../../../components/context/Resource"
-import { GetStaticPaths } from "next"
 import * as Feather from "react-feather"
 import PopUpContainer from "../../../components/popUp/container"
 import firebase from "firebase"
-import Image from "next/image"
 export default function AddNewFood({ session }: any) {
   const router = useRouter()
   const { category, name } = router.query

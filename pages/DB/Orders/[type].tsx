@@ -7,19 +7,15 @@ import { Layout } from "../../../components/layout/secondary"
 import * as Feather from "react-feather"
 import ContentTable from "../../../components/table/restaurant/restaurant-table"
 import PopUpContainer from "../../../components/popUp/container"
-import PopUpTable from "../../../components/popUp/table"
-import { GetStaticPaths } from "next"
 import { useResource } from "../../../components/context/Resource"
-import firebase from "firebase"
 import {
   askForAcceptingOrder,
-  assignOrder,
   getListOfDeliveryBoys,
   rejectOrder,
 } from "../../../utilities/functions"
 import DeliveryBoyTable from "../../../components/popUp/delivery-boy"
 export default function Orders({ session }: any) {
-  const OrdersCollection = firebase.firestore().collection("orders")
+  // const OrdersCollection = firebase.firestore().collection("orders")
   const focusedItem = React.useRef<any>()
   let router = useRouter()
   let { type } = router.query
@@ -50,57 +46,57 @@ export default function Orders({ session }: any) {
     }
   }
 
-  let tableData = [
-    {
-      F1: "I1 asknjnasdsadas",
-      F2: "I2",
-      F3: "I3",
-      F4: "I4",
-      F5: "I5",
-      F6: "Iun",
-    },
-    { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
-    { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
-    { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
-    { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
-    {
-      F1: "I1 asknjnasdsadas",
-      F2: "I2",
-      F3: "I3",
-      F4: "I4",
-      F5: "I5",
-      F6: "Iun",
-    },
-    { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
-    { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
-    { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
-    { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
-    {
-      F1: "I1 asknjnasdsadas",
-      F2: "I2",
-      F3: "I3",
-      F4: "I4",
-      F5: "I5",
-      F6: "Iun",
-    },
-    { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
-    { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
-    { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
-    { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
-    {
-      F1: "I1 asknjnasdsadas",
-      F2: "I2",
-      F3: "I3",
-      F4: "I4",
-      F5: "I5",
-      F6: "Iun",
-    },
-    { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
-    { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
-    { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
-    { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
-  ]
-  let tableFileds = ["F1", "F2", "F3", "F4", "F5", "F6"]
+  // let tableData = [
+  //   {
+  //     F1: "I1 asknjnasdsadas",
+  //     F2: "I2",
+  //     F3: "I3",
+  //     F4: "I4",
+  //     F5: "I5",
+  //     F6: "Iun",
+  //   },
+  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
+  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
+  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
+  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
+  //   {
+  //     F1: "I1 asknjnasdsadas",
+  //     F2: "I2",
+  //     F3: "I3",
+  //     F4: "I4",
+  //     F5: "I5",
+  //     F6: "Iun",
+  //   },
+  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
+  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
+  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
+  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
+  //   {
+  //     F1: "I1 asknjnasdsadas",
+  //     F2: "I2",
+  //     F3: "I3",
+  //     F4: "I4",
+  //     F5: "I5",
+  //     F6: "Iun",
+  //   },
+  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
+  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
+  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
+  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
+  //   {
+  //     F1: "I1 asknjnasdsadas",
+  //     F2: "I2",
+  //     F3: "I3",
+  //     F4: "I4",
+  //     F5: "I5",
+  //     F6: "Iun",
+  //   },
+  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
+  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
+  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
+  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
+  // ]
+  // let tableFileds = ["F1", "F2", "F3", "F4", "F5", "F6"]
   //   let actions = [
   //     {
   //       Icon: <Feather.Edit size={24} />,
@@ -210,16 +206,40 @@ export default function Orders({ session }: any) {
         ]
         break
       case "ongoing":
-        actions = []
+        actions = [
+          {
+            Icon: <Feather.Eye size={24} />,
+            isLink: true,
+            to: "/DB/Orders/inspect",
+          },
+        ]
         break
       case "rejected":
-        actions = []
+        actions = [
+          {
+            Icon: <Feather.Eye size={24} />,
+            isLink: true,
+            to: "/DB/Orders/inspect",
+          },
+        ]
         break
       case "canceled":
-        actions = []
+        actions = [
+          {
+            Icon: <Feather.Eye size={24} />,
+            isLink: true,
+            to: "/DB/Orders/inspect",
+          },
+        ]
         break
       case "delivered":
-        actions = []
+        actions = [
+          {
+            Icon: <Feather.Eye size={24} />,
+            isLink: true,
+            to: "/DB/Orders/inspect",
+          },
+        ]
         break
     }
     return actions

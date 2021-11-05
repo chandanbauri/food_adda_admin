@@ -5,7 +5,7 @@ import { verifyIdToken } from "../../utilities/firebase_admin"
 import { Layout } from "../../components/layout/secondary"
 import nookies from "nookies"
 import firebase from "firebase"
-import { OrderTypes, useResource } from "../../components/context/Resource"
+import { useResource } from "../../components/context/Resource"
 
 export default function Dashboard({ session }: any) {
   const OrdersCollections = firebase.firestore().collection("orders")
@@ -41,26 +41,36 @@ export default function Dashboard({ session }: any) {
         }
       }
     } catch (error) {
-      throw error
+      console.log("ERROR", error)
     }
   }
-  const FetchOrders = async () => {
-    try {
-      let Orders = await OrdersCollections.get()
-      if (Orders) {
-        let list: Array<any> = []
-        Orders.docs.map((item, index) => {
-          list.push({ id: item.id, ...item.data() })
-        })
-        ProcessOrders(list)
-        setInitializing(false)
-      } else {
-        setInitializing(false)
-      }
-    } catch (error) {
-      throw error
-    }
-  }
+  // const FetchOrders = async () => {
+  //   try {
+  //     let Orders = OrdersCollections.onSnapshot((snap) => {
+  //       if (snap.empty) {
+  //         setInitializing(false)
+  //       } else {
+  //         let list: Array<any> = []
+  //         snap.forEach((item) => {
+  //           list.push({ id: item.id, ...item.data() })
+  //         })
+  //         ProcessOrders(list)
+  //       }
+  //     })
+  //     // if (Orders) {
+  //     //   let list: Array<any> = []
+  //     //   Orders.docs.map((item, index) => {
+  //     //     list.push({ id: item.id, ...item.data() })
+  //     //   })
+  //     //   ProcessOrders(list)
+  //     //   setInitializing(false)
+  //     // } else {
+  //     //   setInitializing(false)
+  //     // }
+  //   } catch (error) {
+  //     throw error
+  //   }
+  // }
   const checkOrder = (id: string, array: Array<any> | undefined): boolean => {
     let index = array?.findIndex((item, index) => item.id == id)
     if (index != -1) {
@@ -123,9 +133,20 @@ export default function Dashboard({ session }: any) {
     }
   }
   React.useEffect(() => {
-    FetchOrders().catch((error) => {
-      throw error
+    let Orders = OrdersCollections.onSnapshot((snap) => {
+      if (snap.empty) {
+        setInitializing(false)
+      } else {
+        let list: Array<any> = []
+        snap.forEach((item) => {
+          list.push({ id: item.id, ...item.data() })
+        })
+        ProcessOrders(list)
+      }
     })
+    return () => {
+      Orders()
+    }
   }, [])
   React.useEffect(() => {
     FeatchFeatures().catch((error) => {

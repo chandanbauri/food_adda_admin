@@ -1,7 +1,6 @@
 import Link from "next/link"
 import * as React from "react"
 import { useAuth } from "../components/context/auth"
-import Wrapper from "../components/layout"
 import { Layout } from "../components/layout/secondary"
 
 export default function Home() {

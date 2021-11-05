@@ -153,7 +153,7 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                                 className={`px-4 py-4 text-center whitespace-nowrap`}
                               >
                                 {moment(newData[item]).format(
-                                  "ddd MM YYYY HH:mm a"
+                                  "DD/MM/YYYY HH:mm a"
                                 ) ?? "Not Available"}
                               </td>
                             )

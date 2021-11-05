@@ -2,8 +2,6 @@ import * as React from "react"
 import { FilledButton } from "../../../components/elements/button/filled"
 import { Layout } from "../../../components/layout/secondary"
 import firebase from "firebase/app"
-import { getValueFromLocalStorage } from "../../../utilities/local_storage"
-import { verifyIdToken } from "../../../utilities/firebase_admin"
 
 const TextInput = (
   props: React.DetailedHTMLProps<
