@@ -139,9 +139,75 @@ export default function Dashboard({ session }: any) {
       } else {
         let list: Array<any> = []
         snap.forEach((item) => {
-          list.push({ id: item.id, ...item.data() })
+          if (
+            item.data().isPending &&
+            checkOrder(item.id, Resource?.Orders.pending)
+          ) {
+            Resource?.setOrders((prev) => {
+              // let list = prev.pending
+              // //prev.pending)
+              // list.push(item)
+              return {
+                ...prev,
+                pending: [...prev.pending, { id: item.id, ...item.data() }],
+              }
+            })
+          } else if (
+            item.data().isOnGoing &&
+            checkOrder(item.id, Resource?.Orders.onGoing)
+          ) {
+            Resource?.setOrders((prev) => {
+              // let list = prev.pending
+              // //prev.pending)
+              // list.push(item)
+              return {
+                ...prev,
+                delivered: [...prev.delivered, { id: item.id, ...item.data() }],
+              }
+            })
+          } else if (
+            item.data().isRejected &&
+            checkOrder(item.id, Resource?.Orders.rejected)
+          ) {
+            Resource?.setOrders((prev) => {
+              // let list = prev.pending
+              // //prev.pending)
+              // list.push(item)
+              return {
+                ...prev,
+                rejected: [...prev.rejected, { id: item.id, ...item.data() }],
+              }
+            })
+          } else if (
+            item.data().isCanceled &&
+            checkOrder(item.id, Resource?.Orders.canceled)
+          ) {
+            Resource?.setOrders((prev) => {
+              // let list = prev.pending
+              // //prev.pending)
+              // list.push(item)
+              return {
+                ...prev,
+                canceled: [...prev.canceled, { id: item.id, ...item.data() }],
+              }
+            })
+          } else if (
+            item.data().isDelivered &&
+            checkOrder(item.id, Resource?.Orders.delivered)
+          ) {
+            Resource?.setOrders((prev) => {
+              // let list = prev.pending
+              // //prev.pending)
+              // list.push(item)
+              return {
+                ...prev,
+                delivered: [...prev.delivered, { id: item.id, ...item.data() }],
+              }
+            })
+          }
         })
-        ProcessOrders(list)
+        // ProcessOrders(list)
+        setInitializing(false)
       }
     })
     return () => {
