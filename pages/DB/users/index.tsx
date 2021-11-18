@@ -6,6 +6,7 @@ import { Layout } from "../../../components/layout/secondary"
 import * as Feather from "react-feather"
 import ContentTable from "../../../components/table"
 import { getListUsers } from "../../../utilities/functions"
+import { GetServerSideProps } from "next"
 export default function UserDB({ session }: any) {
   const [tableData, setTableData] = React.useState<Array<any>>([])
   const [initializing, setInitializing] = React.useState<boolean>(true)
@@ -117,33 +118,33 @@ export default function UserDB({ session }: any) {
   }, [])
   if (initializing)
     return (
-      <div className="h-screen w-screen flex items-center justify-center">
-        <h1 className="text-green-500 text-xl">Loading ...</h1>
+      <div className='h-screen w-screen flex items-center justify-center'>
+        <h1 className='text-green-500 text-xl'>Loading ...</h1>
       </div>
     )
   if (session)
     return (
-      <div className=" flex-1 flex">
+      <div className=' flex-1 flex'>
         <Wrapper>
           <ContentTable
             tableData={tableData}
             tableFileds={tableFileds}
             // actions={actions}
-            tableTitle="Users"
+            tableTitle='Users'
           />
         </Wrapper>
       </div>
     )
   return (
-    <Layout title="Not Authenticated">
-      <div className="h-screen w-screen flex items-center justify-center">
-        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
+    <Layout title='Not Authenticated'>
+      <div className='h-screen w-screen flex items-center justify-center'>
+        <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
       </div>
     </Layout>
   )
 }
 
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)

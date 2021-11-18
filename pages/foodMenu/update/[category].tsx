@@ -8,6 +8,7 @@ import * as Feather from "react-feather"
 import PopUpContainer from "../../../components/popUp/container"
 import { useRouter } from "next/router"
 import { updateCategory } from "../../../utilities/functions"
+import { GetServerSideProps } from "next"
 
 export default function UpdateCategory({ session }: any) {
   const { category, name } = useRouter().query
@@ -34,23 +35,23 @@ export default function UpdateCategory({ session }: any) {
     }
   }
   const Success = () => (
-    <div className="h-64 flex flex-col items-center justify-center text-green-500">
+    <div className='h-64 flex flex-col items-center justify-center text-green-500'>
       <div>
         <Feather.CheckCircle size={80} />
       </div>
-      <h1 className="mt-10 font-bold text-xl">Category</h1>
-      <h1 className="font-bold text-xl"> Added Successfully</h1>
+      <h1 className='mt-10 font-bold text-xl'>Category</h1>
+      <h1 className='font-bold text-xl'> Added Successfully</h1>
     </div>
   )
   const Failure = () => (
-    <div className="h-64 flex flex-col items-center justify-center text-red-500">
+    <div className='h-64 flex flex-col items-center justify-center text-red-500'>
       <div>
         <Feather.XCircle size={80} />
       </div>
-      <h1 className="mt-10 font-bold text-xl">Something</h1>
-      <h1 className="font-bold text-xl">Went wrong</h1>
-      <h1 className="mt-10 font-bold text-xl">Or</h1>
-      <h1 className="font-bold text-xl">May be category already exists</h1>
+      <h1 className='mt-10 font-bold text-xl'>Something</h1>
+      <h1 className='font-bold text-xl'>Went wrong</h1>
+      <h1 className='mt-10 font-bold text-xl'>Or</h1>
+      <h1 className='font-bold text-xl'>May be category already exists</h1>
     </div>
   )
   const PopUpContent = () => {
@@ -59,19 +60,19 @@ export default function UpdateCategory({ session }: any) {
   }
   if (initializing)
     return (
-      <div className="h-screen w-screen flex items-center justify-center">
-        <h1 className="text-green-500 text-xl">Loading ...</h1>
+      <div className='h-screen w-screen flex items-center justify-center'>
+        <h1 className='text-green-500 text-xl'>Loading ...</h1>
       </div>
     )
   if (session)
     return (
       <Wrapper>
-        <div className="w-full px-4 mt-5 box-border">
-          <h1 className="text-green-500 text-2xl">{`Update Category ${name}`}</h1>
-          <div className="flex flex-col mt-4 mb-2">
+        <div className='w-full px-4 mt-5 box-border'>
+          <h1 className='text-green-500 text-2xl'>{`Update Category ${name}`}</h1>
+          <div className='flex flex-col mt-4 mb-2'>
             <label>Cateory Name</label>
             <input
-              className="border-2 border-green-500 my-2"
+              className='border-2 border-green-500 my-2'
               value={catFormFields.name}
               onChange={(e) => {
                 setCatFormFields((prev) => ({
@@ -81,7 +82,7 @@ export default function UpdateCategory({ session }: any) {
               }}
             />
           </div>
-          <div className="flex flex-grow items-center justify-center">
+          <div className='flex flex-grow items-center justify-center'>
             <button
               onClick={async () => {
                 // try {
@@ -108,31 +109,26 @@ export default function UpdateCategory({ session }: any) {
                 UpdateCategory().catch((error) => {
                   throw error
                 })
-              }}
-            >
-              <div className="py-2 px-10 bg-green-500 shadow-md rounded-md">
-                <h1 className="text-white">Save</h1>
+              }}>
+              <div className='py-2 px-10 bg-green-500 shadow-md rounded-md'>
+                <h1 className='text-white'>Save</h1>
               </div>
             </button>
           </div>
-          <PopUpContainer
-            trigger={trigger}
-            content={<PopUpContent />}
-            onClose={closePopUp}
-          />
+          <PopUpContainer trigger={trigger} content={<PopUpContent />} onClose={closePopUp} />
         </div>
       </Wrapper>
     )
   return (
-    <Layout title="Not Authenticated">
-      <div className="h-screen w-screen flex items-center justify-center">
-        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
+    <Layout title='Not Authenticated'>
+      <div className='h-screen w-screen flex items-center justify-center'>
+        <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
       </div>
     </Layout>
   )
 }
 
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)

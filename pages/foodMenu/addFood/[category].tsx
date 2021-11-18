@@ -7,6 +7,7 @@ import { useRouter } from "next/router"
 import * as Feather from "react-feather"
 import PopUpContainer from "../../../components/popUp/container"
 import firebase from "firebase"
+import { GetServerSideProps } from "next"
 export default function AddNewFood({ session }: any) {
   const router = useRouter()
   const { category, name } = router.query
@@ -60,23 +61,23 @@ export default function AddNewFood({ session }: any) {
     setApp(initialState)
   }
   const Success = () => (
-    <div className="h-64 flex flex-col items-center justify-center text-green-500">
+    <div className='h-64 flex flex-col items-center justify-center text-green-500'>
       <div>
         <Feather.CheckCircle size={80} />
       </div>
-      <h1 className="mt-10 font-bold text-xl">Food Item</h1>
-      <h1 className="font-bold text-xl">Added Successfully</h1>
+      <h1 className='mt-10 font-bold text-xl'>Food Item</h1>
+      <h1 className='font-bold text-xl'>Added Successfully</h1>
     </div>
   )
   const Failure = () => (
-    <div className="h-64 flex flex-col items-center justify-center text-red-500">
+    <div className='h-64 flex flex-col items-center justify-center text-red-500'>
       <div>
         <Feather.XCircle size={80} />
       </div>
-      <h1 className="mt-10 font-bold text-xl">Something</h1>
-      <h1 className="font-bold text-xl">Went wrong</h1>
-      <h1 className="mt-10 font-bold text-xl">Or</h1>
-      <h1 className="font-bold text-xl">The Food Item already exists</h1>
+      <h1 className='mt-10 font-bold text-xl'>Something</h1>
+      <h1 className='font-bold text-xl'>Went wrong</h1>
+      <h1 className='mt-10 font-bold text-xl'>Or</h1>
+      <h1 className='font-bold text-xl'>The Food Item already exists</h1>
     </div>
   )
   const PopUpContent = () => {
@@ -121,13 +122,13 @@ export default function AddNewFood({ session }: any) {
   if (session)
     return (
       <Wrapper>
-        <div className="w-full px-4 mt-5 box-border">
-          <h1 className="text-green-500 text-2xl">Add new item to {name}</h1>
+        <div className='w-full px-4 mt-5 box-border'>
+          <h1 className='text-green-500 text-2xl'>Add new item to {name}</h1>
           {fields.map((item, index) => (
-            <div className="flex flex-col mt-4 mb-2" key={index}>
-              <label className="capitalize">{item.label}</label>
+            <div className='flex flex-col mt-4 mb-2' key={index}>
+              <label className='capitalize'>{item.label}</label>
               <input
-                className="border-2 border-green-500 my-2"
+                className='border-2 border-green-500 my-2'
                 value={item.value || ""}
                 onChange={handleText(item.name)}
               />
@@ -158,7 +159,7 @@ export default function AddNewFood({ session }: any) {
               }}
             />
           </div> */}
-          <div className="flex flex-grow items-center justify-center">
+          <div className='flex flex-grow items-center justify-center'>
             <button
               onClick={async () => {
                 try {
@@ -189,31 +190,26 @@ export default function AddNewFood({ session }: any) {
                   setTrigger(true)
                   throw error
                 }
-              }}
-            >
-              <div className="py-2 px-10 bg-green-500 shadow-md rounded-md">
-                <h1 className="text-white">Save</h1>
+              }}>
+              <div className='py-2 px-10 bg-green-500 shadow-md rounded-md'>
+                <h1 className='text-white'>Save</h1>
               </div>
             </button>
           </div>
-          <PopUpContainer
-            trigger={trigger}
-            content={<PopUpContent />}
-            onClose={closePopUp}
-          />
+          <PopUpContainer trigger={trigger} content={<PopUpContent />} onClose={closePopUp} />
         </div>
       </Wrapper>
     )
   return (
-    <Layout title="Not Authenticated">
-      <div className="h-screen w-screen flex items-center justify-center">
-        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
+    <Layout title='Not Authenticated'>
+      <div className='h-screen w-screen flex items-center justify-center'>
+        <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
       </div>
     </Layout>
   )
 }
 
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)

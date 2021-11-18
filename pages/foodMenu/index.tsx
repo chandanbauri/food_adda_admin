@@ -7,6 +7,7 @@ import * as Feather from "react-feather"
 import ContentTable from "../../components/table"
 import firebase from "firebase"
 import PopUpContainer from "../../components/popUp/container"
+import { GetServerSideProps } from "next"
 
 export default function FoodMenu({ session }: any) {
   let CategoriesCollection = firebase.firestore().collection("categories")
@@ -77,21 +78,21 @@ export default function FoodMenu({ session }: any) {
 
   if (initializing)
     return (
-      <div className="h-screen w-screen flex items-center justify-center">
-        <h1 className="text-green-500 text-xl">Loading ...</h1>
+      <div className='h-screen w-screen flex items-center justify-center'>
+        <h1 className='text-green-500 text-xl'>Loading ...</h1>
       </div>
     )
   if (session)
     return (
-      <div className="flex-1 flex flex-col">
+      <div className='flex-1 flex flex-col'>
         <Wrapper>
           <PopUpContainer
             trigger={popUp}
             content={
-              <div className="flex flex-col mb-5 text-center">
-                <h4 className="text-xl font-sans font-bold">Are you sure ?</h4>
+              <div className='flex flex-col mb-5 text-center'>
+                <h4 className='text-xl font-sans font-bold'>Are you sure ?</h4>
                 <button
-                  className="w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl"
+                  className='w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl'
                   onClick={async () => {
                     // deleteTournament().catch((error) => console.error(error))
                     try {
@@ -118,25 +119,20 @@ export default function FoodMenu({ session }: any) {
                                   .collection("foods")
                                   .doc(val.id)
                                   .delete()
-                              })
+                              }),
                             )
                           }
-                        })
+                        }),
                       )
 
                       await CategoriesCollection.doc(data.id).delete()
                       setTableData((prev: any) => {
-                        let index = prev.findIndex(
-                          (item: any) => item.id == data.id
-                        )
+                        let index = prev.findIndex((item: any) => item.id == data.id)
                         if (index != -1) {
                           if (index == 0) {
                             return [...prev.slice(1)]
                           }
-                          return [
-                            ...prev.slice(0, index),
-                            ...prev.slice(index + 1),
-                          ]
+                          return [...prev.slice(0, index), ...prev.slice(index + 1)]
                         }
                         return prev
                       })
@@ -144,9 +140,8 @@ export default function FoodMenu({ session }: any) {
                     } catch (error) {
                       console.error(error)
                     }
-                  }}
-                >
-                  <span className="text-white font-bold">Proceed</span>
+                  }}>
+                  <span className='text-white font-bold'>Proceed</span>
                 </button>
               </div>
             }
@@ -158,7 +153,7 @@ export default function FoodMenu({ session }: any) {
           <ContentTable
             tableData={tableData}
             tableFileds={["name"]}
-            tableTitle="Menu Categories"
+            tableTitle='Menu Categories'
             headerActions={HeaderActions}
             actions={actions}
           />
@@ -166,15 +161,15 @@ export default function FoodMenu({ session }: any) {
       </div>
     )
   return (
-    <Layout title="Not Authenticated">
-      <div className="h-screen w-screen flex items-center justify-center">
-        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
+    <Layout title='Not Authenticated'>
+      <div className='h-screen w-screen flex items-center justify-center'>
+        <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
       </div>
     </Layout>
   )
 }
 
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)
