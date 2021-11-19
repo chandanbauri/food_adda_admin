@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useRouter } from "next/router"
 import Wrapper from "../../../components/layout/"
 import nookies from "nookies"
 import { verifyIdToken } from "../../../utilities/firebase_admin"
@@ -8,21 +9,21 @@ import ContentTable from "../../../components/table/restaurant/restaurant-table"
 import PopUpContainer from "../../../components/popUp/container"
 import { useResource } from "../../../components/context/Resource"
 import {
-  // askForAcceptingOrder,
+  askForAcceptingOrder,
   getListOfDeliveryBoys,
   rejectOrder,
 } from "../../../utilities/functions"
 import DeliveryBoyTable from "../../../components/popUp/delivery-boy"
-import { GetServerSideProps } from "next"
-import { OrderPageProps } from "../../../interface"
-export default function Orders({ session, query }: OrderPageProps) {
+export default function Orders({ session }: any) {
+  // const OrdersCollection = firebase.firestore().collection("orders")
   const focusedItem = React.useRef<any>()
-  let { type } = query
+  let router = useRouter()
+  let { type } = router.query
   const [popUp, setPopUp] = React.useState<boolean>(false)
   let Resource = useResource()
-  // const [success, setSuccess] = React.useState<boolean>(false)
-  // const [Error, setError] = React.useState<boolean>(false)
-  // const [DeliveryBoys, setDeliveryBoys] = React.useState<Array<any>>([])
+  const [success, setSuccess] = React.useState<boolean>(false)
+  const [Error, setError] = React.useState<boolean>(false)
+  const [DeliveryBoys, setDeliveryBoys] = React.useState<Array<any>>([])
   const [popUpData, setPopUpData] = React.useState<Array<any>>([])
   const [initializing, setInitializing] = React.useState<boolean>(false)
   const [isDeleting, setIsDeleting] = React.useState<boolean>(false)
@@ -43,6 +44,104 @@ export default function Orders({ session, query }: OrderPageProps) {
     } catch (error) {
       throw error
     }
+  }
+
+  // let tableData = [
+  //   {
+  //     F1: "I1 asknjnasdsadas",
+  //     F2: "I2",
+  //     F3: "I3",
+  //     F4: "I4",
+  //     F5: "I5",
+  //     F6: "Iun",
+  //   },
+  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
+  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
+  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
+  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
+  //   {
+  //     F1: "I1 asknjnasdsadas",
+  //     F2: "I2",
+  //     F3: "I3",
+  //     F4: "I4",
+  //     F5: "I5",
+  //     F6: "Iun",
+  //   },
+  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
+  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
+  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
+  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
+  //   {
+  //     F1: "I1 asknjnasdsadas",
+  //     F2: "I2",
+  //     F3: "I3",
+  //     F4: "I4",
+  //     F5: "I5",
+  //     F6: "Iun",
+  //   },
+  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
+  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
+  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
+  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
+  //   {
+  //     F1: "I1 asknjnasdsadas",
+  //     F2: "I2",
+  //     F3: "I3",
+  //     F4: "I4",
+  //     F5: "I5",
+  //     F6: "Iun",
+  //   },
+  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
+  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
+  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
+  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
+  // ]
+  // let tableFileds = ["F1", "F2", "F3", "F4", "F5", "F6"]
+  //   let actions = [
+  //     {
+  //       Icon: <Feather.Edit size={24} />,
+  //       action: (data: any) => //data),
+  //     },
+  //     {
+  //       Icon: <Feather.Trash2 size={24} />,
+  //       action: (data: any) => //data),
+  //     },
+  //   ]
+
+  const getPopUpActions = (type: any) => {
+    let actions: Array<any> = []
+    switch (type) {
+      case "pending":
+        actions = [
+          {
+            Icon: <Feather.CheckSquare size={24} />,
+            action: async (data: any) => {
+              try {
+                let res = await askForAcceptingOrder({
+                  order: focusedItem.current,
+                  deliveryBoyID: data.uid,
+                })
+              } catch (error) {
+                setPopUp((prev) => false)
+              }
+            },
+          },
+        ]
+        break
+      case "ongoing":
+        actions = []
+        break
+      case "rejected":
+        actions = []
+        break
+      case "canceled":
+        actions = []
+        break
+      case "delivered":
+        actions = []
+        break
+    }
+    return actions
   }
 
   const getActions = (type: any) => {
@@ -69,6 +168,39 @@ export default function Orders({ session, query }: OrderPageProps) {
               setPopUp(true)
               setIsDeleting(true)
               setData(data)
+              // try {
+              //   setInitializing(true)
+              //   await rejectOrder({ order: data })
+              //   if (Resource?.Orders.pending) {
+              //     let index = Resource?.Orders?.pending?.findIndex(
+              //       (item, index) => item.id == data.id
+              //     )
+              //     if (index !== undefined) {
+              //       Resource?.setOrders((prev) => ({
+              //         ...prev,
+              //         rejected: [...prev.rejected, prev.pending[index]],
+              //       }))
+              //       if (index == 0) {
+              //         Resource?.setOrders((prev) => ({
+              //           ...prev,
+              //           pending: [...prev.pending.slice(1)],
+              //         }))
+              //       } else if (index == 1) {
+              //         Resource?.setOrders((prev) => ({
+              //           ...prev,
+              //           pending: [
+              //             ...prev.pending.slice(0, index),
+              //             ...prev.pending.slice(index + 1),
+              //           ],
+              //         }))
+              //       }
+              //     }
+              //   }
+              //   setSuccess((prev) => false)
+              //   setInitializing(false)
+              // } catch (error) {
+              //   setError((prev) => false)
+              // }
             },
           },
         ]
@@ -136,10 +268,11 @@ export default function Orders({ session, query }: OrderPageProps) {
           focusedItem.current
           Resource?.setOrders((prev) => {
             let { pending, ...rest } = prev
-            let list = pending.filter((item) => item.id != focusedItem.current.id)
+            let list = pending.filter(
+              (item) => item.id != focusedItem.current.id
+            )
             return { ...prev, pending: list }
           })
-          window.location.href = "/dashboard"
         }}
       />
     </div>
@@ -152,24 +285,29 @@ export default function Orders({ session, query }: OrderPageProps) {
   }, [])
   if (initializing)
     return (
-      <Layout title='Not Authenticated'>
-        <div className='h-screen w-screen flex items-center justify-center'>
-          <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
+      <Layout title="Not Authenticated">
+        <div className="h-screen w-screen flex items-center justify-center">
+          <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
         </div>
       </Layout>
     )
   if (session)
     return (
-      <div className=' flex-1 flex'>
+      <div className=" flex-1 flex">
         <Wrapper>
+          {/* <div className="w-full md:px-4">
+            <h1 className="w-full bg-green-500 py-5 flex items-center justify-center text-white uppercase">{`${type} Orders`}</h1>
+          </div> */}
           <PopUpContainer
             trigger={popUp}
             content={
               isDeleting ? (
-                <div className='flex flex-col mb-5 text-center'>
-                  <h4 className='text-xl font-sans font-bold'>Are you sure ?</h4>
+                <div className="flex flex-col mb-5 text-center">
+                  <h4 className="text-xl font-sans font-bold">
+                    Are you sure ?
+                  </h4>
                   <button
-                    className='w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl'
+                    className="w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl"
                     onClick={async () => {
                       // deleteTournament().catch((error) => console.error(error))
                       try {
@@ -177,7 +315,7 @@ export default function Orders({ session, query }: OrderPageProps) {
                         await rejectOrder({ order: data })
                         if (Resource?.Orders.pending) {
                           let index = Resource?.Orders?.pending?.findIndex(
-                            (item, index) => item.id == data.id,
+                            (item, index) => item.id == data.id
                           )
                           if (index !== undefined) {
                             Resource?.setOrders((prev) => ({
@@ -200,15 +338,16 @@ export default function Orders({ session, query }: OrderPageProps) {
                             }
                           }
                         }
-                        // setSuccess((prev) => false)
+                        setSuccess((prev) => false)
                         setData(null)
                         setIsDeleting(false)
                         setInitializing(false)
                       } catch (error) {
-                        // setError((prev) => false)
+                        setError((prev) => false)
                       }
-                    }}>
-                    <span className='text-white font-bold'>Proceed</span>
+                    }}
+                  >
+                    <span className="text-white font-bold">Proceed</span>
                   </button>
                 </div>
               ) : (
@@ -249,17 +388,14 @@ export default function Orders({ session, query }: OrderPageProps) {
     )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps(context: any) {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)
     if (token) {
       const { uid, email } = token
       return {
-        props: {
-          session: `your email is ${email},and your uid is ${uid}`,
-          query: context.query,
-        },
+        props: { session: `your email is ${email},and your uid is ${uid}` },
       }
     }
     context.res.writeHead(302, { location: "/auth/login" })
@@ -272,79 +408,3 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {} }
   }
 }
-
-// {
-//  <div className="w-full md:px-4">
-//           <h1 className="w-full bg-green-500 py-5 flex items-center justify-center text-white uppercase">{`${type} Orders`}</h1>
-//         </div>
-// }
-
-// try {
-//   setInitializing(true)
-//   await rejectOrder({ order: data })
-//   if (Resource?.Orders.pending) {
-//     let index = Resource?.Orders?.pending?.findIndex(
-//       (item, index) => item.id == data.id
-//     )
-//     if (index !== undefined) {
-//       Resource?.setOrders((prev) => ({
-//         ...prev,
-//         rejected: [...prev.rejected, prev.pending[index]],
-//       }))
-//       if (index == 0) {
-//         Resource?.setOrders((prev) => ({
-//           ...prev,
-//           pending: [...prev.pending.slice(1)],
-//         }))
-//       } else if (index == 1) {
-//         Resource?.setOrders((prev) => ({
-//           ...prev,
-//           pending: [
-//             ...prev.pending.slice(0, index),
-//             ...prev.pending.slice(index + 1),
-//           ],
-//         }))
-//       }
-//     }
-//   }
-//   setSuccess((prev) => false)
-//   setInitializing(false)
-// } catch (error) {
-//   setError((prev) => false)
-// }
-
-// const getPopUpActions = (type: any) => {
-//   let actions: Array<any> = []
-//   switch (type) {
-//     case "pending":
-//       actions = [
-//         {
-//           Icon: <Feather.CheckSquare size={24} />,
-//           action: async (data: any) => {
-//             try {
-//               let res = await askForAcceptingOrder({
-//                 order: focusedItem.current,
-//                 deliveryBoyID: data.uid,
-//               })
-//             } catch (error) {
-//               setPopUp((prev) => false)
-//             }
-//           },
-//         },
-//       ]
-//       break
-//     case "ongoing":
-//       actions = []
-//       break
-//     case "rejected":
-//       actions = []
-//       break
-//     case "canceled":
-//       actions = []
-//       break
-//     case "delivered":
-//       actions = []
-//       break
-//   }
-//   return actions
-// }

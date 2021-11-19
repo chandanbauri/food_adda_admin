@@ -7,7 +7,6 @@ import { useRouter } from "next/router"
 import ContentTable from "../../../components/table"
 import firebase from "firebase"
 import * as Feather from "react-feather"
-import { GetServerSideProps } from "next"
 export default function View({ session }: any) {
   const router = useRouter()
   const { category, name } = router.query
@@ -17,7 +16,9 @@ export default function View({ session }: any) {
   const RestaurantCollection = firebase.firestore().collection("restaurants")
   const getList = async () => {
     if (typeof category == "string") {
-      let res = await CategoriesCollection.doc(category).collection("foods").get()
+      let res = await CategoriesCollection.doc(category)
+        .collection("foods")
+        .get()
       if (res.size) {
         let list: Array<any> = []
         res.docs.map((item, index) => {
@@ -58,10 +59,10 @@ export default function View({ session }: any) {
                         .collection("foods")
                         .doc(item.id)
                         .delete()
-                    }),
+                    })
                   )
                 }
-              }),
+              })
             )
             setTableData((prev: any) => {
               let index = prev.findIndex((item: any) => item.id == data.id)
@@ -93,16 +94,18 @@ export default function View({ session }: any) {
   }, [])
   if (initializing)
     return (
-      <div className='h-screen w-screen flex items-center justify-center'>
-        <h1 className='text-green-500 text-xl'>Loading ...</h1>
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-xl">Loading ...</h1>
       </div>
     )
   if (session)
     return (
       <Wrapper>
         {!tableData.length ? (
-          <div className='h-64 w-full flex items-center justify-center'>
-            <h1 className='text-green-500 text-2xl font-bold'>No data available</h1>
+          <div className="h-64 w-full flex items-center justify-center">
+            <h1 className="text-green-500 text-2xl font-bold">
+              No data available
+            </h1>
           </div>
         ) : (
           <ContentTable
@@ -115,15 +118,15 @@ export default function View({ session }: any) {
       </Wrapper>
     )
   return (
-    <Layout title='Not Authenticated'>
-      <div className='h-screen w-screen flex items-center justify-center'>
-        <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
+    <Layout title="Not Authenticated">
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
       </div>
     </Layout>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps(context: any) {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)

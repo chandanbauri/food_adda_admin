@@ -5,7 +5,6 @@ import Wrapper from "../../../../components/layout"
 import { Layout } from "../../../../components/layout/secondary"
 import { verifyIdToken } from "../../../../utilities/firebase_admin"
 import nookies from "nookies"
-import { GetServerSideProps } from "next"
 
 export default function InspectOrderScreen() {
   let OrdersCollection = firebase.firestore().collection("orders")
@@ -41,42 +40,48 @@ export default function InspectOrderScreen() {
   }, [])
   if (initializing)
     return (
-      <Layout title='Not Authenticated'>
-        <div className='h-screen w-screen flex items-center justify-center'>
-          <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
+      <Layout title="Not Authenticated">
+        <div className="h-screen w-screen flex items-center justify-center">
+          <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
         </div>
       </Layout>
     )
   return (
     <Wrapper>
-      <div className='pt-5 mx-5'>
-        <div className='flex flex-row items-center'>
-          <h1 className='text-green-500 text-base '>Order Id:</h1>
-          <h1 className='uppercase font-sans text-base ml-4'>{`${order}`}</h1>
+      <div className="pt-5 mx-5">
+        <div className="flex flex-row items-center">
+          <h1 className="text-green-500 text-base ">Order Id:</h1>
+          <h1 className="uppercase font-sans text-base ml-4">{`${order}`}</h1>
         </div>
-        <h1 className='my-5 text-gray-800 text-2xl font-bold'>User Details</h1>
-        <div className=''>
-          <div className='flex flex-row items-start'>
-            <h1 className='text-green-500 text-base '>Name&nbsp;:</h1>
-            <h1 className='uppercase font-sans text-base ml-3'>
+        <h1 className="my-5 text-gray-800 text-2xl font-bold">User Details</h1>
+        <div className="">
+          <div className="flex flex-row items-start">
+            <h1 className="text-green-500 text-base ">Name&nbsp;:</h1>
+            <h1 className="uppercase font-sans text-base ml-3">
               {`${Details.userDetails ? Details.userDetails.name ?? "" : ""}`}
             </h1>
           </div>
-          <div className='flex flex-row items-start'>
-            <h1 className='text-green-500 text-base '>Phone&nbsp;:</h1>
-            <h1 className='uppercase font-sans text-base ml-3'>
+          <div className="flex flex-row items-start">
+            <h1 className="text-green-500 text-base ">Phone&nbsp;:</h1>
+            <h1 className="uppercase font-sans text-base ml-3">
               {`${Details.userDetails ? Details.userDetails.phone ?? "" : ""}`}
             </h1>
           </div>
-          <div className='flex flex-row items-start'>
-            <h1 className='text-green-500 text-base '>Address&nbsp;:</h1>
-            <h1 className='uppercase font-sans text-base ml-3'>
-              {`${Details.userDetails ? Details.userDetails.deliveryAddress ?? "" : ""}`}
+          <div className="flex flex-row items-start">
+            <h1 className="text-green-500 text-base ">Address&nbsp;:</h1>
+            <h1 className="uppercase font-sans text-base ml-3">
+              {`${
+                Details.userDetails
+                  ? Details.userDetails.deliveryAddress ?? ""
+                  : ""
+              }`}
             </h1>
           </div>
-          <div className='flex flex-row items-center '>
-            <h1 className='text-green-500 text-base '>Alternate Phone&nbsp;:</h1>
-            <h1 className='uppercase font-sans text-base ml-3'>
+          <div className="flex flex-row items-center ">
+            <h1 className="text-green-500 text-base ">
+              Alternate Phone&nbsp;:
+            </h1>
+            <h1 className="uppercase font-sans text-base ml-3">
               {`${
                 Details.userDetails
                   ? Details.userDetails.alternatePhone ?? "Not Available"
@@ -85,75 +90,99 @@ export default function InspectOrderScreen() {
             </h1>
           </div>
         </div>
-        <h1 className='my-5 text-gray-800 text-2xl font-bold'>Restaurant Details</h1>
+        <h1 className="my-5 text-gray-800 text-2xl font-bold">
+          Restaurant Details
+        </h1>
         <div>
-          <div className='flex flex-row items-center '>
-            <h1 className='text-green-500 text-base '>Name&nbsp;:</h1>
-            <h1 className='uppercase font-sans text-base ml-3'>
-              {`${Details.restaurantDetails ? Details.restaurantDetails.name ?? "" : ""}`}
+          <div className="flex flex-row items-center ">
+            <h1 className="text-green-500 text-base ">Name&nbsp;:</h1>
+            <h1 className="uppercase font-sans text-base ml-3">
+              {`${
+                Details.restaurantDetails
+                  ? Details.restaurantDetails.name ?? ""
+                  : ""
+              }`}
             </h1>
           </div>
-          <div className='flex flex-row items-center '>
-            <h1 className='text-green-500 text-base '>Address&nbsp;:</h1>
-            <h1 className='uppercase font-sans text-base ml-3'>
-              {`${Details.restaurantDetails ? Details.restaurantDetails.address ?? "" : ""}`}
+          <div className="flex flex-row items-center ">
+            <h1 className="text-green-500 text-base ">Address&nbsp;:</h1>
+            <h1 className="uppercase font-sans text-base ml-3">
+              {`${
+                Details.restaurantDetails
+                  ? Details.restaurantDetails.address ?? ""
+                  : ""
+              }`}
             </h1>
           </div>
         </div>
-        <h1 className='my-5 text-gray-800 text-2xl font-bold'>Cart</h1>
-        <div className='lg:max-w-2xl max-w-full'>
+        <h1 className="my-5 text-gray-800 text-2xl font-bold">Cart</h1>
+        <div className="lg:max-w-2xl max-w-full">
           {Details.items &&
             Details.items.length > 0 &&
             Details.items.map((item: any, index: number) => (
-              <div className='my-2 flex flex-row justify-between' key={index}>
-                <div className='flex flex-row items-center '>
-                  <h1 className='text-green-500 text-xs lg:text-base '>Name&nbsp;:</h1>
-                  <h1 className='uppercase font-sans text-xs lg:text-base ml-3'>
+              <div className="my-2 flex flex-row justify-between" key={index}>
+                <div className="flex flex-row items-center ">
+                  <h1 className="text-green-500 text-xs lg:text-base ">
+                    Name&nbsp;:
+                  </h1>
+                  <h1 className="uppercase font-sans text-xs lg:text-base ml-3">
                     {`${Details ? item.name ?? "" : ""}`}
                   </h1>
                 </div>
-                <div className='flex flex-row items-center '>
-                  <h1 className='text-green-500 text-xs lg:text-base '>Cost&nbsp;:</h1>
-                  <h1 className='uppercase font-sans text-xs lg:text-base ml-3'>
-                    {`${item ? item.cost ?? 0 : 0} x ${item ? item.count ?? 0 : 0} =  ${(
-                      (item.cost ?? 0) * (item.count ?? 0)
-                    ).toFixed(2)} ₹`}
+                <div className="flex flex-row items-center ">
+                  <h1 className="text-green-500 text-xs lg:text-base ">
+                    Cost&nbsp;:
+                  </h1>
+                  <h1 className="uppercase font-sans text-xs lg:text-base ml-3">
+                    {`${item ? item.cost ?? 0 : 0} x ${
+                      item ? item.count ?? 0 : 0
+                    } =  ${((item.cost ?? 0) * (item.count ?? 0)).toFixed(
+                      2
+                    )} ₹`}
                   </h1>
                 </div>
               </div>
             ))}
         </div>
-        <div className=' flex-grow bg-gray-500 my-2' style={{ width: "100%", height: "1px" }} />
-        <div className='lg:max-w-2xl max-w-full'>
-          <div className='flex flex-row justify-between'>
-            <h1 className='text-green-500 text-base'>Total Item Price</h1>
-            <h1 className='uppercase font-sans text-base ml-3'>{`${calculateTotalCost(
-              Details.items ?? [],
+        <div
+          className=" flex-grow bg-gray-500 my-2"
+          style={{ width: "100%", height: "1px" }}
+        />
+        <div className="lg:max-w-2xl max-w-full">
+          <div className="flex flex-row justify-between">
+            <h1 className="text-green-500 text-base">Total Item Price</h1>
+            <h1 className="uppercase font-sans text-base ml-3">{`${calculateTotalCost(
+              Details.items ?? []
             ).toFixed(2)} ₹`}</h1>
           </div>
         </div>
-        <div className='lg:max-w-2xl max-w-full'>
-          <div className='flex flex-row justify-between'>
-            <h1 className='text-green-500 text-base'>GST</h1>
-            <h1 className='uppercase font-sans text-base ml-3'>{`${(Details.gst ?? 0).toFixed(
-              2,
-            )} ₹`}</h1>
+        <div className="lg:max-w-2xl max-w-full">
+          <div className="flex flex-row justify-between">
+            <h1 className="text-green-500 text-base">GST</h1>
+            <h1 className="uppercase font-sans text-base ml-3">{`${(
+              Details.gst ?? 0
+            ).toFixed(2)} ₹`}</h1>
           </div>
         </div>
-        <div className='lg:max-w-2xl max-w-full'>
-          <div className='flex flex-row justify-between'>
-            <h1 className='text-green-500 text-base'>Delivery Charge</h1>
-            <h1 className='uppercase font-sans text-base ml-3'>{` ${
-              Details.deliveryCharge ? parseInt(Details.deliveryCharge).toFixed(2) : ""
+        <div className="lg:max-w-2xl max-w-full">
+          <div className="flex flex-row justify-between">
+            <h1 className="text-green-500 text-base">Delivery Charge</h1>
+            <h1 className="uppercase font-sans text-base ml-3">{` ${
+              Details.deliveryCharge
+                ? parseInt(Details.deliveryCharge).toFixed(2)
+                : ""
             } ₹`}</h1>
           </div>
         </div>
-        <div className=' flex-grow bg-gray-500 my-2' style={{ width: "100%", height: "1px" }} />
-        <div className='lg:max-w-2xl max-w-full'>
-          <div className='lg:max-w-2xl max-w-full'>
-            <div className='flex flex-row justify-between'>
-              <h1 className='text-green-500 text-base'>Grand Total</h1>
-              <h1 className='uppercase font-sans text-base ml-3'>{` ${(
+        <div
+          className=" flex-grow bg-gray-500 my-2"
+          style={{ width: "100%", height: "1px" }}
+        />
+        <div className="lg:max-w-2xl max-w-full">
+          <div className="lg:max-w-2xl max-w-full">
+            <div className="flex flex-row justify-between">
+              <h1 className="text-green-500 text-base">Grand Total</h1>
+              <h1 className="uppercase font-sans text-base ml-3">{` ${(
                 calculateTotalCost(Details.items ?? []) +
                 parseInt(Details.gst ?? "0") +
                 parseInt(Details.deliveryCharge ? Details.deliveryCharge : "0")
@@ -166,7 +195,7 @@ export default function InspectOrderScreen() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps(context: any) {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)
