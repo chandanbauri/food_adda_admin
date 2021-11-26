@@ -80,6 +80,14 @@ export default function Orders({ session, query }: OrderPageProps) {
             isLink: true,
             to: "/DB/Orders/inspect",
           },
+          {
+            Icon: <Feather.Trash2 size={24} />,
+            action: async (data: any) => {
+              setPopUp(true)
+              setIsDeleting(true)
+              setData(data)
+            },
+          },
         ]
         break
       case "rejected":
@@ -88,6 +96,14 @@ export default function Orders({ session, query }: OrderPageProps) {
             Icon: <Feather.Eye size={24} />,
             isLink: true,
             to: "/DB/Orders/inspect",
+          },
+          {
+            Icon: <Feather.Trash2 size={24} />,
+            action: async (data: any) => {
+              setPopUp(true)
+              setIsDeleting(true)
+              setData(data)
+            },
           },
         ]
         break
@@ -98,6 +114,14 @@ export default function Orders({ session, query }: OrderPageProps) {
             isLink: true,
             to: "/DB/Orders/inspect",
           },
+          {
+            Icon: <Feather.Trash2 size={24} />,
+            action: async (data: any) => {
+              setPopUp(true)
+              setIsDeleting(true)
+              setData(data)
+            },
+          },
         ]
         break
       case "delivered":
@@ -106,6 +130,14 @@ export default function Orders({ session, query }: OrderPageProps) {
             Icon: <Feather.Eye size={24} />,
             isLink: true,
             to: "/DB/Orders/inspect",
+          },
+          {
+            Icon: <Feather.Trash2 size={24} />,
+            action: async (data: any) => {
+              setPopUp(true)
+              setIsDeleting(true)
+              setData(data)
+            },
           },
         ]
         break
@@ -174,8 +206,8 @@ export default function Orders({ session, query }: OrderPageProps) {
                       // deleteTournament().catch((error) => console.error(error))
                       try {
                         setInitializing(true)
-                        await rejectOrder({ order: data })
                         if (Resource?.Orders.pending) {
+                          await rejectOrder({ order: data })
                           let index = Resource?.Orders?.pending?.findIndex(
                             (item, index) => item.id == data.id,
                           )

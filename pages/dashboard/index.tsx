@@ -45,33 +45,6 @@ export default function Dashboard({ session }: any) {
       console.log("ERROR", error)
     }
   }
-  // const FetchOrders = async () => {
-  //   try {
-  //     let Orders = OrdersCollections.onSnapshot((snap) => {
-  //       if (snap.empty) {
-  //         setInitializing(false)
-  //       } else {
-  //         let list: Array<any> = []
-  //         snap.forEach((item) => {
-  //           list.push({ id: item.id, ...item.data() })
-  //         })
-  //         ProcessOrders(list)
-  //       }
-  //     })
-  //     // if (Orders) {
-  //     //   let list: Array<any> = []
-  //     //   Orders.docs.map((item, index) => {
-  //     //     list.push({ id: item.id, ...item.data() })
-  //     //   })
-  //     //   ProcessOrders(list)
-  //     //   setInitializing(false)
-  //     // } else {
-  //     //   setInitializing(false)
-  //     // }
-  //   } catch (error) {
-  //     throw error
-  //   }
-  // }
   const checkOrder = (id: string, array: Array<any> | undefined): boolean => {
     let index = array?.findIndex((item, index) => item.id == id)
     if (index != -1) {
@@ -126,7 +99,6 @@ export default function Dashboard({ session }: any) {
       if (snap.empty) {
         setInitializing(false)
       } else {
-        let list: Array<any> = []
         snap.forEach((item) => {
           if (item.data().isPending && checkOrder(item.id, Resource?.Orders.pending)) {
             Resource?.setOrders((prev) => {
@@ -203,22 +175,6 @@ export default function Dashboard({ session }: any) {
     return (
       <div className='bg-white flex-1 flex'>
         <Wrapper>
-          {/* <button
-          onClick={async () => {
-            await assignOrder({
-              deliveryBoyID: "asndasndjasdkka",
-              orderID: "5SC56nZkTAIwSJAn8Dpq",
-            })
-              .then((res) => {
-                //res)
-              })
-              .catch((error) => {
-                //error)
-              })
-          }}
-        >
-          Test
-        </button> */}
           {!Resource?.Orders ? (
             <div className='h-64 w-full flex items-center justify-center'>
               <h1 className='text-red-500 text-xl'>No Orders Available ...</h1>
