@@ -47,60 +47,61 @@ export default function Dashboard({ session }: any) {
   }
   const checkOrder = (id: string, array: Array<any> | undefined): boolean => {
     let index = array?.findIndex((item, index) => item.id == id)
-    if (index != -1) {
+    if (index == -1) {
       return false
     }
     return true
   }
-  const ProcessOrders = (Orders: Array<any>) => {
-    if (Orders.length) {
-      Orders.map((item, index) => {
-        if (item.isPending && checkOrder(item.id, Resource?.Orders.pending)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, pending: [...prev.pending, item] }
-          })
-        } else if (item.isOnGoing && checkOrder(item.id, Resource?.Orders.onGoing)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, delivered: [...prev.delivered, item] }
-          })
-        } else if (item.isRejected && checkOrder(item.id, Resource?.Orders.rejected)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, rejected: [...prev.rejected, item] }
-          })
-        } else if (item.isCanceled && checkOrder(item.id, Resource?.Orders.canceled)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, canceled: [...prev.canceled, item] }
-          })
-        } else if (item.isDelivered && checkOrder(item.id, Resource?.Orders.delivered)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, delivered: [...prev.delivered, item] }
-          })
-        }
-      })
-    }
-  }
+  // const ProcessOrders = (Orders: Array<any>) => {
+  //   if (Orders.length) {
+  //     Orders.map((item, index) => {
+  //       if (item.isPending && !checkOrder(item.id, Resource?.Orders.pending)) {
+  //         Resource?.setOrders((prev) => {
+  //           // let list = prev.pending
+  //           // //prev.pending)
+  //           // list.push(item)
+  //           return { ...prev, pending: [...prev.pending, item] }
+  //         })
+  //       } else if (item.isOnGoing && checkOrder(item.id, Resource?.Orders.onGoing)) {
+  //         Resource?.setOrders((prev) => {
+  //           // let list = prev.pending
+  //           // //prev.pending)
+  //           // list.push(item)
+  //           return { ...prev, delivered: [...prev.delivered, item] }
+  //         })
+  //       } else if (item.isRejected && checkOrder(item.id, Resource?.Orders.rejected)) {
+  //         Resource?.setOrders((prev) => {
+  //           // let list = prev.pending
+  //           // //prev.pending)
+  //           // list.push(item)
+  //           return { ...prev, rejected: [...prev.rejected, item] }
+  //         })
+  //       } else if (item.isCanceled && checkOrder(item.id, Resource?.Orders.canceled)) {
+  //         Resource?.setOrders((prev) => {
+  //           // let list = prev.pending
+  //           // //prev.pending)
+  //           // list.push(item)
+  //           return { ...prev, canceled: [...prev.canceled, item] }
+  //         })
+  //       } else if (item.isDelivered && checkOrder(item.id, Resource?.Orders.delivered)) {
+  //         Resource?.setOrders((prev) => {
+  //           // let list = prev.pending
+  //           // //prev.pending)
+  //           // list.push(item)
+  //           return { ...prev, delivered: [...prev.delivered, item] }
+  //         })
+  //       }
+  //     })
+  //   }
+  // }
   React.useEffect(() => {
     let Orders = OrdersCollections.onSnapshot((snap) => {
       if (snap.empty) {
         setInitializing(false)
       } else {
+        console.log(Resource?.Orders)
         snap.forEach((item) => {
-          if (item.data().isPending && checkOrder(item.id, Resource?.Orders.pending)) {
+          if (item.data().isPending && !checkOrder(item.id, Resource?.Orders.pending)) {
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
@@ -110,17 +111,17 @@ export default function Dashboard({ session }: any) {
                 pending: [...prev.pending, { id: item.id, ...item.data() }],
               }
             })
-          } else if (item.data().isOnGoing && checkOrder(item.id, Resource?.Orders.onGoing)) {
+          } else if (item.data().isOnGoing && !checkOrder(item.id, Resource?.Orders.onGoing)) {
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
               // list.push(item)
               return {
                 ...prev,
-                delivered: [...prev.delivered, { id: item.id, ...item.data() }],
+                onGoing: [...prev.delivered, { id: item.id, ...item.data() }],
               }
             })
-          } else if (item.data().isRejected && checkOrder(item.id, Resource?.Orders.rejected)) {
+          } else if (item.data().isRejected && !checkOrder(item.id, Resource?.Orders.rejected)) {
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
@@ -130,7 +131,7 @@ export default function Dashboard({ session }: any) {
                 rejected: [...prev.rejected, { id: item.id, ...item.data() }],
               }
             })
-          } else if (item.data().isCanceled && checkOrder(item.id, Resource?.Orders.canceled)) {
+          } else if (item.data().isCanceled && !checkOrder(item.id, Resource?.Orders.canceled)) {
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
@@ -140,15 +141,17 @@ export default function Dashboard({ session }: any) {
                 canceled: [...prev.canceled, { id: item.id, ...item.data() }],
               }
             })
-          } else if (item.data().isDelivered && checkOrder(item.id, Resource?.Orders.delivered)) {
+          } else if (item.data().isDelivered && !checkOrder(item.id, Resource?.Orders.delivered)) {
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
               // list.push(item)
-              return {
-                ...prev,
-                delivered: [...prev.delivered, { id: item.id, ...item.data() }],
-              }
+              if (!checkOrder(item.id, Resource?.Orders.delivered))
+                return {
+                  ...prev,
+                  delivered: [...prev.delivered, { id: item.id, ...item.data() }],
+                }
+              return prev
             })
           }
         })
