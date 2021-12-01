@@ -81,47 +81,35 @@ export default function Dashboard({ session }: any) {
   const ProcessOrders = (Orders: Array<any>) => {
     if (Orders.length) {
       Orders.map((item, index) => {
-        if (item.isPending && checkOrder(item.id, Resource?.Orders.pending)) {
+        if (item.isPending && !checkOrder(item.id, Resource?.Orders.pending)) {
           Resource?.setOrders((prev) => {
             // let list = prev.pending
             // //prev.pending)
             // list.push(item)
             return { ...prev, pending: [...prev.pending, item] }
           })
-        } else if (
-          item.isOnGoing &&
-          checkOrder(item.id, Resource?.Orders.onGoing)
-        ) {
+        } else if (item.isOnGoing && checkOrder(item.id, Resource?.Orders.onGoing)) {
           Resource?.setOrders((prev) => {
             // let list = prev.pending
             // //prev.pending)
             // list.push(item)
             return { ...prev, delivered: [...prev.delivered, item] }
           })
-        } else if (
-          item.isRejected &&
-          checkOrder(item.id, Resource?.Orders.rejected)
-        ) {
+        } else if (item.isRejected && checkOrder(item.id, Resource?.Orders.rejected)) {
           Resource?.setOrders((prev) => {
             // let list = prev.pending
             // //prev.pending)
             // list.push(item)
             return { ...prev, rejected: [...prev.rejected, item] }
           })
-        } else if (
-          item.isCanceled &&
-          checkOrder(item.id, Resource?.Orders.canceled)
-        ) {
+        } else if (item.isCanceled && checkOrder(item.id, Resource?.Orders.canceled)) {
           Resource?.setOrders((prev) => {
             // let list = prev.pending
             // //prev.pending)
             // list.push(item)
             return { ...prev, canceled: [...prev.canceled, item] }
           })
-        } else if (
-          item.isDelivered &&
-          checkOrder(item.id, Resource?.Orders.delivered)
-        ) {
+        } else if (item.isDelivered && checkOrder(item.id, Resource?.Orders.delivered)) {
           Resource?.setOrders((prev) => {
             // let list = prev.pending
             // //prev.pending)
@@ -140,7 +128,7 @@ export default function Dashboard({ session }: any) {
         // let list: Array<any> = []
         snap.forEach((item) => {
           console.log(item.data())
-          if (item.data().isPending && !checkOrder(item.id, Resource?.Orders.pending)) {
+          if (item.data().isPending && checkOrder(item.id, Resource?.Orders.pending)) {
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
