@@ -11,9 +11,10 @@ import {
 } from "../../../../utilities/functions"
 import firebase from "firebase"
 import { useRouter } from "next/router"
-import { GetServerSideProps } from "next"
 export default function ViewOrders({ session }: any) {
-  const DeliveryBoysCollection = firebase.firestore().collection("deliveryPartners")
+  const DeliveryBoysCollection = firebase
+    .firestore()
+    .collection("deliveryPartners")
   const OrdersCollection = firebase.firestore().collection("orders")
   const [tableData, setTableData] = React.useState<Array<any>>([])
   const [initializing, setInitializing] = React.useState<boolean>(true)
@@ -177,27 +178,29 @@ export default function ViewOrders({ session }: any) {
   }, [])
   if (initializing)
     return (
-      <div className='h-screen w-screen flex items-center justify-center'>
-        <h1 className='text-green-500 text-xl'>Loading ...</h1>
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-xl">Loading ...</h1>
       </div>
     )
   if (session)
     return (
-      <div className='flex-1 flex'>
+      <div className="flex-1 flex">
         <Wrapper>
-          <div className='flex w-full'>
+          <div className="flex w-full">
             <button
-              className='flex-1 flex items-center justify-center py-2'
+              className="flex-1 flex items-center justify-center py-2"
               onClick={() => {
                 fetchOngoingList().catch((error) => console.error(error))
-              }}>
+              }}
+            >
               <span>Accepted</span>
             </button>
             <button
-              className='flex-1 flex items-center justify-center py-2'
+              className="flex-1 flex items-center justify-center py-2"
               onClick={() => {
                 fetchRejectedList().catch((error) => console.error(error))
-              }}>
+              }}
+            >
               <span>Rejected</span>
             </button>
           </div>
@@ -206,21 +209,21 @@ export default function ViewOrders({ session }: any) {
             tableFileds={tableFileds}
             // actions={actions}
             headerActions={HeaderActions}
-            tableTitle='Delivery Boy'
+            tableTitle="Delivery Boy"
           />
         </Wrapper>
       </div>
     )
   return (
-    <Layout title='Not Authenticated'>
-      <div className='h-screen w-screen flex items-center justify-center'>
-        <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
+    <Layout title="Not Authenticated">
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
       </div>
     </Layout>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps(context: any) {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)

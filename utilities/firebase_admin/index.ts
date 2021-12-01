@@ -2,7 +2,7 @@ import * as admin from "firebase-admin"
 
 const config = require("../../Configs/service_account.json")
 
-export const verifyIdToken = async (token: string) => {
+export const verifyIdToken = async (token: any) => {
   if (!admin.apps.length) {
     admin.initializeApp({
       credential: admin.credential.cert(config),
@@ -13,6 +13,5 @@ export const verifyIdToken = async (token: string) => {
     .verifyIdToken(token)
     .catch((error) => {
       //error)
-      throw error
     })
 }

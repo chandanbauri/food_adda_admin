@@ -12,7 +12,6 @@ import Image from "next/image"
 import TimeField from "react-simple-timefield"
 import { useRouter } from "next/router"
 import FoodTable from "../../../../components/table/food-table/food-table"
-import { GetServerSideProps } from "next"
 let initialState = {
   restaurantName: "",
   phone: "",
@@ -121,9 +120,9 @@ export default function EditRestaurant({ session }: any) {
     })
   }
   const Chips = ({ text }: any) => (
-    <div className='pl-3 py-2 bg-purple-500 rounded-full m-2 flex items-center justify-between'>
-      <span className='text-white text-xs'>{text}</span>
-      <div className='px-3 text-white' onClick={() => RemoveType(text)}>
+    <div className="pl-3 py-2 bg-purple-500 rounded-full m-2 flex items-center justify-between">
+      <span className="text-white text-xs">{text}</span>
+      <div className="px-3 text-white" onClick={() => RemoveType(text)}>
         <Feather.X size={18} />
       </div>
     </div>
@@ -197,44 +196,44 @@ export default function EditRestaurant({ session }: any) {
 
   if (initializing)
     return (
-      <div className='h-screen w-screen flex items-center justify-center'>
-        <h1 className='text-green-500 text-xl'>Loading ...</h1>
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-xl">Loading ...</h1>
       </div>
     )
   if (session)
     return (
       <Wrapper>
-        <div className='w-full px-4 mt-5 box-border'>
-          <h1 className='text-green-500 text-2xl'>{`Update Restaurant`}</h1>
-          <h1 className='text-green-500 text-xl'>{restaurantName}</h1>
+        <div className="w-full px-4 mt-5 box-border">
+          <h1 className="text-green-500 text-2xl">{`Update Restaurant`}</h1>
+          <h1 className="text-green-500 text-xl">{restaurantName}</h1>
           {fields.map((item, index) => (
-            <div className='flex flex-col mt-4 mb-2' key={index}>
-              <label className='capitalize'>{item.label}</label>
+            <div className="flex flex-col mt-4 mb-2" key={index}>
+              <label className="capitalize">{item.label}</label>
               <input
-                className='border-2 border-green-500 my-2'
+                className="border-2 border-green-500 my-2"
                 value={item.value || ""}
                 onChange={handleText(item.name)}
               />
             </div>
           ))}
-          <div className='flex flex-col mt-4 mb-2'>
-            <label className='capitalize'>Restaurant Types</label>
+          <div className="flex flex-col mt-4 mb-2">
+            <label className="capitalize">Restaurant Types</label>
             <textarea
-              className='border-2 border-green-500 my-2'
+              className="border-2 border-green-500 my-2"
               value={tag}
               onChange={(e) => {
                 setTag(e.target.value)
               }}
             />
-            <div className='flex flex-row items-center justify-start flex-wrap'>
+            <div className="flex flex-row items-center justify-start flex-wrap">
               {tags.map((item, index) => (
                 <Chips text={item} key={index} />
               ))}
             </div>
           </div>
-          <div className=' my-3'>
+          <div className=" my-3">
             <button
-              className='px-14 py-2 bg-green-500 shadow-xl rounded'
+              className="px-14 py-2 bg-green-500 shadow-xl rounded"
               onClick={() => {
                 if (tag != "") {
                   setTags((prev) => {
@@ -244,58 +243,73 @@ export default function EditRestaurant({ session }: any) {
                   })
                   setTag("")
                 }
-              }}>
-              <span className=' capitalize text-white'>add type</span>
+              }}
+            >
+              <span className=" capitalize text-white">add type</span>
             </button>
           </div>
-          <div className='flex justify-between md:flex-row flex-col'>
-            <div className='flex flex-col'>
+          <div className="flex justify-between md:flex-row flex-col">
+            <div className="flex flex-col">
               <label>Opens at</label>
               <TimeField
                 value={app.opening}
                 onChange={(event, value) => {
                   setApp((prev) => ({ ...prev, opening: value }))
                 }}
-                input={<input type='text' className='border-2 border-green-500 my-2 px-2 py-1' />}
-                colon=':'
+                input={
+                  <input
+                    type="text"
+                    className="border-2 border-green-500 my-2 px-2 py-1"
+                  />
+                }
+                colon=":"
                 showSeconds={false}
               />
             </div>
-            <div className='flex flex-col'>
+            <div className="flex flex-col">
               <label>Closes At</label>
               <TimeField
                 value={app.closing}
                 onChange={(event, value) => {
                   setApp((prev) => ({ ...prev, closing: value }))
                 }}
-                input={<input type='text' className='border-2 border-green-500 my-2 px-2 py-1' />}
-                colon=':'
+                input={
+                  <input
+                    type="text"
+                    className="border-2 border-green-500 my-2 px-2 py-1"
+                  />
+                }
+                colon=":"
                 showSeconds={false}
               />
             </div>
           </div>
-          <div className=' bg-green-50 h-52 w-full sm:max-w-max rounded overflow-hidden relative outline-none my-10'>
-            <div className='absolute top-0 left-0 right-0 bottom-0 outline-none'>
+          <div className=" bg-green-50 h-52 w-full sm:max-w-max rounded overflow-hidden relative outline-none my-10">
+            <div className="absolute top-0 left-0 right-0 bottom-0 outline-none">
               {previewImage != null && (
-                <Image src={previewImage} className='h-full w-full' layout='fill' />
+                <Image
+                  src={previewImage}
+                  className="h-full w-full"
+                  layout="fill"
+                />
               )}
             </div>
-            <div className='absolute bottom-0 w-full bg-black bg-opacity-25 px-2 box-border py-3 outline-none'>
-              <span className='text-white capitalize'>
+            <div className="absolute bottom-0 w-full bg-black bg-opacity-25 px-2 box-border py-3 outline-none">
+              <span className="text-white capitalize">
                 {previewImage ? "change" : "upload Restaurant image"}
               </span>
             </div>
             <input
-              type='file'
-              className='opacity-0 h-full w-full z-20 outline-none'
-              accept='image/x-png,image/jpeg'
+              type="file"
+              className="opacity-0 h-full w-full z-20 outline-none"
+              accept="image/x-png,image/jpeg"
               onChange={(e) => {
                 onImageChange(e)
               }}
             />
           </div>
 
-          <div className='flex flex-grow items-center justify-center my-5'>
+          <div className="flex flex-grow items-center justify-center my-5">
             <button
               onClick={async () => {
                 // //app)
@@ -303,7 +317,9 @@ export default function EditRestaurant({ session }: any) {
                   await uploadToFirebase()
                   if (imageURL.current !== "") {
                     //console.log()
-                    await RestaurantCollection.doc(restaurant?.toString()).update({
+                    await RestaurantCollection.doc(
+                      restaurant?.toString()
+                    ).update({
                       ...app,
                       tags,
                       image: imageURL.current,
@@ -331,9 +347,10 @@ export default function EditRestaurant({ session }: any) {
                   throw error
                 }
                 // setTrigger(true)
-              }}>
-              <div className='py-2 px-10 bg-green-500 shadow-md rounded-md'>
-                <h1 className='text-white'>Save</h1>
+              }}
+            >
+              <div className="py-2 px-10 bg-green-500 shadow-md rounded-md">
+                <h1 className="text-white">Save</h1>
               </div>
             </button>
           </div>
@@ -346,39 +363,43 @@ export default function EditRestaurant({ session }: any) {
 
           <FoodTable restaurant={restaurant} isEditMode={true} />
 
-          <PopUpContainer trigger={trigger} content={<PopUpContent />} onClose={closePopUp} />
+          <PopUpContainer
+            trigger={trigger}
+            content={<PopUpContent />}
+            onClose={closePopUp}
+          />
         </div>
       </Wrapper>
     )
   return (
-    <Layout title='Not Authenticated'>
-      <div className='h-screen w-screen flex items-center justify-center'>
-        <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
+    <Layout title="Not Authenticated">
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
       </div>
     </Layout>
   )
 }
 
 const Success = () => (
-  <div className='h-64 flex flex-col items-center justify-center text-green-500'>
+  <div className="h-64 flex flex-col items-center justify-center text-green-500">
     <div>
       <Feather.CheckCircle size={80} />
     </div>
-    <h1 className='mt-10 font-bold text-xl'>Restaurant</h1>
-    <h1 className='font-bold text-xl'> Added Successfully</h1>
+    <h1 className="mt-10 font-bold text-xl">Restaurant</h1>
+    <h1 className="font-bold text-xl"> Added Successfully</h1>
   </div>
 )
 const Failure = () => (
-  <div className='h-64 flex flex-col items-center justify-center text-red-500'>
+  <div className="h-64 flex flex-col items-center justify-center text-red-500">
     <div>
       <Feather.XCircle size={80} />
     </div>
-    <h1 className='mt-10 font-bold text-xl'>Something</h1>
-    <h1 className='font-bold text-xl'>Went wrong</h1>
+    <h1 className="mt-10 font-bold text-xl">Something</h1>
+    <h1 className="font-bold text-xl">Went wrong</h1>
   </div>
 )
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps(context: any) {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)

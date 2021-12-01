@@ -7,7 +7,6 @@ import * as Feather from "react-feather"
 import ContentTable from "../../../components/table"
 import firebase from "firebase"
 import PopUpContainer from "../../../components/popUp/container"
-import { GetServerSideProps } from "next"
 export default function RestaurantsDB({ session }: any) {
   const RestaurantCollection = firebase.firestore().collection("restaurants")
   const [tableData, setTableData] = React.useState<Array<any>>([])
@@ -64,7 +63,12 @@ export default function RestaurantsDB({ session }: any) {
   //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
   //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
   // ]
-  let tableFileds = ["restaurantName", "preparationDuration", "phone", "address"]
+  let tableFileds = [
+    "restaurantName",
+    "preparationDuration",
+    "phone",
+    "address",
+  ]
   let actions = [
     {
       Icon: <Feather.Edit size={24} />,
@@ -111,21 +115,21 @@ export default function RestaurantsDB({ session }: any) {
   }, [])
   if (initializing)
     return (
-      <div className='h-screen w-screen flex items-center justify-center'>
-        <h1 className='text-green-500 text-xl'>Loading ...</h1>
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-xl">Loading ...</h1>
       </div>
     )
   if (session)
     return (
-      <div className=' flex-1 flex'>
+      <div className=" flex-1 flex">
         <Wrapper>
           <PopUpContainer
             trigger={popUp}
             content={
-              <div className='flex flex-col mb-5 text-center'>
-                <h4 className='text-xl font-sans font-bold'>Are you sure ?</h4>
+              <div className="flex flex-col mb-5 text-center">
+                <h4 className="text-xl font-sans font-bold">Are you sure ?</h4>
                 <button
-                  className='w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl'
+                  className="w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl"
                   onClick={async () => {
                     // deleteTournament().catch((error) => console.error(error))
                     try {
@@ -136,7 +140,10 @@ export default function RestaurantsDB({ session }: any) {
                           if (index == 0) {
                             return [...prev.slice(1)]
                           }
-                          return [...prev.slice(0, index), ...prev.slice(index + 1)]
+                          return [
+                            ...prev.slice(0, index),
+                            ...prev.slice(index + 1),
+                          ]
                         }
                         return prev
                       })
@@ -144,8 +151,9 @@ export default function RestaurantsDB({ session }: any) {
                     } catch (error) {
                       console.error(error)
                     }
-                  }}>
-                  <span className='text-white font-bold'>Proceed</span>
+                  }}
+                >
+                  <span className="text-white font-bold">Proceed</span>
                 </button>
               </div>
             }
@@ -158,22 +166,22 @@ export default function RestaurantsDB({ session }: any) {
             tableData={tableData}
             tableFileds={tableFileds}
             actions={actions}
-            tableTitle='Restaurants'
+            tableTitle="Restaurants"
             headerActions={HeaderActions}
           />
         </Wrapper>
       </div>
     )
   return (
-    <Layout title='Not Authenticated'>
-      <div className='h-screen w-screen flex items-center justify-center'>
-        <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
+    <Layout title="Not Authenticated">
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
       </div>
     </Layout>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps(context: any) {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)

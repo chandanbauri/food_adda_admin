@@ -10,7 +10,6 @@ import {
   getListOfDeliveryBoys,
 } from "../../../utilities/functions"
 import PopUpContainer from "../../../components/popUp/container"
-import { GetServerSideProps } from "next"
 export default function DeliveryBoyDB({ session }: any) {
   const [tableData, setTableData] = React.useState<Array<any>>([])
   const [initializing, setInitializing] = React.useState<boolean>(true)
@@ -126,21 +125,21 @@ export default function DeliveryBoyDB({ session }: any) {
   }, [])
   if (initializing)
     return (
-      <div className='h-screen w-screen flex items-center justify-center'>
-        <h1 className='text-green-500 text-xl'>Loading ...</h1>
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-xl">Loading ...</h1>
       </div>
     )
   if (session)
     return (
-      <div className=' flex-1 flex'>
+      <div className=" flex-1 flex">
         <Wrapper>
           <PopUpContainer
             trigger={popUp}
             content={
-              <div className='flex flex-col mb-5 text-center'>
-                <h4 className='text-xl font-sans font-bold'>Are you sure ?</h4>
+              <div className="flex flex-col mb-5 text-center">
+                <h4 className="text-xl font-sans font-bold">Are you sure ?</h4>
                 <button
-                  className='w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl'
+                  className="w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl"
                   onClick={async () => {
                     // deleteTournament().catch((error) => console.error(error))
                     try {
@@ -151,7 +150,10 @@ export default function DeliveryBoyDB({ session }: any) {
                           if (index == 0) {
                             return [...prev.slice(1)]
                           }
-                          return [...prev.slice(0, index), ...prev.slice(index + 1)]
+                          return [
+                            ...prev.slice(0, index),
+                            ...prev.slice(index + 1),
+                          ]
                         }
                         return prev
                       })
@@ -159,8 +161,9 @@ export default function DeliveryBoyDB({ session }: any) {
                     } catch (error) {
                       console.error(error)
                     }
-                  }}>
-                  <span className='text-white font-bold'>Proceed</span>
+                  }}
+                >
+                  <span className="text-white font-bold">Proceed</span>
                 </button>
               </div>
             }
@@ -174,21 +177,21 @@ export default function DeliveryBoyDB({ session }: any) {
             tableFileds={tableFileds}
             actions={actions}
             headerActions={HeaderActions}
-            tableTitle='Delivery Boys'
+            tableTitle="Delivery Boys"
           />
         </Wrapper>
       </div>
     )
   return (
-    <Layout title='Not Authenticated'>
-      <div className='h-screen w-screen flex items-center justify-center'>
-        <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
+    <Layout title="Not Authenticated">
+      <div className="h-screen w-screen flex items-center justify-center">
+        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
       </div>
     </Layout>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps(context: any) {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)
