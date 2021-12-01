@@ -51,7 +51,6 @@ export default function Dashboard({ session }: any) {
     }
     return true
   }
-<<<<<<< HEAD
   // const ProcessOrders = (Orders: Array<any>) => {
   //   if (Orders.length) {
   //     Orders.map((item, index) => {
@@ -94,65 +93,14 @@ export default function Dashboard({ session }: any) {
   //     })
   //   }
   // }
-=======
-  const ProcessOrders = (Orders: Array<any>) => {
-    if (Orders.length) {
-      Orders.map((item, index) => {
-        if (item.isPending && !checkOrder(item.id, Resource?.Orders.pending)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, pending: [...prev.pending, item] }
-          })
-        } else if (item.isOnGoing && checkOrder(item.id, Resource?.Orders.onGoing)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, delivered: [...prev.delivered, item] }
-          })
-        } else if (item.isRejected && checkOrder(item.id, Resource?.Orders.rejected)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, rejected: [...prev.rejected, item] }
-          })
-        } else if (item.isCanceled && checkOrder(item.id, Resource?.Orders.canceled)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, canceled: [...prev.canceled, item] }
-          })
-        } else if (item.isDelivered && checkOrder(item.id, Resource?.Orders.delivered)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, delivered: [...prev.delivered, item] }
-          })
-        }
-      })
-    }
-  }
->>>>>>> 2ef2a8d004b8784bba27c71f50e04058f3f153e8
   React.useEffect(() => {
     let Orders = OrdersCollections.onSnapshot((snap) => {
       if (snap.empty) {
         setInitializing(false)
       } else {
-<<<<<<< HEAD
         console.log(Resource?.Orders)
         snap.forEach((item) => {
           if (item.data().isPending && !checkOrder(item.id, Resource?.Orders.pending)) {
-=======
-        // let list: Array<any> = []
-        snap.forEach((item) => {
-          console.log(item.data())
-          if (item.data().isPending && checkOrder(item.id, Resource?.Orders.pending)) {
->>>>>>> 2ef2a8d004b8784bba27c71f50e04058f3f153e8
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
