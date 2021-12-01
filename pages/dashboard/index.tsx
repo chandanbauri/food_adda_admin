@@ -137,12 +137,10 @@ export default function Dashboard({ session }: any) {
       if (snap.empty) {
         setInitializing(false)
       } else {
-        let list: Array<any> = []
+        // let list: Array<any> = []
         snap.forEach((item) => {
-          if (
-            item.data().isPending &&
-            checkOrder(item.id, Resource?.Orders.pending)
-          ) {
+          console.log(item.data())
+          if (item.data().isPending && !checkOrder(item.id, Resource?.Orders.pending)) {
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
@@ -152,10 +150,7 @@ export default function Dashboard({ session }: any) {
                 pending: [...prev.pending, { id: item.id, ...item.data() }],
               }
             })
-          } else if (
-            item.data().isOnGoing &&
-            checkOrder(item.id, Resource?.Orders.onGoing)
-          ) {
+          } else if (item.data().isOnGoing && checkOrder(item.id, Resource?.Orders.onGoing)) {
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
@@ -165,10 +160,7 @@ export default function Dashboard({ session }: any) {
                 delivered: [...prev.delivered, { id: item.id, ...item.data() }],
               }
             })
-          } else if (
-            item.data().isRejected &&
-            checkOrder(item.id, Resource?.Orders.rejected)
-          ) {
+          } else if (item.data().isRejected && checkOrder(item.id, Resource?.Orders.rejected)) {
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
@@ -178,10 +170,7 @@ export default function Dashboard({ session }: any) {
                 rejected: [...prev.rejected, { id: item.id, ...item.data() }],
               }
             })
-          } else if (
-            item.data().isCanceled &&
-            checkOrder(item.id, Resource?.Orders.canceled)
-          ) {
+          } else if (item.data().isCanceled && checkOrder(item.id, Resource?.Orders.canceled)) {
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
@@ -191,10 +180,7 @@ export default function Dashboard({ session }: any) {
                 canceled: [...prev.canceled, { id: item.id, ...item.data() }],
               }
             })
-          } else if (
-            item.data().isDelivered &&
-            checkOrder(item.id, Resource?.Orders.delivered)
-          ) {
+          } else if (item.data().isDelivered && checkOrder(item.id, Resource?.Orders.delivered)) {
             Resource?.setOrders((prev) => {
               // let list = prev.pending
               // //prev.pending)
