@@ -117,7 +117,7 @@ export default function Dashboard({ session }: any) {
               // list.push(item)
               return {
                 ...prev,
-                onGoing: [...prev.delivered, { id: item.id, ...item.data() }],
+                onGoing: [...prev.onGoing, { id: item.id, ...item.data() }],
               }
             })
           } else if (item.data().isRejected && !checkOrder(item.id, Resource?.Orders.rejected)) {
