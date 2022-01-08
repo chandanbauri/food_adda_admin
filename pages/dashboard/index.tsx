@@ -65,15 +65,13 @@ export default function DashboardScreen({ session }: DASHBOARD_SCREEN_PROPS) {
       console.log("ERROR", error)
     }
   }
-
   const checkOrder = (id: string, array: Array<any> | undefined): boolean => {
     let index = array?.findIndex((item, index) => item.id == id)
-    if (index != -1) {
+    if (index == -1) {
       return false
     }
     return true
   }
-
   React.useEffect(() => {
     let Orders = OrdersCollections.onSnapshot((snap) => {
       if (snap.empty) {
@@ -92,7 +90,7 @@ export default function DashboardScreen({ session }: DASHBOARD_SCREEN_PROPS) {
             setOrders((prev) => {
               return {
                 ...prev,
-                delivered: [...prev.delivered, { id: item.id, ...item.data() }],
+                onGoing: [...prev.onGoing, { id: item.id, ...item.data() }],
               }
             })
           } else if (item.data().isRejected && checkOrder(item.id, orders.rejected)) {
