@@ -14,7 +14,7 @@ export default function Home() {
           </h1>
           <div className='flex flex-row items-center justify-between mt-5'>
             {Auth?.user ? (
-              <Link href='/dashboard/dashboard'>
+              <Link href='/dashboard'>
                 <button
                   onClick={() => {
                     //"1")
