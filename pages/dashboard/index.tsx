@@ -1,18 +1,38 @@
 import * as React from "react"
-import OrderCard from "../../components/cards/order"
-import Wrapper from "../../components/layout"
-import { verifyIdToken } from "../../utilities/firebase_admin"
-import { Layout } from "../../components/layout/secondary"
 import nookies from "nookies"
+import { verifyIdToken } from "../../utilities/firebase_admin"
 import firebase from "firebase"
-import { useResource } from "../../components/context/Resource"
+import Wrapper from "../../components/layout"
+import OrderCard from "../../components/cards/order"
+import { GetServerSideProps } from "next"
 
-export default function Dashboard({ session }: any) {
-  const OrdersCollections = firebase.firestore().collection("orders")
-  const CompanyFeatureValues = firebase.firestore().collection("Features")
+interface DASHBOARD_SCREEN_PROPS {
+  session: string
+}
+
+interface InitOrders {
+  pending: Array<any>
+  onGoing: Array<any>
+  rejected: Array<any>
+  canceled: Array<any>
+  delivered: Array<any>
+}
+
+export default function DashboardScreen({ session }: DASHBOARD_SCREEN_PROPS) {
+  const firestore = firebase.firestore
+  const OrdersCollections = firestore().collection("orders")
+  const CompanyFeatureValues = firestore().collection("Features")
   const [features, setFeatures] = React.useState<any>({})
-  const [initializing, setInitializing] = React.useState<boolean>(true)
-  const Resource = useResource()
+  const [initializing, setInitializing] = React.useState<boolean>(() => true)
+  let initOrders: InitOrders = {
+    pending: [],
+    onGoing: [],
+    rejected: [],
+    canceled: [],
+    delivered: [],
+  }
+  const [orders, setOrders] = React.useState(() => initOrders)
+
   const updateFeature = async (field: string, value: string) => {
     try {
       setInitializing(true)
@@ -31,6 +51,7 @@ export default function Dashboard({ session }: any) {
       throw error
     }
   }
+
   const FeatchFeatures = async () => {
     try {
       let res = await CompanyFeatureValues.doc("production").get()
@@ -44,33 +65,7 @@ export default function Dashboard({ session }: any) {
       console.log("ERROR", error)
     }
   }
-  // const FetchOrders = async () => {
-  //   try {
-  //     let Orders = OrdersCollections.onSnapshot((snap) => {
-  //       if (snap.empty) {
-  //         setInitializing(false)
-  //       } else {
-  //         let list: Array<any> = []
-  //         snap.forEach((item) => {
-  //           list.push({ id: item.id, ...item.data() })
-  //         })
-  //         ProcessOrders(list)
-  //       }
-  //     })
-  //     // if (Orders) {
-  //     //   let list: Array<any> = []
-  //     //   Orders.docs.map((item, index) => {
-  //     //     list.push({ id: item.id, ...item.data() })
-  //     //   })
-  //     //   ProcessOrders(list)
-  //     //   setInitializing(false)
-  //     // } else {
-  //     //   setInitializing(false)
-  //     // }
-  //   } catch (error) {
-  //     throw error
-  //   }
-  // }
+
   const checkOrder = (id: string, array: Array<any> | undefined): boolean => {
     let index = array?.findIndex((item, index) => item.id == id)
     if (index != -1) {
@@ -78,101 +73,44 @@ export default function Dashboard({ session }: any) {
     }
     return true
   }
-  const ProcessOrders = (Orders: Array<any>) => {
-    if (Orders.length) {
-      Orders.map((item, index) => {
-        if (item.isPending && !checkOrder(item.id, Resource?.Orders.pending)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, pending: [...prev.pending, item] }
-          })
-        } else if (item.isOnGoing && checkOrder(item.id, Resource?.Orders.onGoing)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, delivered: [...prev.delivered, item] }
-          })
-        } else if (item.isRejected && checkOrder(item.id, Resource?.Orders.rejected)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, rejected: [...prev.rejected, item] }
-          })
-        } else if (item.isCanceled && checkOrder(item.id, Resource?.Orders.canceled)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, canceled: [...prev.canceled, item] }
-          })
-        } else if (item.isDelivered && checkOrder(item.id, Resource?.Orders.delivered)) {
-          Resource?.setOrders((prev) => {
-            // let list = prev.pending
-            // //prev.pending)
-            // list.push(item)
-            return { ...prev, delivered: [...prev.delivered, item] }
-          })
-        }
-      })
-    }
-  }
+
   React.useEffect(() => {
     let Orders = OrdersCollections.onSnapshot((snap) => {
       if (snap.empty) {
         setInitializing(false)
       } else {
-        // let list: Array<any> = []
         snap.forEach((item) => {
           console.log(item.data())
-          if (item.data().isPending && checkOrder(item.id, Resource?.Orders.pending)) {
-            Resource?.setOrders((prev) => {
-              // let list = prev.pending
-              // //prev.pending)
-              // list.push(item)
+          if (item.data().isPending && checkOrder(item.id, orders.pending)) {
+            setOrders((prev) => {
               return {
                 ...prev,
                 pending: [...prev.pending, { id: item.id, ...item.data() }],
               }
             })
-          } else if (item.data().isOnGoing && checkOrder(item.id, Resource?.Orders.onGoing)) {
-            Resource?.setOrders((prev) => {
-              // let list = prev.pending
-              // //prev.pending)
-              // list.push(item)
+          } else if (item.data().isOnGoing && checkOrder(item.id, orders.onGoing)) {
+            setOrders((prev) => {
               return {
                 ...prev,
                 delivered: [...prev.delivered, { id: item.id, ...item.data() }],
               }
             })
-          } else if (item.data().isRejected && checkOrder(item.id, Resource?.Orders.rejected)) {
-            Resource?.setOrders((prev) => {
-              // let list = prev.pending
-              // //prev.pending)
-              // list.push(item)
+          } else if (item.data().isRejected && checkOrder(item.id, orders.rejected)) {
+            setOrders((prev) => {
               return {
                 ...prev,
                 rejected: [...prev.rejected, { id: item.id, ...item.data() }],
               }
             })
-          } else if (item.data().isCanceled && checkOrder(item.id, Resource?.Orders.canceled)) {
-            Resource?.setOrders((prev) => {
-              // let list = prev.pending
-              // //prev.pending)
-              // list.push(item)
+          } else if (item.data().isCanceled && checkOrder(item.id, orders.canceled)) {
+            setOrders((prev) => {
               return {
                 ...prev,
                 canceled: [...prev.canceled, { id: item.id, ...item.data() }],
               }
             })
-          } else if (item.data().isDelivered && checkOrder(item.id, Resource?.Orders.delivered)) {
-            Resource?.setOrders((prev) => {
-              // let list = prev.pending
-              // //prev.pending)
-              // list.push(item)
+          } else if (item.data().isDelivered && checkOrder(item.id, orders.delivered)) {
+            setOrders((prev) => {
               return {
                 ...prev,
                 delivered: [...prev.delivered, { id: item.id, ...item.data() }],
@@ -180,7 +118,7 @@ export default function Dashboard({ session }: any) {
             })
           }
         })
-        // ProcessOrders(list)
+
         setInitializing(false)
       }
     })
@@ -195,78 +133,70 @@ export default function Dashboard({ session }: any) {
   }, [])
   if (initializing)
     return (
-      <div className="h-screen w-screen flex items-center justify-center">
-        <h1 className="text-green-500 text-xl">Loading ...</h1>
+      <div className='h-screen w-screen flex items-center justify-center'>
+        <h1 className='text-green-500 text-xl'>Loading ...</h1>
       </div>
     )
   if (session)
     return (
-      <div className="bg-white flex-1 flex">
+      <div className='bg-white flex-1 flex'>
         <Wrapper>
           {/* <button
-          onClick={async () => {
-            await assignOrder({
-              deliveryBoyID: "asndasndjasdkka",
-              orderID: "5SC56nZkTAIwSJAn8Dpq",
-            })
-              .then((res) => {
-                //res)
+            onClick={async () => {
+              await assignOrder({
+                deliveryBoyID: "asndasndjasdkka",
+                orderID: "5SC56nZkTAIwSJAn8Dpq",
               })
-              .catch((error) => {
-                //error)
-              })
-          }}
-        >
-          Test
-        </button> */}
-          {!Resource?.Orders ? (
-            <div className="h-64 w-full flex items-center justify-center">
-              <h1 className="text-red-500 text-xl">No Orders Available ...</h1>
+                .then((res) => {
+                  //res)
+                })
+                .catch((error) => {
+                  //error)
+                })
+            }}
+          >
+            Test
+          </button> */}
+          {!orders ? (
+            <div className='h-64 w-full flex items-center justify-center'>
+              <h1 className='text-red-500 text-xl'>No Orders Available ...</h1>
             </div>
           ) : (
-            <div className="flex h-full flex-wrap flex-row items-start justify-start">
+            <div className='flex h-full flex-wrap flex-row items-start justify-start'>
               <OrderCard
-                title="Pending"
-                qty={Resource?.Orders.pending.length}
-                desc="Pending orders Card"
-                to="/DB/Orders/pending"
+                title='Pending'
+                qty={orders.pending.length}
+                desc='Pending orders Card'
+                to='/DB/Orders/pending'
               />
               <OrderCard
-                title="On Going"
-                qty={Resource?.Orders.onGoing.length}
-                desc="On going orders Card"
-                to="/DB/Orders/ongoing"
+                title='On Going'
+                qty={orders.onGoing.length}
+                desc='On going orders Card'
+                to='/DB/Orders/ongoing'
               />
               <OrderCard
-                title="Rejected"
-                qty={Resource?.Orders.rejected.length}
-                desc="Rejected orders Card"
-                to="/DB/Orders/rejected"
+                title='Rejected'
+                qty={orders.rejected.length}
+                desc='Rejected orders Card'
+                to='/DB/Orders/rejected'
               />
               <OrderCard
-                title="Canceled"
-                qty={Resource?.Orders.canceled.length}
-                desc="Canceled orders Card"
-                to="/DB/Orders/canceled"
-              />
-              <OrderCard
-                title="Delivered"
-                qty={Resource?.Orders.delivered.length}
-                desc="Delivered orders Card"
-                to="/DB/Orders/delivered"
+                title='Delivered'
+                qty={orders.delivered.length}
+                desc='Delivered orders Card'
+                to='/DB/Orders/delivered'
               />
             </div>
           )}
-          <div className="ml-5">
-            <div className="my-5">
-              <div className="flex flex-col">
-                <label className=" text-lg text-green-500">
-                  Delivery Charge (₹)
-                </label>
+          <div className='ml-5'>
+            <div className='my-5'>
+              <div className='flex flex-col'>
+                <label className=' text-lg text-green-500'>Delivery Charge (₹)</label>
                 <input
-                  className="border-green-500 border-2 md:h-12 h-10 mt-2 w-52 rounded-lg pl-10 pr-2 focus:border-blue-500 outline-none"
-                  placeholder="Delivery charge"
-                  type="number"
+                  className='border-green-500 border-2 md:h-12 h-10 mt-2 w-52 rounded-lg pl-10 pr-2 focus:border-blue-500 outline-none'
+                  placeholder='Delivery charge'
+                  type='number'
                   min={0}
                   value={features ? features.delivery_charge : 0}
                   onChange={(e) => {
@@ -278,23 +208,18 @@ export default function Dashboard({ session }: any) {
                 />
               </div>
               <button
-                onClick={() =>
-                  updateFeature("delivery_charge", features.delivery_charge)
-                }
-                className="px-10 py-1 bg-blue-500 rounded-lg text-white capitalize mt-5 shadow-xl"
-              >
+                onClick={() => updateFeature("delivery_charge", features.delivery_charge)}
+                className='px-10 py-1 bg-blue-500 rounded-lg text-white capitalize mt-5 shadow-xl'>
                 save
               </button>
             </div>
-            <div className="my-5">
-              <div className="flex flex-col">
-                <label className=" text-lg text-green-500 capitalize">
-                  GST percentage (%)
-                </label>
+            <div className='my-5'>
+              <div className='flex flex-col'>
+                <label className=' text-lg text-green-500 capitalize'>GST percentage (%)</label>
                 <input
-                  className="border-green-500 border-2 md:h-12 h-10 mt-2 w-52 rounded-lg pl-10 pr-2 focus:border-blue-500 outline-none"
-                  placeholder="GST Percentage"
-                  type="number"
+                  className='border-green-500 border-2 md:h-12 h-10 mt-2 w-52 rounded-lg pl-10 pr-2 focus:border-blue-500 outline-none'
+                  placeholder='GST Percentage'
+                  type='number'
                   min={0}
                   value={features ? features.gst : 0}
                   onChange={(e) => {
@@ -307,20 +232,17 @@ export default function Dashboard({ session }: any) {
               </div>
               <button
                 onClick={() => updateFeature("gst", features.gst)}
-                className="px-10 py-1 bg-blue-500 rounded-lg text-white capitalize mt-5 shadow-xl"
-              >
+                className='px-10 py-1 bg-blue-500 rounded-lg text-white capitalize mt-5 shadow-xl'>
                 save
               </button>
             </div>
-            <div className="my-5">
-              <div className="flex flex-col">
-                <label className=" text-lg text-green-500">
-                  Minimum Order Cost (₹)
-                </label>
+            <div className='my-5'>
+              <div className='flex flex-col'>
+                <label className=' text-lg text-green-500'>Minimum Order Cost (₹)</label>
                 <input
-                  className="border-green-500 border-2 md:h-12 h-10 mt-2 w-52 rounded-lg pl-10 pr-2 focus:border-blue-500 outline-none"
-                  placeholder="Minimum Order Cost"
-                  type="number"
+                  className='border-green-500 border-2 md:h-12 h-10 mt-2 w-52 rounded-lg pl-10 pr-2 focus:border-blue-500 outline-none'
+                  placeholder='Minimum Order Cost'
+                  type='number'
                   min={0}
                   value={features ? features.minimum_order_price : 0}
                   onChange={(e) => {
@@ -332,14 +254,8 @@ export default function Dashboard({ session }: any) {
                 />
               </div>
               <button
-                onClick={() =>
-                  updateFeature(
-                    "minimum_order_price",
-                    features.minimum_order_price
-                  )
-                }
-                className="px-10 py-1 bg-blue-500 rounded-lg text-white capitalize mt-5 shadow-xl"
-              >
+                onClick={() => updateFeature("minimum_order_price", features.minimum_order_price)}
+                className='px-10 py-1 bg-blue-500 rounded-lg text-white capitalize mt-5 shadow-xl'>
                 save
               </button>
             </div>
@@ -347,16 +263,9 @@ export default function Dashboard({ session }: any) {
         </Wrapper>
       </div>
     )
-  return (
-    <Layout title="Not Authenticated">
-      <div className="h-screen w-screen flex items-center justify-center">
-        <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
-      </div>
-    </Layout>
-  )
 }
 
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let cookies = nookies.get(context)
     const token = await verifyIdToken(cookies.token)

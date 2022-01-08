@@ -1,5 +1,4 @@
 import * as React from "react"
-import { useRouter } from "next/router"
 import Wrapper from "../../../components/layout/"
 import nookies from "nookies"
 import { verifyIdToken } from "../../../utilities/firebase_admin"
@@ -7,20 +6,34 @@ import { Layout } from "../../../components/layout/secondary"
 import * as Feather from "react-feather"
 import ContentTable from "../../../components/table/restaurant/restaurant-table"
 import PopUpContainer from "../../../components/popUp/container"
-import { useResource } from "../../../components/context/Resource"
+import firebase from "firebase"
 import {
   askForAcceptingOrder,
   getListOfDeliveryBoys,
   rejectOrder,
 } from "../../../utilities/functions"
 import DeliveryBoyTable from "../../../components/popUp/delivery-boy"
-export default function Orders({ session }: any) {
-  // const OrdersCollection = firebase.firestore().collection("orders")
+import { GetServerSideProps } from "next"
+interface InitOrders {
+  pending: Array<any>
+  onGoing: Array<any>
+  rejected: Array<any>
+  canceled: Array<any>
+  delivered: Array<any>
+}
+export default function Orders({ session, type }: any) {
+  const firestore = firebase.firestore
+  const OrdersCollections = firestore().collection("orders")
+  let initOrders: InitOrders = {
+    pending: [],
+    onGoing: [],
+    rejected: [],
+    canceled: [],
+    delivered: [],
+  }
+  const [orders, setOrders] = React.useState(() => initOrders)
   const focusedItem = React.useRef<any>()
-  let router = useRouter()
-  let { type } = router.query
   const [popUp, setPopUp] = React.useState<boolean>(false)
-  let Resource = useResource()
   const [success, setSuccess] = React.useState<boolean>(false)
   const [Error, setError] = React.useState<boolean>(false)
   const [DeliveryBoys, setDeliveryBoys] = React.useState<Array<any>>([])
@@ -45,68 +58,6 @@ export default function Orders({ session }: any) {
       throw error
     }
   }
-
-  // let tableData = [
-  //   {
-  //     F1: "I1 asknjnasdsadas",
-  //     F2: "I2",
-  //     F3: "I3",
-  //     F4: "I4",
-  //     F5: "I5",
-  //     F6: "Iun",
-  //   },
-  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
-  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
-  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
-  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
-  //   {
-  //     F1: "I1 asknjnasdsadas",
-  //     F2: "I2",
-  //     F3: "I3",
-  //     F4: "I4",
-  //     F5: "I5",
-  //     F6: "Iun",
-  //   },
-  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
-  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
-  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
-  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
-  //   {
-  //     F1: "I1 asknjnasdsadas",
-  //     F2: "I2",
-  //     F3: "I3",
-  //     F4: "I4",
-  //     F5: "I5",
-  //     F6: "Iun",
-  //   },
-  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
-  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
-  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
-  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
-  //   {
-  //     F1: "I1 asknjnasdsadas",
-  //     F2: "I2",
-  //     F3: "I3",
-  //     F4: "I4",
-  //     F5: "I5",
-  //     F6: "Iun",
-  //   },
-  //   { F1: "I6 gadsdafsd", F2: "I7", F3: "I8", F4: "I9", F5: "I10", F6: "Iun" },
-  //   { F1: "I11", F2: "I12", F3: "I13", F4: "I14", F5: "I15", F6: "Iun" },
-  //   { F1: "I16", F2: "I17", F3: "I18", F4: "I19", F5: "I20", F6: "Iun" },
-  //   { F1: "I21", F2: "I22", F3: "I23", F4: "I24", F5: "I25", F6: "Iun" },
-  // ]
-  // let tableFileds = ["F1", "F2", "F3", "F4", "F5", "F6"]
-  //   let actions = [
-  //     {
-  //       Icon: <Feather.Edit size={24} />,
-  //       action: (data: any) => //data),
-  //     },
-  //     {
-  //       Icon: <Feather.Trash2 size={24} />,
-  //       action: (data: any) => //data),
-  //     },
-  //   ]
 
   const getPopUpActions = (type: any) => {
     let actions: Array<any> = []
@@ -158,7 +109,6 @@ export default function Orders({ session }: any) {
             Icon: <Feather.CheckSquare size={24} />,
             action: (data: any) => {
               focusedItem.current = data
-              //focusedItem.current)
               setPopUp(true)
             },
           },
@@ -168,39 +118,6 @@ export default function Orders({ session }: any) {
               setPopUp(true)
               setIsDeleting(true)
               setData(data)
-              // try {
-              //   setInitializing(true)
-              //   await rejectOrder({ order: data })
-              //   if (Resource?.Orders.pending) {
-              //     let index = Resource?.Orders?.pending?.findIndex(
-              //       (item, index) => item.id == data.id
-              //     )
-              //     if (index !== undefined) {
-              //       Resource?.setOrders((prev) => ({
-              //         ...prev,
-              //         rejected: [...prev.rejected, prev.pending[index]],
-              //       }))
-              //       if (index == 0) {
-              //         Resource?.setOrders((prev) => ({
-              //           ...prev,
-              //           pending: [...prev.pending.slice(1)],
-              //         }))
-              //       } else if (index == 1) {
-              //         Resource?.setOrders((prev) => ({
-              //           ...prev,
-              //           pending: [
-              //             ...prev.pending.slice(0, index),
-              //             ...prev.pending.slice(index + 1),
-              //           ],
-              //         }))
-              //       }
-              //     }
-              //   }
-              //   setSuccess((prev) => false)
-              //   setInitializing(false)
-              // } catch (error) {
-              //   setError((prev) => false)
-              // }
             },
           },
         ]
@@ -245,19 +162,18 @@ export default function Orders({ session }: any) {
     return actions
   }
 
-  const getOrders = () => {
-    //Resource?.Orders)
+  const getOrders = (type: string) => {
     switch (type) {
       case "pending":
-        return Resource?.Orders?.pending
+        return orders?.pending
       case "rejected":
-        return Resource?.Orders?.rejected
+        return orders?.rejected
       case "canceled":
-        return Resource?.Orders?.canceled
+        return orders?.canceled
       case "ongoing":
-        return Resource?.Orders?.onGoing
+        return orders?.onGoing
       case "delivered":
-        return Resource?.Orders?.delivered
+        return orders?.delivered
     }
   }
   const PopUpConent = () => (
@@ -266,11 +182,9 @@ export default function Orders({ session }: any) {
         order={focusedItem.current}
         onAssigning={() => {
           focusedItem.current
-          Resource?.setOrders((prev) => {
+          setOrders((prev) => {
             let { pending, ...rest } = prev
-            let list = pending.filter(
-              (item) => item.id != focusedItem.current.id
-            )
+            let list = pending.filter((item) => item.id != focusedItem.current.id)
             return { ...prev, pending: list }
           })
         }}
@@ -283,17 +197,77 @@ export default function Orders({ session }: any) {
     })
     return
   }, [])
+  const checkOrder = (id: string, array: Array<any> | undefined): boolean => {
+    let index = array?.findIndex((item, index) => item.id == id)
+    if (index != -1) {
+      return false
+    }
+    return true
+  }
+  React.useEffect(() => {
+    setInitializing(true)
+    let Orders = OrdersCollections.onSnapshot((snap) => {
+      if (snap.empty) {
+        setInitializing(false)
+      } else {
+        snap.forEach((item) => {
+          console.log(item.data())
+          if (item.data().isPending && checkOrder(item.id, orders.pending)) {
+            setOrders((prev) => {
+              return {
+                ...prev,
+                pending: [...prev.pending, { id: item.id, ...item.data() }],
+              }
+            })
+          } else if (item.data().isOnGoing && checkOrder(item.id, orders.onGoing)) {
+            setOrders((prev) => {
+              return {
+                ...prev,
+                delivered: [...prev.delivered, { id: item.id, ...item.data() }],
+              }
+            })
+          } else if (item.data().isRejected && checkOrder(item.id, orders.rejected)) {
+            setOrders((prev) => {
+              return {
+                ...prev,
+                rejected: [...prev.rejected, { id: item.id, ...item.data() }],
+              }
+            })
+          } else if (item.data().isCanceled && checkOrder(item.id, orders.canceled)) {
+            setOrders((prev) => {
+              return {
+                ...prev,
+                canceled: [...prev.canceled, { id: item.id, ...item.data() }],
+              }
+            })
+          } else if (item.data().isDelivered && checkOrder(item.id, orders.delivered)) {
+            setOrders((prev) => {
+              return {
+                ...prev,
+                delivered: [...prev.delivered, { id: item.id, ...item.data() }],
+              }
+            })
+          }
+        })
+
+        setInitializing(false)
+      }
+    })
+    return () => {
+      Orders()
+    }
+  }, [])
   if (initializing)
     return (
-      <Layout title="Not Authenticated">
-        <div className="h-screen w-screen flex items-center justify-center">
-          <h1 className="text-green-500 text-2xl font-bold">Loading ... </h1>
+      <Layout title='Not Authenticated'>
+        <div className='h-screen w-screen flex items-center justify-center'>
+          <h1 className='text-green-500 text-2xl font-bold'>Loading ... </h1>
         </div>
       </Layout>
     )
   if (session)
     return (
-      <div className=" flex-1 flex">
+      <div className=' flex-1 flex'>
         <Wrapper>
           {/* <div className="w-full md:px-4">
             <h1 className="w-full bg-green-500 py-5 flex items-center justify-center text-white uppercase">{`${type} Orders`}</h1>
@@ -302,33 +276,31 @@ export default function Orders({ session }: any) {
             trigger={popUp}
             content={
               isDeleting ? (
-                <div className="flex flex-col mb-5 text-center">
-                  <h4 className="text-xl font-sans font-bold">
-                    Are you sure ?
-                  </h4>
+                <div className='flex flex-col mb-5 text-center'>
+                  <h4 className='text-xl font-sans font-bold'>Are you sure ?</h4>
                   <button
-                    className="w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl"
+                    className='w-full mt-5 bg-red-500 py-2 flex items-center justify-center rounded-lg shadow-xl'
                     onClick={async () => {
                       // deleteTournament().catch((error) => console.error(error))
                       try {
                         setInitializing(true)
                         await rejectOrder({ order: data })
-                        if (Resource?.Orders.pending) {
-                          let index = Resource?.Orders?.pending?.findIndex(
-                            (item, index) => item.id == data.id
+                        if (orders.pending) {
+                          let index = orders?.pending?.findIndex(
+                            (item, index) => item.id == data.id,
                           )
                           if (index !== undefined) {
-                            Resource?.setOrders((prev) => ({
+                            setOrders((prev) => ({
                               ...prev,
                               rejected: [...prev.rejected, prev.pending[index]],
                             }))
                             if (index == 0) {
-                              Resource?.setOrders((prev) => ({
+                              setOrders((prev) => ({
                                 ...prev,
                                 pending: [...prev.pending.slice(1)],
                               }))
                             } else if (index == 1) {
-                              Resource?.setOrders((prev) => ({
+                              setOrders((prev) => ({
                                 ...prev,
                                 pending: [
                                   ...prev.pending.slice(0, index),
@@ -345,9 +317,8 @@ export default function Orders({ session }: any) {
                       } catch (error) {
                         setError((prev) => false)
                       }
-                    }}
-                  >
-                    <span className="text-white font-bold">Proceed</span>
+                    }}>
+                    <span className='text-white font-bold'>Proceed</span>
                   </button>
                 </div>
               ) : (
@@ -361,7 +332,7 @@ export default function Orders({ session }: any) {
             }}
           />
           <ContentTable
-            tableData={getOrders()}
+            tableData={getOrders(type)}
             tableFileds={[
               "paymentMethod",
               "amount",
@@ -388,14 +359,18 @@ export default function Orders({ session }: any) {
     )
 }
 
-export async function getServerSideProps(context: any) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     let cookies = nookies.get(context)
+    let { type } = context.query
     const token = await verifyIdToken(cookies.token)
     if (token) {
       const { uid, email } = token
       return {
-        props: { session: `your email is ${email},and your uid is ${uid}` },
+        props: {
+          session: `your email is ${email},and your uid is ${uid}`,
+          type,
+        },
       }
     }
     context.res.writeHead(302, { location: "/auth/login" })
