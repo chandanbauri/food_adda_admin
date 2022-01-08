@@ -67,7 +67,7 @@ export default function DashboardScreen({ session }: DASHBOARD_SCREEN_PROPS) {
   }
   const checkOrder = (id: string, array: Array<any> | undefined): boolean => {
     let index = array?.findIndex((item, index) => item.id == id)
-    if (index == -1) {
+    if (index != -1) {
       return false
     }
     return true
