@@ -273,7 +273,7 @@ export default function Orders({ session, type }: any) {
       } else {
         snap.forEach((item) => {
           console.log(item.data())
-          removePreviousOrderInstance(item.id)
+          // removePreviousOrderInstance(item.id)
           if (item.data().isPending && checkOrder(item.id, orders.pending)) {
             setOrders((prev) => {
               return {
@@ -371,8 +371,7 @@ export default function Orders({ session, type }: any) {
                               }))
                             }
                           }
-                        }
-                        if (data.isDelivered) {
+                        } else if (data.isDelivered) {
                           let index = orders?.delivered?.findIndex(
                             (item, index) => item.id == data.id,
                           )
@@ -385,8 +384,7 @@ export default function Orders({ session, type }: any) {
                               ],
                             }))
                           }
-                        }
-                        if (data.isRejected) {
+                        } else if (data.isRejected) {
                           let index = orders?.rejected?.findIndex(
                             (item, index) => item.id == data.id,
                           )
@@ -399,8 +397,7 @@ export default function Orders({ session, type }: any) {
                               ],
                             }))
                           }
-                        }
-                        if (data.isOnGoing) {
+                        } else if (data.isOnGoing) {
                           let index = orders?.onGoing?.findIndex(
                             (item, index) => item.id == data.id,
                           )

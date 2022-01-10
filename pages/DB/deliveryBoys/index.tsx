@@ -24,9 +24,10 @@ export default function DeliveryBoyDB({ session }: any) {
           //console.log("DELIVERY BOYS", parsedResponse.data)
           let list = parsedResponse.data.map((item: any) => {
             let { uid, ...details } = item
-            //console.log("DELIVERY BOY", item)
+            console.log("DELIVERY BOY", item)
             return { id: uid, ...details }
           })
+          console.log("PARTNERS", list)
           setTableData(list)
           setInitializing(false)
         } else {
