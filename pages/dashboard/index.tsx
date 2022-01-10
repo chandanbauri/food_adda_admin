@@ -31,7 +31,7 @@ export default function DashboardScreen({ session }: DASHBOARD_SCREEN_PROPS) {
     canceled: [],
     delivered: [],
   }
-  const [orders, setOrders] = React.useState(() => initOrders)
+  const [orders, setOrders] = React.useState(initOrders)
 
   const updateFeature = async (field: string, value: string) => {
     try {
@@ -72,6 +72,35 @@ export default function DashboardScreen({ session }: DASHBOARD_SCREEN_PROPS) {
     }
     return true
   }
+  const removePreviousOrderInstance = (id: string) => {
+    setOrders((prev) => {
+      let { pending, onGoing, delivered, rejected } = prev
+      let pendingIndex = pending.findIndex((value, index) => value.id == id)
+      let onGoingIndex = onGoing.findIndex((value, index) => value.id == id)
+      let deliveredIndex = delivered.findIndex((value, index) => value.id == id)
+      let rejectedIndex = rejected.findIndex((value, index) => value.id == id)
+
+      return {
+        ...prev,
+        pending:
+          pendingIndex == -1
+            ? pending
+            : [...pending.slice(0, pendingIndex), ...pending.slice(pendingIndex + 1)],
+        onGoing:
+          pendingIndex == -1
+            ? onGoing
+            : [...onGoing.slice(0, onGoingIndex), ...pending.slice(onGoingIndex + 1)],
+        delivered:
+          pendingIndex == -1
+            ? delivered
+            : [...delivered.slice(0, deliveredIndex), ...pending.slice(deliveredIndex + 1)],
+        rejected:
+          pendingIndex == -1
+            ? rejected
+            : [...rejected.slice(0, rejectedIndex), ...pending.slice(rejectedIndex + 1)],
+      }
+    })
+  }
   React.useEffect(() => {
     let Orders = OrdersCollections.onSnapshot((snap) => {
       if (snap.empty) {
@@ -79,6 +108,7 @@ export default function DashboardScreen({ session }: DASHBOARD_SCREEN_PROPS) {
       } else {
         snap.forEach((item) => {
           console.log(item.data())
+          removePreviousOrderInstance(item.id)
           if (item.data().isPending && checkOrder(item.id, orders.pending)) {
             setOrders((prev) => {
               return {

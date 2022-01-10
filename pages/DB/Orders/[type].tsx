@@ -236,6 +236,35 @@ export default function Orders({ session, type }: any) {
     }
     return true
   }
+  const removePreviousOrderInstance = (id: string) => {
+    setOrders((prev) => {
+      let { pending, onGoing, delivered, rejected } = prev
+      let pendingIndex = pending.findIndex((value, index) => value.id == id)
+      let onGoingIndex = onGoing.findIndex((value, index) => value.id == id)
+      let deliveredIndex = delivered.findIndex((value, index) => value.id == id)
+      let rejectedIndex = rejected.findIndex((value, index) => value.id == id)
+
+      return {
+        ...prev,
+        pending:
+          pendingIndex == -1
+            ? pending
+            : [...pending.slice(0, pendingIndex), ...pending.slice(pendingIndex + 1)],
+        onGoing:
+          pendingIndex == -1
+            ? onGoing
+            : [...onGoing.slice(0, onGoingIndex), ...pending.slice(onGoingIndex + 1)],
+        delivered:
+          pendingIndex == -1
+            ? delivered
+            : [...delivered.slice(0, deliveredIndex), ...pending.slice(deliveredIndex + 1)],
+        rejected:
+          pendingIndex == -1
+            ? rejected
+            : [...rejected.slice(0, rejectedIndex), ...pending.slice(rejectedIndex + 1)],
+      }
+    })
+  }
   React.useEffect(() => {
     setInitializing(true)
     let Orders = OrdersCollections.onSnapshot((snap) => {
@@ -244,6 +273,7 @@ export default function Orders({ session, type }: any) {
       } else {
         snap.forEach((item) => {
           console.log(item.data())
+          removePreviousOrderInstance(item.id)
           if (item.data().isPending && checkOrder(item.id, orders.pending)) {
             setOrders((prev) => {
               return {
@@ -317,7 +347,7 @@ export default function Orders({ session, type }: any) {
                       try {
                         setInitializing(true)
                         await rejectOrder({ order: data })
-                        if (orders.pending) {
+                        if (data.isPending) {
                           let index = orders?.pending?.findIndex(
                             (item, index) => item.id == data.id,
                           )
@@ -340,6 +370,48 @@ export default function Orders({ session, type }: any) {
                                 ],
                               }))
                             }
+                          }
+                        }
+                        if (data.isDelivered) {
+                          let index = orders?.delivered?.findIndex(
+                            (item, index) => item.id == data.id,
+                          )
+                          if (index !== -1) {
+                            setOrders((prev) => ({
+                              ...prev,
+                              delivered: [
+                                ...prev.delivered.slice(0, index),
+                                ...prev.delivered.slice(index + 1),
+                              ],
+                            }))
+                          }
+                        }
+                        if (data.isRejected) {
+                          let index = orders?.rejected?.findIndex(
+                            (item, index) => item.id == data.id,
+                          )
+                          if (index !== -1) {
+                            setOrders((prev) => ({
+                              ...prev,
+                              rejected: [
+                                ...prev.rejected.slice(0, index),
+                                ...prev.rejected.slice(index + 1),
+                              ],
+                            }))
+                          }
+                        }
+                        if (data.isOnGoing) {
+                          let index = orders?.onGoing?.findIndex(
+                            (item, index) => item.id == data.id,
+                          )
+                          if (index !== -1) {
+                            setOrders((prev) => ({
+                              ...prev,
+                              onGoing: [
+                                ...prev.onGoing.slice(0, index),
+                                ...prev.onGoing.slice(index + 1),
+                              ],
+                            }))
                           }
                         }
                         setSuccess((prev) => false)
