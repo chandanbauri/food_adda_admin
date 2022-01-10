@@ -76,47 +76,36 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                       restaurantName: resRest.name,
                     }
                     return (
-                      <tr
-                        key={index}
-                        className={index % 2 == 0 ? "bg-green-100" : "bg-white"}
-                      >
+                      <tr key={index} className={index % 2 == 0 ? "bg-green-100" : "bg-white"}>
                         {actions && actions.length ? (
-                          <td key={`${index}item`} className=" px-4 py-4 ">
-                            <div className="flex items-center justify-around">
+                          <td key={`${index}item`} className=' px-4 py-4 '>
+                            <div className='flex items-center justify-around'>
                               {actions.map(
-                                (
-                                  { Icon, action, isLink, to }: actionProps,
-                                  index: number
-                                ) =>
+                                ({ Icon, action, isLink, to }: actionProps, index: number) =>
                                   isLink && to ? (
                                     <Link
                                       href={`${to}/${data["id"]}?${
-                                        data["name"]
-                                          ? "name=" + data["name"]
-                                          : ""
+                                        data["name"] ? "name=" + data["name"] : ""
                                       }${
                                         data["restaurantName"]
-                                          ? "restaurantName=" +
-                                            data["restaurantName"]
+                                          ? "restaurantName=" + data["restaurantName"]
                                           : ""
                                       }`}
-                                      key={index}
-                                    >
-                                      <span className="box-border p-2 hover:bg-gray-300 rounded-full transition-all ease-linear mx-2">
+                                      key={index}>
+                                      <span className='box-border p-2 hover:bg-gray-300 rounded-full transition-all ease-linear mx-2'>
                                         {Icon}
                                       </span>
                                     </Link>
-                                  ) : data.isRequested && index == 1 ? null : (
+                                  ) : (
                                     <button
                                       key={index}
                                       onClick={() => {
                                         if (action) action(data)
                                       }}
-                                      className="box-border p-2 hover:bg-gray-300 rounded-full transition-all ease-linear mx-2"
-                                    >
+                                      className='box-border p-2 hover:bg-gray-300 rounded-full transition-all ease-linear mx-2'>
                                       {Icon}
                                     </button>
-                                  )
+                                  ),
                               )}
                             </div>
                           </td>
@@ -126,42 +115,31 @@ const ContentTable: React.FunctionComponent<tableProps> = ({
                             return (
                               <td
                                 key={`${index}item`}
-                                className={`px-4 py-4 text-center whitespace-nowrap`}
-                              >
-                                <span>
-                                  {newData[item] ? "Done" : "Not Done Yet"}
-                                </span>
+                                className={`px-4 py-4 text-center whitespace-nowrap`}>
+                                <span>{newData[item] ? "Done" : "Not Done Yet"}</span>
                               </td>
                             )
                           if (typeof newData[item] == "undefined")
                             return (
                               <td
                                 key={`${index}item`}
-                                className={`px-4 py-4 text-center whitespace-nowrap`}
-                              >
+                                className={`px-4 py-4 text-center whitespace-nowrap`}>
                                 <span>Not Available</span>
                               </td>
                             )
-                          if (
-                            item == "placedAt" ||
-                            item == "acceptedOn" ||
-                            item == "deliveredOn"
-                          )
+                          if (item == "placedAt" || item == "acceptedOn" || item == "deliveredOn")
                             return (
                               <td
                                 key={`${index}item`}
-                                className={`px-4 py-4 text-center whitespace-nowrap`}
-                              >
-                                {moment(newData[item]).format(
-                                  "DD/MM/YYYY HH:mm a"
-                                ) ?? "Not Available"}
+                                className={`px-4 py-4 text-center whitespace-nowrap`}>
+                                {moment(newData[item]).format("DD/MM/YYYY HH:mm a") ??
+                                  "Not Available"}
                               </td>
                             )
                           return (
                             <td
                               key={`${index}item`}
-                              className={`px-4 py-4 text-center whitespace-nowrap`}
-                            >
+                              className={`px-4 py-4 text-center whitespace-nowrap`}>
                               {newData[item]}
                             </td>
                           )
