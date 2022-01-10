@@ -347,74 +347,11 @@ export default function Orders({ session, type }: any) {
                       try {
                         setInitializing(true)
                         await rejectOrder({ order: data })
-                        if (data.isPending) {
-                          let index = orders?.pending?.findIndex(
-                            (item, index) => item.id == data.id,
-                          )
-                          if (index !== undefined) {
-                            setOrders((prev) => ({
-                              ...prev,
-                              rejected: [...prev.rejected, prev.pending[index]],
-                            }))
-                            if (index == 0) {
-                              setOrders((prev) => ({
-                                ...prev,
-                                pending: [...prev.pending.slice(1)],
-                              }))
-                            } else if (index == 1) {
-                              setOrders((prev) => ({
-                                ...prev,
-                                pending: [
-                                  ...prev.pending.slice(0, index),
-                                  ...prev.pending.slice(index + 1),
-                                ],
-                              }))
-                            }
-                          }
-                        } else if (data.isDelivered) {
-                          let index = orders?.delivered?.findIndex(
-                            (item, index) => item.id == data.id,
-                          )
-                          if (index !== -1) {
-                            setOrders((prev) => ({
-                              ...prev,
-                              delivered: [
-                                ...prev.delivered.slice(0, index),
-                                ...prev.delivered.slice(index + 1),
-                              ],
-                            }))
-                          }
-                        } else if (data.isRejected) {
-                          let index = orders?.rejected?.findIndex(
-                            (item, index) => item.id == data.id,
-                          )
-                          if (index !== -1) {
-                            setOrders((prev) => ({
-                              ...prev,
-                              rejected: [
-                                ...prev.rejected.slice(0, index),
-                                ...prev.rejected.slice(index + 1),
-                              ],
-                            }))
-                          }
-                        } else if (data.isOnGoing) {
-                          let index = orders?.onGoing?.findIndex(
-                            (item, index) => item.id == data.id,
-                          )
-                          if (index !== -1) {
-                            setOrders((prev) => ({
-                              ...prev,
-                              onGoing: [
-                                ...prev.onGoing.slice(0, index),
-                                ...prev.onGoing.slice(index + 1),
-                              ],
-                            }))
-                          }
-                        }
+                        window.location.href = "/dashboard"
                         setSuccess((prev) => false)
                         setData(null)
                         setIsDeleting(false)
-                        setInitializing(false)
+                        // setInitializing(false)
                       } catch (error) {
                         setError((prev) => false)
                       }
