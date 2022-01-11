@@ -251,15 +251,15 @@ export default function Orders({ session, type }: any) {
             ? pending
             : [...pending.slice(0, pendingIndex), ...pending.slice(pendingIndex + 1)],
         onGoing:
-          pendingIndex == -1
+          onGoingIndex == -1
             ? onGoing
             : [...onGoing.slice(0, onGoingIndex), ...pending.slice(onGoingIndex + 1)],
         delivered:
-          pendingIndex == -1
+          deliveredIndex == -1
             ? delivered
             : [...delivered.slice(0, deliveredIndex), ...pending.slice(deliveredIndex + 1)],
         rejected:
-          pendingIndex == -1
+          rejectedIndex == -1
             ? rejected
             : [...rejected.slice(0, rejectedIndex), ...pending.slice(rejectedIndex + 1)],
       }
@@ -273,7 +273,7 @@ export default function Orders({ session, type }: any) {
       } else {
         snap.forEach((item) => {
           console.log(item.data())
-          // removePreviousOrderInstance(item.id)
+          removePreviousOrderInstance(item.id)
           if (item.data().isPending && checkOrder(item.id, orders.pending)) {
             setOrders((prev) => {
               return {
@@ -347,7 +347,7 @@ export default function Orders({ session, type }: any) {
                       try {
                         setInitializing(true)
                         await rejectOrder({ order: data })
-                        window.location.href = "/dashboard"
+                        window.location.reload()
                         setSuccess((prev) => false)
                         setData(null)
                         setIsDeleting(false)

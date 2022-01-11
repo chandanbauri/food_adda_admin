@@ -87,15 +87,15 @@ export default function DashboardScreen({ session }: DASHBOARD_SCREEN_PROPS) {
             ? pending
             : [...pending.slice(0, pendingIndex), ...pending.slice(pendingIndex + 1)],
         onGoing:
-          pendingIndex == -1
+          onGoingIndex == -1
             ? onGoing
             : [...onGoing.slice(0, onGoingIndex), ...pending.slice(onGoingIndex + 1)],
         delivered:
-          pendingIndex == -1
+          deliveredIndex == -1
             ? delivered
             : [...delivered.slice(0, deliveredIndex), ...pending.slice(deliveredIndex + 1)],
         rejected:
-          pendingIndex == -1
+          rejectedIndex == -1
             ? rejected
             : [...rejected.slice(0, rejectedIndex), ...pending.slice(rejectedIndex + 1)],
       }
