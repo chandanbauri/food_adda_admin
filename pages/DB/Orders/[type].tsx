@@ -285,7 +285,7 @@ export default function Orders({ session, type }: any) {
             setOrders((prev) => {
               return {
                 ...prev,
-                delivered: [...prev.delivered, { id: item.id, ...item.data() }],
+                onGoing: [...prev.onGoing, { id: item.id, ...item.data() }],
               }
             })
           } else if (item.data().isRejected && checkOrder(item.id, orders.rejected)) {
